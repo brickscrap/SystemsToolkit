@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30330.147
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuelPOSToolkitCmdLineUI", "FuelPOSToolkitCmdLineUI\FuelPOSToolkitCmdLineUI.csproj", "{B4E3AAC8-CB55-4B81-B5C1-E60EA43A39B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToolkitLibrary", "ToolkitLibrary\ToolkitLibrary.csproj", "{6B8876E9-749F-4FC1-96F0-4D525616FC0A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B4E3AAC8-CB55-4B81-B5C1-E60EA43A39B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4E3AAC8-CB55-4B81-B5C1-E60EA43A39B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4E3AAC8-CB55-4B81-B5C1-E60EA43A39B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4E3AAC8-CB55-4B81-B5C1-E60EA43A39B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B8876E9-749F-4FC1-96F0-4D525616FC0A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B8876E9-749F-4FC1-96F0-4D525616FC0A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B8876E9-749F-4FC1-96F0-4D525616FC0A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B8876E9-749F-4FC1-96F0-4D525616FC0A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {15A228E1-D058-4306-9AF6-46C1A3E1E38F}
+	EndGlobalSection
+EndGlobal
