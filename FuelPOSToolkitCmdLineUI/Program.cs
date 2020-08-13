@@ -9,17 +9,16 @@ namespace FuelPOSToolkitCmdLineUI
     {
         static void Main(string[] args)
         {
-            XDocument doc1 = XDocument.Load("99612_statdev.xml");
-            XDocument doc2 = XDocument.Load("L2330_statdev.xml");
-
-            List<StatdevModel> data = new List<StatdevModel>();
+            string[] files = System.IO.Directory.GetFiles("C:\\surveys", "*.xml");
 
             StatdevParser parser = new StatdevParser();
-            var statDev1 = parser.Parse(doc1);
-            var statDev2 = parser.Parse(doc2);
+            List<StatdevModel> data = new List<StatdevModel>();
 
-            data.Add(statDev1);
-            data.Add(statDev2);
+            foreach (var file in files)
+	        {
+                XDocument doc = XDocument.Load(file);
+                data.Add(parser.Parse(doc));
+	        }
 
             SpreadsheetWriter writer = new SpreadsheetWriter();
 

@@ -227,7 +227,9 @@ namespace ToolkitLibrary
         }
         private string GetBarcodeScanner(int pcNumber)
         {
-            string output = SelectPC(pcNumber)
+            try
+            {
+                string output = SelectPC(pcNumber)
                 .Elements("Device")
                 .Where(item => (string)item.Attribute("Type") == "26")
                 .Elements("Property")
@@ -235,7 +237,13 @@ namespace ToolkitLibrary
                 .FirstOrDefault()
                 .Value;
 
-            return output;
+                return output;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            
         }
         private IEnumerable<XElement> GetSerialDevices(int pcNumber)
         {
@@ -254,7 +262,9 @@ namespace ToolkitLibrary
 
         private string GetUPS(int pcNumber)
         {
-            string output = SelectPC(pcNumber)
+            try
+            {
+                string output = SelectPC(pcNumber)
                 .Elements("Device")
                 .Where(item => (string)item.Attribute("Type") == "16")
                 .Elements("Property")
@@ -262,7 +272,12 @@ namespace ToolkitLibrary
                 .FirstOrDefault()
                 .Value;
 
-            return output;
+                return output;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
         #endregion
 
@@ -270,7 +285,9 @@ namespace ToolkitLibrary
 
         private string GetPumpProtocol(int pcNumber, int pumpNumber)
         {
-            var output = SelectDispensers(pcNumber)
+            try
+            {
+                var output = SelectDispensers(pcNumber)
                 .Elements("Device")
                 .Where(item => (string)item.Attribute("Type") == "9")
                 .Where(item => (int)item.Attribute("Number") == pumpNumber)
@@ -279,7 +296,13 @@ namespace ToolkitLibrary
                 .LastOrDefault()
                 .Value;
 
-            return output;
+                return output;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+            
         }
 
         #endregion
@@ -298,7 +321,7 @@ namespace ToolkitLibrary
         private XElement SelectPC(int pcNumber)
         {
             var output = _doc.Elements("Device")
-                .Where(item => (string)item.Attribute("Type") == "2")
+                .Where(item => (string)item.Attribute("Type") == "2" && item.Attribute("Number") != null)
                 .Where(number => (int)number.Attribute("Number") == pcNumber)
                 .FirstOrDefault();
 
