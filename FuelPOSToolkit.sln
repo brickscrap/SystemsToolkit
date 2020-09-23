@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToolkitData", "ToolkitData\
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ToolkitDB", "ToolkitDB\ToolkitDB.sqlproj", "{ABD35E33-17E4-4DF0-BDDC-E1535B296148}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "POSFileParser", "POSFileParser\POSFileParser.csproj", "{34CD8523-6278-40C6-AB6F-7873F6AF20E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POSFileParser", "POSFileParser\POSFileParser.csproj", "{34CD8523-6278-40C6-AB6F-7873F6AF20E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TankTableToolkit", "TankTableToolkit\TankTableToolkit.csproj", "{FC31B31A-6C8B-479D-A21A-B5FDE042C615}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{34CD8523-6278-40C6-AB6F-7873F6AF20E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{34CD8523-6278-40C6-AB6F-7873F6AF20E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{34CD8523-6278-40C6-AB6F-7873F6AF20E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC31B31A-6C8B-479D-A21A-B5FDE042C615}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC31B31A-6C8B-479D-A21A-B5FDE042C615}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC31B31A-6C8B-479D-A21A-B5FDE042C615}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC31B31A-6C8B-479D-A21A-B5FDE042C615}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

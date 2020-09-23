@@ -4,6 +4,7 @@ using System.Xml.Linq;
 using ToolkitLibrary;
 using ToolkitLibrary.Models;
 using POSFileParser;
+using TankTableToolkit;
 
 namespace FuelPOSToolkitCmdLineUI
 {
@@ -11,7 +12,13 @@ namespace FuelPOSToolkitCmdLineUI
     {
         static void Main(string[] args)
         {
-            Parser.LoadFile();
+            GaugeFileParser table = new GaugeFileParser(@"C:\Users\omgit\source\repos\FuelPOSToolkit\TankTableToolkit\Example\Aqueduct 200922d.cal");
+
+            var tables = table.Parse();
+            table.DisplayTablesInConsole();
+
+
+            // Parser.LoadFile();
 
 
             Console.ReadLine();

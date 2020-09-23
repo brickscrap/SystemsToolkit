@@ -7,6 +7,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\POSFileParser\POSFileParser.csproj" />
+    <ProjectReference Include="..\TankTableToolkit\TankTableToolkit.csproj" />
     <ProjectReference Include="..\ToolkitLibrary\ToolkitLibrary.csproj" />
   </ItemGroup>
 
