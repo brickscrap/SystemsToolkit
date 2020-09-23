@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\POSFileParser\POSFileParser.csproj" />
     <ProjectReference Include="..\ToolkitLibrary\ToolkitLibrary.csproj" />
   </ItemGroup>
 
