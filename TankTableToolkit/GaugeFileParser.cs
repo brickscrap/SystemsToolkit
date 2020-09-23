@@ -89,6 +89,21 @@ namespace TankTableToolkit
 
             return tankTable;
         }
+        private string GetTankNumber(string input)
+        {
+            char[] matchOn = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
+
+            var subString = input.IndexOfAny(matchOn);
+
+            if (subString != -1)
+            {
+                var output = input.Insert(subString, ",")
+                .Split(',')[1];
+                return output;
+            }
+
+            return null;
+        }
         private void CreateTankTables()
         {
             List<TankTableModel> output = new List<TankTableModel>();
@@ -104,7 +119,7 @@ namespace TankTableToolkit
                     _currentTank = newLine[1];
                     if (_nextTank == _currentTank)
                     {
-                        table.TankNumber = _currentTank;
+                        table.TankNumber = GetTankNumber(_currentTank);
                         continue;
                     }
                     else
@@ -112,7 +127,7 @@ namespace TankTableToolkit
                         _tankTables.Add(table);
                         _nextTank = _currentTank;
                         table = new TankTableModel();
-                        table.TankNumber = _currentTank;
+                        table.TankNumber = GetTankNumber(_currentTank);
                     }
                 }
                 else

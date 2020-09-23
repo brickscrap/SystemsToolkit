@@ -17,7 +17,7 @@ namespace FuelPOSToolkitCmdLineUI
             var tables = table.Parse();
             table.DisplayTablesInConsole();
 
-
+            POSFileCreator.CreateFile(tables, @"C:\Users\omgit\source\repos\FuelPOSToolkit\TankTableToolkit\Example");
             // Parser.LoadFile();
 
 
