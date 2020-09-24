@@ -33,7 +33,8 @@ namespace TankTableToolkit
                 int i = 1;
                 foreach (var mm in table.Measurements)
                 {
-                    output.Add($"MM{table.TankNumber},{i}={mm.Item2}.00");
+                    output.Add($"MM{table.TankNumber},{i}={mm.Item1}.00");
+                    output.Add($"LIT{table.TankNumber},{i}={mm.Item2}.00");
                     i++;
                 }
             }
