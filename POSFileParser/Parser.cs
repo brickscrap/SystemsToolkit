@@ -2,6 +2,8 @@
 using SharpConfig;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -11,51 +13,32 @@ namespace POSFileParser
     {
         public static void LoadFile()
         {
+            Configuration.CultureInfo.DateTimeFormat.FullDateTimePattern = "yyyyMMddHHmmss";
+            Configuration.CultureInfo.DateTimeFormat.LongDatePattern = "yyyyMMddHHmmss";
+            Configuration.CultureInfo.DateTimeFormat.ShortDatePattern = "yyyyMMddHHmmss";
+            Configuration.CultureInfo = CultureInfo.CurrentUICulture;
             var file = Configuration.LoadFromFile("C:\\Users\\omgit\\source\\repos\\FuelPOSToolkit\\POSFileParser\\Tests\\61111042.PU", Encoding.Unicode);
+            
             var dayReport = ParsePUFile(file);
 
-            foreach (var item in dayReport.Status)
-            {
-                Console.WriteLine($"Open: {item.Open}");
-                Console.WriteLine($"Close: {item.Close}");
-                Console.WriteLine($"POSDisconnected: {item.POSDisconnected}");
-                Console.WriteLine($"Closure Type: {item.ClosureType}");
-                Console.WriteLine($"Software: {item.SoftwareVersion}");
-                Console.WriteLine($"Station ID: {item.StationID}");
-                Console.WriteLine($"Station Name: {item.StationName}");
-                foreach (var line in item.StationAddress)
-                {
-                    Console.WriteLine($"{line}");
-                }
-                Console.WriteLine($"Post Code: {item.PostCode}");
-                Console.WriteLine($"City: {item.City}");
-                Console.WriteLine($"Last Fuel Sale: {item.LastFuelSale}");
-                Console.WriteLine($"Last Article Sale: {item.Open}");
-                Console.WriteLine($"Report Nr: {item.ReportNumber}");
-                Console.WriteLine($"Acc Day Nr: {item.AccountingDayReportNumber}");
-                Console.WriteLine($"VAT Country: {item.VATCountryCode}");
-                Console.WriteLine($"Nr of POS: {item.NumberOfPOS}");
-            }
-
-            foreach (var item in dayReport.CurrencyInfo)
-            {
-
-            }
+            Console.WriteLine(dayReport.Status.Open);
         }
 
         public static DayReportModel ParsePUFile(Configuration file)
         {
             DayReportModel dayReport = new DayReportModel();
 
+            var dayR = file["STATUS"].ToObject<StatusModel>();
+
             foreach (var section in file)
             {
                 switch (section.Name)
                 {
                     case "STATUS":
-                        dayReport.Status = Parse<StatusModel>(section);
+                        dayReport.Status = Parse<StatusModel>(section).FirstOrDefault();
                         break;
                     case "HEADER_RECEIPT_INFO":
-                        dayReport.HeaderReceipt = Parse<HeaderReceiptModel>(section);
+                        dayReport.HeaderReceipt = Parse<HeaderReceiptModel>(section).FirstOrDefault();
                         break;
                     case "MERCHANT_INFO":
                         dayReport.MerchantInfo = Parse<MerchantInfoModel>(section);

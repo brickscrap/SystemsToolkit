@@ -6,8 +6,8 @@ namespace POSFileParser.Models
 {
     public class DayReportModel
     {
-        public List<StatusModel> Status { get; set; }
-        public List<HeaderReceiptModel> HeaderReceipt { get; set; }
+        public StatusModel Status { get; set; }
+        public HeaderReceiptModel HeaderReceipt { get; set; }
         public List<MerchantInfoModel> MerchantInfo { get; set; }
         public List<FuelInfoModel> StartFuelInfo { get; set; }
         public List<FuelInfoModel> FuelInfo { get; set; }

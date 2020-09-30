@@ -1,7 +1,12 @@
-﻿using Microsoft.VisualBasic;
+﻿using AutoMapper;
+using Microsoft.VisualBasic;
+using POSFileParser.Attributes;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace POSFileParser.Models
@@ -9,17 +14,31 @@ namespace POSFileParser.Models
     public class StatusModel : ICanParse
     {
         public string IDKey { get; set; }
-        public DateTime Open { get; set; }
+        private DateTime _open;
+        public DateTime Open
+        {
+            get { return _open; }
+            set { _open = value; }
+        }
+        [FieldName("CLOSE")]
         public DateTime Close { get; set; }
+        [FieldName("POSDISCONNECTED")]
         public bool POSDisconnected { get; set; } = false;
+        [FieldName("CLOSE_TYPE")]
         public int ClosureType { get; set; }
+        [FieldName("SWVER")]
         public string SoftwareVersion { get; set; }
+        [FieldName("STID")]
         public string StationID { get; set; }
+        [FieldName("STNAME")]
         public string StationName { get; set; }
+        [FieldName("STADDRESS")]
         public List<string> StationAddress { get; set; } = new List<string>();
         public string PostCode { get; set; }
         public string City { get; set; }
+        [FieldName("FDATI")]
         public DateTime LastFuelSale { get; set; }
+        [FieldName("SDATI")]
         public DateTime LastArticleSale { get; set; }
         public int ReportNumber { get; set; }
         public int AccountingDayReportNumber { get; set; }
@@ -28,6 +47,9 @@ namespace POSFileParser.Models
 
         public void AddToItem(string[] headers, string value)
         {
+            Mapper.MapFile(this, headers[0], value, this);
+
+            /*
             switch (headers[0])
             {
                 case "OPEN":
@@ -81,6 +103,7 @@ namespace POSFileParser.Models
                 default:
                     break;
             }
+            */
         }
     }
 }
