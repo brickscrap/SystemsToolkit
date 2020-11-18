@@ -4,9 +4,13 @@ using System.Text;
 
 namespace POSFileParser.Models.TRX
 {
-    public class TrxArticleModel : ICanParse
+    public class TrxArticleModel : MappableBase<TrxArticleModel>
     {
         #region Public Properties
+        private protected override IDictionary<string, Func<TrxArticleModel, string, TrxArticleModel>> Mappings
+        { 
+            get { return _mappings; } 
+        }
         public string IDKey { get; set; }
         public ArticleType Type { get; set; }
         public TrxPumpModel PumpDetails { get; set; }
@@ -46,14 +50,38 @@ namespace POSFileParser.Models.TRX
         public double DepositAmountVATExcluded { get; set; }
         // INCx,y
         public double PartialVATAmount { get; set; }
+        public string PLU { get; set; }
+
+
         // TODO : COMP_LEVELx,y,r page 977
 
         #endregion
 
-        public void AddToItem(string[] headers, string value)
+        private IDictionary<string, Func<TrxArticleModel, string, TrxArticleModel>> _mappings = new Dictionary<string, Func<TrxArticleModel, string, TrxArticleModel>>
         {
-            throw new NotImplementedException();
-        }
+            { "PRI", (model, value) => { model.Price = double.Parse(value); return model; } },
+            { "UPRI", (model, value) => { model.UnitPrice = double.Parse(value); return model; } },
+            { "QTY", (model, value) => { model.Quantity = double.Parse(value); return model; } },
+            { "QTYUNIT", (model, value) => { model.QuantityUnits = (Unit)Enum.Parse(typeof(Unit), value); return model; } },
+            { "GAMT", (model, value) => { model.GrossAmount = double.Parse(value); return model; } },
+            { "AMT", (model, value) => { model.NetAmount = double.Parse(value); return model; } },
+            { "PLU", (model, value) => { model.PLU = value; return model; } },
+            { "NAM", (model, value) => { model.Name = value; return model; } },
+            { "GRP", (model, value) => { model.GroupCode = value; return model; } },
+            { "CRD", (model, value) => { model.CardCode = value; return model; } },
+            { "ART_MERCH_ID", (model, value) => { model.MerchantID = value; return model; } },
+            { "PRC", (model, value) => { model.VATPercentage = double.Parse(value); return model; } },
+            { "VAMT", (model, value) => { model.VATAmount = double.Parse(value); return model; } },
+            { "EXC", (model, value) => { model.AmountVATExcluded = double.Parse(value); return model; } },
+            { "PMP", (model, value) => { model.PumpDetails = new TrxPumpModel(); model.PumpDetails.PumpNumber = int.Parse(value); return model; } },
+            { "PUMP_MODE", (model, value) => { model.PumpDetails.PumpMode = value; return model; } },
+            { "NOZZLE", (model, value) => { model.PumpDetails.NozzleNumber = int.Parse(value); return model; } },
+            { "NDATI", (model, value) => { model.PumpDetails.NozzleReturnTime = value.ParseFuelPOSDate(); return model; } },
+            { "START_DATE", (model, value) => { model.PumpDetails.FillingStartTime = value.ParseFuelPOSDate(); return model; } },
+            { "BASEPRI", (model, value) => { model.PumpDetails.FuelBasePrice = double.Parse(value); return model; } },
+            { "EXTREF", (model, value) => { model.ExternalReference = value; return model; } },
+            { "NQUA_CHANGEABLE", (model, value) => { model.PumpDetails.NozzleQuantityChangeable = double.Parse(value); return model; } },
+        };
 
         #region Enumerators
         public enum ArticleType : ushort

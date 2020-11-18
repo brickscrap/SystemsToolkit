@@ -28,6 +28,15 @@ namespace StadevParser
                 .Elements("TREE")
                 .Elements("Device");
 
+            StatdevModel output = CreateStatdev();
+
+            output = AddAllPCs(output);
+
+            return output;
+        }
+
+        private StatdevModel CreateStatdev()
+        {
             StatdevModel output = new StatdevModel
             {
                 StationInfo = new StationInfoModel
@@ -36,67 +45,69 @@ namespace StadevParser
                     StationName = GetStationName(),
                     Company = GetCompany(),
                     NumberOfTills = GetNumberOfTills()
-                }                
+                }
             };
 
+            return output;
+        }
+
+        private StatdevModel AddAllPCs(StatdevModel statDev)
+        {
             List<PCInfoModel> pcInfoModels = new List<PCInfoModel>();
             List<PumpModel> pumpModels = new List<PumpModel>();
 
-            for (int i = 1; i <= output.StationInfo.NumberOfTills; i++)
+            for (int tillNumber = 1; tillNumber <= statDev.StationInfo.NumberOfTills; tillNumber++)
             {
-                List<SerialDeviceModel> serialDevices = new List<SerialDeviceModel>();
+                pcInfoModels.Add(CreatePCInfoModel(tillNumber));
 
-                foreach (var item in GetSerialDevices(i))
+                pumpModels = AddPumpModels(tillNumber, pumpModels);
+            }
+
+            statDev.POS = pcInfoModels;
+            statDev.Dispensers = pumpModels;
+
+            return statDev;
+        }
+
+        private PCInfoModel CreatePCInfoModel(int pcNumber)
+        {
+            PCInfoModel output = new PCInfoModel
+            {
+                Type = GetPCType(pcNumber),
+                OperatingSystem = GetOS(pcNumber),
+                Number = GetPCNumber(pcNumber),
+                HardwareType = GetHardwareType(pcNumber),
+                SoftwareVersion = GetSoftwareVersion(pcNumber),
+                PrimaryIP = GetIP(pcNumber),
+                ReceiptPrinter = GetReceiptPrinter(pcNumber),
+                CustomerDisplay = GetCustDisplay(pcNumber),
+                BarcodeScanner = GetBarcodeScanner(pcNumber),
+                UPS = GetUPS(pcNumber),
+                SerialDevices = GetSerialDevices(pcNumber)
+            };
+
+            return output;
+        }
+
+        private List<PumpModel> AddPumpModels(int tillNumber, List<PumpModel> pumps)
+        {
+            var dispensers = GetDispenserXML(tillNumber).Elements("Device");
+
+            if (dispensers != null)
+            {
+                foreach (var dispenser in dispensers)
                 {
-                    int portNumber = int.Parse(item.Attribute("Number").Value);
-                    string device = item.Elements("Property")
-                            .Where(elem => (string)elem.Attribute("Type") == "85")
-                            .FirstOrDefault()
-                            .Value;
+                    var pumpNumber = int.Parse(dispenser.Attribute("Number").Value);
 
-                    serialDevices.Add(new SerialDeviceModel
+                    pumps.Add(new PumpModel
                     {
-                        PortNumber = portNumber,
-                        Device = device
+                        Number = pumpNumber,
+                        Protocol = GetPumpProtocol(tillNumber, pumpNumber)
                     });
-                }
-
-                pcInfoModels.Add(new PCInfoModel
-                {
-                    Type = GetPCType(i),
-                    OperatingSystem = GetOS(i),
-                    Number = GetPCNumber(i),
-                    HardwareType = GetHardwareType(i),
-                    SoftwareVersion = GetSoftwareVersion(i),
-                    PrimaryIP = GetIP(i),
-                    ReceiptPrinter = GetReceiptPrinter(i),
-                    CustomerDisplay = GetCustDisplay(i),
-                    BarcodeScanner = GetBarcodeScanner(i),
-                    UPS = GetUPS(i),
-                    SerialDevices = serialDevices
-                });
-
-                var dispensers = GetDispenserXML(i).Elements("Device");
-
-                if (dispensers != null)
-                {
-                    foreach (var dispenser in dispensers)
-                    {
-                        var pumpNumber = int.Parse(dispenser.Attribute("Number").Value);
-
-                        pumpModels.Add(new PumpModel
-                        {
-                            Number = pumpNumber,
-                            Protocol = GetPumpProtocol(i, pumpNumber)
-                        });
-                    }
                 }
             }
 
-            output.POS = pcInfoModels;
-            output.Dispensers = pumpModels;
-
-            return output;
+            return pumps;
         }
 
         #region StationInfo
@@ -215,6 +226,8 @@ namespace StadevParser
         }
         private string GetCustDisplay(int pcNumber)
         {
+            // TODO: Group by USB/Serial
+            // Serial = DM202
             string output = SelectPC(pcNumber)
                 .Elements("Device")
                 .Where(item => (string)item.Attribute("Type") == "27")
@@ -227,6 +240,8 @@ namespace StadevParser
         }
         private string GetBarcodeScanner(int pcNumber)
         {
+            // TODO: Group by USB/Serial
+            // Serial are Metrologic
             string output = SelectPC(pcNumber)
                 .Elements("Device")
                 .Where(item => (string)item.Attribute("Type") == "26")
@@ -237,9 +252,9 @@ namespace StadevParser
 
             return output;
         }
-        private IEnumerable<XElement> GetSerialDevices(int pcNumber)
+        private List<SerialDeviceModel> GetSerialDevices(int pcNumber)
         {
-            var output = SelectPC(pcNumber)
+            var serialDevices = SelectPC(pcNumber)
                 .Elements("Device")
                 .Where(item => (string)item.Attribute("Type") == "38")
                 .Where(item => (int)item.Attribute("Number") == pcNumber)
@@ -249,11 +264,30 @@ namespace StadevParser
                 .Elements("Device")
                 .Where(item => (string)item.Attribute("Type") == "41");
 
+            List<SerialDeviceModel> output = new List<SerialDeviceModel>();
+
+            foreach (var item in serialDevices)
+            {
+                int portNumber = int.Parse(item.Attribute("Number").Value);
+                string device = item.Elements("Property")
+                        .Where(elem => (string)elem.Attribute("Type") == "85")
+                        .FirstOrDefault()
+                        .Value;
+
+                output.Add(new SerialDeviceModel
+                {
+                    PortNumber = portNumber,
+                    Device = device
+                });
+            }
+
             return output;
         }
 
         private string GetUPS(int pcNumber)
         {
+            // TODO: Group by USB/Serial
+            // Serial have a number
             string output = SelectPC(pcNumber)
                 .Elements("Device")
                 .Where(item => (string)item.Attribute("Type") == "16")

@@ -1,8 +1,10 @@
-﻿using POSFileParser.Models;
+﻿using POSFileParser.Enums;
+using POSFileParser.Models;
 using SharpConfig;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -11,52 +13,61 @@ namespace POSFileParser
 {
     public static class Parser
     {
-        public static void LoadFile()
+        public static void LoadFile(string filePath)
         {
-            Configuration.CultureInfo.DateTimeFormat.FullDateTimePattern = "yyyyMMddHHmmss";
-            Configuration.CultureInfo.DateTimeFormat.LongDatePattern = "yyyyMMddHHmmss";
-            Configuration.CultureInfo.DateTimeFormat.ShortDatePattern = "yyyyMMddHHmmss";
-            Configuration.CultureInfo = CultureInfo.CurrentUICulture;
-            var file = Configuration.LoadFromFile("C:\\Users\\omgit\\source\\repos\\FuelPOSToolkit\\POSFileParser\\Tests\\61111042.PU", Encoding.Unicode);
-            
-            var dayReport = ParsePUFile(file);
+            var fileType = Path.GetExtension(filePath);
+            var file = new Configuration();
 
-            Console.WriteLine(dayReport.Status.Open);
+            switch (fileType)
+            {
+                case ".TRX":
+                    file = Configuration.LoadFromFile(filePath, Encoding.UTF8);
+                    List<TRXModel> output = ParseTRXFile(file);
+                    break;
+                case ".PU":
+                    file = Configuration.LoadFromFile(filePath, Encoding.Unicode);
+                    ParsePUFile(file);
+                    break;
+            }
+        }
+
+        public static List<TRXModel> LoadTRXFile(string filePath)
+        {
+            var file = new Configuration();
+            file = Configuration.LoadFromFile(filePath, Encoding.UTF8);
+
+            List<TRXModel> output = ParseTRXFile(file);
+
+            var final = output.Where(x => x.Type == TrxType.NormalTrx);
+
+            return output;
+        }
+
+        public static List<TRXModel> ParseTRXFile(Configuration file)
+        {
+           List<IFileSection> output = new List<IFileSection>();
+            
+            foreach (Section section in file)
+            {
+                if (section.Name.Equals("TRX"))
+                {
+                    output = FileSectionFactory.CreateList(section);
+                }
+            }
+
+            return output.ConvertAll(o => (TRXModel)o);
         }
 
         public static DayReportModel ParsePUFile(Configuration file)
         {
             DayReportModel dayReport = new DayReportModel();
 
-            var dayR = file["STATUS"].ToObject<StatusModel>();
-
-            foreach (var section in file)
+            foreach (Section section in file)
             {
                 switch (section.Name)
                 {
                     case "STATUS":
-                        dayReport.Status = Parse<StatusModel>(section).FirstOrDefault();
-                        break;
-                    case "HEADER_RECEIPT_INFO":
-                        dayReport.HeaderReceipt = Parse<HeaderReceiptModel>(section).FirstOrDefault();
-                        break;
-                    case "MERCHANT_INFO":
-                        dayReport.MerchantInfo = Parse<MerchantInfoModel>(section);
-                        break;
-                    case "START_FUEL_INFO":
-                        dayReport.StartFuelInfo = Parse<FuelInfoModel>(section);
-                        break;
-                    case "FUEL_INFO":
-                        dayReport.StartFuelInfo = Parse<FuelInfoModel>(section);
-                        break;
-                    case "ARTICLE_SOLD_INFO":
-                        dayReport.ArticleSoldInfo = Parse<ArticleSoldInfoModel>(section);
-                        break;
-                    case "CURRENCY_INFO":
-                        dayReport.CurrencyInfo = Parse<CurrencyInfoModel>(section);
-                        break;
-                    case "LION_LOYALTY":
-                        dayReport.LionLoyalty = Parse<LionLoyaltyModel>(section);
+                        dayReport.Status = (StatusModel)FileSectionFactory.CreateIndividual(section);
                         break;
                     default:
                         break;
@@ -107,24 +118,6 @@ namespace POSFileParser
             items.Add(newItem);
 
             return items;
-        }
-
-        public static string[] SplitKey(this string item)
-        {
-            char[] matchOn = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
-            var subString = item.IndexOfAny(matchOn);
-
-            if (subString != -1)
-            {
-                var output = item.Insert(subString, ",")
-                .Split(',');
-                return output;
-            }
-            else
-            {
-                string[] output = new string[] { item };
-                return output;
-            }
         }
     }
 }

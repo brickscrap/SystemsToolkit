@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.VisualBasic;
 using POSFileParser.Attributes;
+using SharpConfig;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -11,15 +12,12 @@ using System.Text;
 
 namespace POSFileParser.Models
 {
-    public class StatusModel : ICanParse
+    public class StatusModel : IFileSection
     {
+        #region Public Properties
         public string IDKey { get; set; }
-        private DateTime _open;
-        public DateTime Open
-        {
-            get { return _open; }
-            set { _open = value; }
-        }
+        [FieldName("OPEN")]
+        public DateTime Open { get; set; }
         [FieldName("CLOSE")]
         public DateTime Close { get; set; }
         [FieldName("POSDISCONNECTED")]
@@ -33,7 +31,7 @@ namespace POSFileParser.Models
         [FieldName("STNAME")]
         public string StationName { get; set; }
         [FieldName("STADDRESS")]
-        public List<string> StationAddress { get; set; } = new List<string>();
+        public AddressModel StationAddress { get; set; } = new AddressModel();
         public string PostCode { get; set; }
         public string City { get; set; }
         [FieldName("FDATI")]
@@ -43,67 +41,45 @@ namespace POSFileParser.Models
         public int ReportNumber { get; set; }
         public int AccountingDayReportNumber { get; set; }
         public int VATCountryCode { get; set; }
+        public int VatNumber { get; set; }
         public int NumberOfPOS { get; set; }
+        #endregion
 
-        public void AddToItem(string[] headers, string value)
+        private static readonly IDictionary<string, Func<StatusModel, string, StatusModel>> _mappings = new Dictionary<string, Func<StatusModel, string, StatusModel>>
         {
-            Mapper.MapFile(this, headers[0], value, this);
+            { "OPEN", (model, value) => { model.Open = value.ParseFuelPOSDate(); return model; } },
+            { "CLOS", (model, value) => { model.Close = value.ParseFuelPOSDate(); return model; } },
+            { "POSDISCONNECTED", (model, value) => { model.POSDisconnected = value.StringToBool(); return model; } },
+            { "CLOSE_TYPE", (model, value) => { model.ClosureType = int.Parse(value); return model; } },
+            { "SWV", (model, value) => { model.SoftwareVersion = value; return model; } },
+            { "STID", (model, value) => { model.StationID = value; return model; } },
+            { "STNAME", (model, value) => { model.StationName = value; return model; } },
+            { "STADDRESS1", (model, value) => { model.StationAddress.Line1 = value; return model; } },
+            { "STADDRESS2", (model, value) => { model.StationAddress.Line2 = value; return model; } },
+            { "STZIP", (model, value) => { model.StationAddress.PostCode = value; return model; } },
+            { "STCITY", (model, value) => { model.StationAddress.City = value; return model; } },
+            { "FDATI", (model, value) => { model.LastFuelSale = value.ParseFuelPOSDate(); return model; } },
+            { "SDATI", (model, value) => { model.LastArticleSale = value.ParseFuelPOSDate(); return model; } },
+            { "REP_NR", (model, value) => { model.ReportNumber = int.Parse(value); return model; } },
+            { "ACC_REP_NR", (model, value) => { model.AccountingDayReportNumber = int.Parse(value); return model; } },
+            { "VAT_ISO_C", (model, value) => { model.VATCountryCode = int.Parse(value); return model; } },
+            { "VAT_NR", (model, value) => { model.VatNumber = int.Parse(value); return model; } },
+            { "NRPOSSES", (model, value) => { model.NumberOfPOS = int.Parse(value); return model; } }
+        };
 
-            /*
-            switch (headers[0])
+        public IFileSection Create(IGrouping<string, Setting> groupedData)
+        {
+            foreach (var item in groupedData)
             {
-                case "OPEN":
-                    Open = value.ParseFuelPOSDate();
-                    break;
-                case "CLOS":
-                    Close = value.ParseFuelPOSDate();
-                    break;
-                case "POSDISCONNECTED":
-                    POSDisconnected = value.Equals("YES");
-                    break;
-                case "CLOSE_TYPE":
-                    ClosureType = int.Parse(value);
-                    break;
-                case "SWV":
-                    SoftwareVersion = value;
-                    break;
-                case "STID":
-                    StationID = value;
-                    break;
-                case "STNAME":
-                    StationName = value;
-                    break;
-                case "STADDRESS":
-                    StationAddress.Add(value);
-                    break;
-                case "STZIP":
-                    PostCode = value;
-                    break;
-                case "STCITY":
-                    City = value;
-                    break;
-                case "FDATI":
-                    LastFuelSale = value.ParseFuelPOSDate();
-                    break;
-                case "SDATI":
-                    LastArticleSale = value.ParseFuelPOSDate();
-                    break;
-                case "REP_NR":
-                    ReportNumber = int.Parse(value);
-                    break;
-                case "ACC_REP_NR":
-                    AccountingDayReportNumber = int.Parse(value);
-                    break;
-                case "VAT_ISO_C":
-                    VATCountryCode = int.Parse(value);
-                    break;
-                case "NRPOSSES":
-                    NumberOfPOS = int.Parse(value);
-                    break;
-                default:
-                    break;
+                Func<StatusModel, string, StatusModel> function;
+                // TODO: THIS DOESNT WORK ANYMORE
+                if (_mappings.TryGetValue(item.Name, out function))
+                {
+                    function(this, item.Name);
+                }
             }
-            */
+
+            return this;
         }
     }
 }

@@ -13,7 +13,13 @@ Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "ToolkitDB", "ToolkitDB\Tool
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "POSFileParser", "POSFileParser\POSFileParser.csproj", "{34CD8523-6278-40C6-AB6F-7873F6AF20E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TankTableToolkit", "TankTableToolkit\TankTableToolkit.csproj", "{FC31B31A-6C8B-479D-A21A-B5FDE042C615}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TankTableToolkit", "TankTableToolkit\TankTableToolkit.csproj", "{FC31B31A-6C8B-479D-A21A-B5FDE042C615}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuelPOSDebugTools", "FuelPOSDebugTools\FuelPOSDebugTools.csproj", "{24986932-97C0-4E8F-83F0-E69A44464865}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FuelPOSFTPLib", "FuelPOSFTPLib\FuelPOSFTPLib.csproj", "{2935B46D-5707-4A91-B87B-63F1A8C041D2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StadevParser", "StadevParser\StadevParser.csproj", "{F7AC9C48-9DDD-47C7-A76D-B804D166045A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +53,18 @@ Global
 		{FC31B31A-6C8B-479D-A21A-B5FDE042C615}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC31B31A-6C8B-479D-A21A-B5FDE042C615}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC31B31A-6C8B-479D-A21A-B5FDE042C615}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24986932-97C0-4E8F-83F0-E69A44464865}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24986932-97C0-4E8F-83F0-E69A44464865}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24986932-97C0-4E8F-83F0-E69A44464865}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24986932-97C0-4E8F-83F0-E69A44464865}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2935B46D-5707-4A91-B87B-63F1A8C041D2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2935B46D-5707-4A91-B87B-63F1A8C041D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2935B46D-5707-4A91-B87B-63F1A8C041D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2935B46D-5707-4A91-B87B-63F1A8C041D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7AC9C48-9DDD-47C7-A76D-B804D166045A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7AC9C48-9DDD-47C7-A76D-B804D166045A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7AC9C48-9DDD-47C7-A76D-B804D166045A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7AC9C48-9DDD-47C7-A76D-B804D166045A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

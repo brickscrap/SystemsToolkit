@@ -339,3 +339,7 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /TankTableToolkit/Example/TMS_AOF.INP
+/FuelPOSDebugTools/process_list.json
+/FuelPOSDebugTools/BUG_DEF.ASC
+/POSFileParser/Tests/trx.json
+/StadevParser/StadevParser.sln
