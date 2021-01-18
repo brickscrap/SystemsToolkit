@@ -73,7 +73,8 @@ namespace ToolkitLibrary
                     CustomerDisplay = GetCustDisplay(i),
                     BarcodeScanner = GetBarcodeScanner(i),
                     UPS = GetUPS(i),
-                    SerialDevices = serialDevices
+                    SerialDevices = serialDevices,
+                    TouchScreenType = GetTouchscreenType(i)
                 });
 
                 var dispensers = GetDispenserXML(i).Elements("Device");
@@ -203,27 +204,41 @@ namespace ToolkitLibrary
         }
         private string GetReceiptPrinter(int pcNumber)
         {
-            string output = SelectPC(pcNumber)
-                .Elements("Device")
-                .Where(item => (string)item.Attribute("Type") == "30")
-                .Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "34")
-                .FirstOrDefault()
-                .Value;
+            try
+            {
+                string output = SelectPC(pcNumber)
+                        .Elements("Device")
+                        .Where(item => (string)item.Attribute("Type") == "30")
+                        .Elements("Property")
+                        .Where(item => (string)item.Attribute("Type") == "34")
+                        .FirstOrDefault()
+                        .Value;
 
-            return output;
+                return output;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
         private string GetCustDisplay(int pcNumber)
         {
-            string output = SelectPC(pcNumber)
-                .Elements("Device")
-                .Where(item => (string)item.Attribute("Type") == "27")
-                .Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "34")
-                .FirstOrDefault()
-                .Value;
+            try
+            {
+                string output = SelectPC(pcNumber)
+                        .Elements("Device")
+                        .Where(item => (string)item.Attribute("Type") == "27")
+                        .Elements("Property")
+                        .Where(item => (string)item.Attribute("Type") == "34")
+                        .FirstOrDefault()
+                        .Value;
 
-            return output;
+                return output;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
         private string GetBarcodeScanner(int pcNumber)
         {
@@ -278,6 +293,21 @@ namespace ToolkitLibrary
             {
                 return null;
             }
+        }
+
+        private string GetTouchscreenType(int pcNumber) 
+        {
+            var output = SelectPC(pcNumber)
+                .Elements("Device")
+                .Where(item => (string)item.Attribute("Type") == "42")
+                .Elements("Device")
+                .Where(item => item.Value.Contains("TouchScreenType"))
+                .Elements("Property")
+                .Where(item => (string)item.Attribute("Type") == "89")
+                .FirstOrDefault()
+                .Value;
+
+            return output;
         }
         #endregion
 

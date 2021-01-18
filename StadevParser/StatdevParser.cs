@@ -264,6 +264,19 @@ namespace StadevParser
 
             return output;
         }
+
+        private string GetTouchscreenType(int pcNumber) 
+        {
+            string output = SelectPC(pcNumber)
+                .Elements("Device")
+                .Where(item => (string)item.Attribute("Type") == "42")
+                .Elements("Device")
+                .Where(item => (string)item.Attribute("Number") == "259")
+                .Elements("Property")
+                .Where(item => (string)item.Attribute("Type") == "89")
+                .FirstOrDefault()
+                .Value;
+        }
         #endregion
 
         #region DispenserInfo
@@ -316,5 +329,10 @@ namespace StadevParser
         }
 
         #endregion
+
+        public string GetTouchScreenTest() 
+        {
+            return GetTouchscreenType(1);
+        }
     }
 }

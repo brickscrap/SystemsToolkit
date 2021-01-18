@@ -20,6 +20,7 @@ namespace ToolkitLibrary.Models
         public int NumSerialPorts { get; set; }
         public List<SerialDeviceModel> SerialDevices { get; set; }
         public string UPS { get; set; }
+        public string TouchScreenType { get; set; }
         public int SerialPortsUsed
         {
             get
