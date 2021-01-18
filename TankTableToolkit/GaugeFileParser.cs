@@ -59,6 +59,7 @@ namespace TankTableToolkit
             var file = File.ReadAllLines(_filePath);
             _file = RemoveExcessData(file);
         }
+
         private List<string> RemoveExcessData(string[] file)
         {
             List<string> output = new List<string>();
