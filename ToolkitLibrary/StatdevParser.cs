@@ -46,10 +46,10 @@ namespace ToolkitLibrary
             {
                 List<SerialDeviceModel> serialDevices = new List<SerialDeviceModel>();
 
-                foreach (var item in GetSerialDevices(i))
+                foreach (var value in GetSerialDevices(i))
                 {
-                    int portNumber = int.Parse(item.Attribute("Number").Value);
-                    string device = item.Elements("Property")
+                    int portNumber = int.Parse(value.Attribute("Number").Value);
+                    string device = value.Elements("Property")
                             .Where(elem => (string)elem.Attribute("Type") == "85")
                             .FirstOrDefault()
                             .Value;
@@ -104,7 +104,7 @@ namespace ToolkitLibrary
         private string GetStationNumber()
         {
             string output = _doc.Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "1")
+                .Where(value => (string)value.Attribute("Type") == "1")
                 .FirstOrDefault()
                 .Value;
 
@@ -113,7 +113,7 @@ namespace ToolkitLibrary
         private string GetStationName()
         {
             string output = _doc.Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "2")
+                .Where(value => (string)value.Attribute("Type") == "2")
                 .FirstOrDefault()
                 .Value;
 
@@ -122,7 +122,7 @@ namespace ToolkitLibrary
         private string GetCompany()
         {
             string output = _doc.Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "6")
+                .Where(value => (string)value.Attribute("Type") == "6")
                 .FirstOrDefault()
                 .Value;
 
@@ -131,7 +131,7 @@ namespace ToolkitLibrary
         private int GetNumberOfTills()
         {
             string number = _doc.Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "10")
+                .Where(value => (string)value.Attribute("Type") == "10")
                 .FirstOrDefault()
                 .Value;
 
@@ -146,7 +146,7 @@ namespace ToolkitLibrary
         {
             string output = SelectPC(pcNumber)
                 .Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "34")
+                .Where(value => (string)value.Attribute("Type") == "34")
                 .FirstOrDefault()
                 .Value;
 
@@ -156,7 +156,7 @@ namespace ToolkitLibrary
         {
             string output = SelectPC(pcNumber)
                 .Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "54")
+                .Where(value => (string)value.Attribute("Type") == "54")
                 .FirstOrDefault()
                 .Value;
 
@@ -166,7 +166,7 @@ namespace ToolkitLibrary
         {
             string output = SelectPC(pcNumber)
                 .Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "68")
+                .Where(value => (string)value.Attribute("Type") == "68")
                 .FirstOrDefault()
                 .Value;
 
@@ -176,7 +176,7 @@ namespace ToolkitLibrary
         {
             string output = SelectPC(pcNumber)
                 .Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "147")
+                .Where(value => (string)value.Attribute("Type") == "147")
                 .FirstOrDefault()
                 .Value;
 
@@ -186,7 +186,7 @@ namespace ToolkitLibrary
         {
             string output = SelectPC(pcNumber)
                 .Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "35")
+                .Where(value => (string)value.Attribute("Type") == "35")
                 .FirstOrDefault()
                 .Value;
 
@@ -196,7 +196,7 @@ namespace ToolkitLibrary
         {
             string output = SelectPC(pcNumber)
                 .Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "56")
+                .Where(value => (string)value.Attribute("Type") == "56")
                 .FirstOrDefault()
                 .Value;
 
@@ -246,9 +246,9 @@ namespace ToolkitLibrary
             {
                 string output = SelectPC(pcNumber)
                 .Elements("Device")
-                .Where(item => (string)item.Attribute("Type") == "26")
+                .Where(value => (string)value.Attribute("Type") == "26")
                 .Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "34")
+                .Where(value => (string)value.Attribute("Type") == "34")
                 .FirstOrDefault()
                 .Value;
 
@@ -264,13 +264,13 @@ namespace ToolkitLibrary
         {
             var output = SelectPC(pcNumber)
                 .Elements("Device")
-                .Where(item => (string)item.Attribute("Type") == "38")
-                .Where(item => (int)item.Attribute("Number") == pcNumber)
+                .Where(value => (string)value.Attribute("Type") == "38")
+                .Where(value => (int)value.Attribute("Number") == pcNumber)
                 .Elements("Device")
-                .Where(item => (string)item.Attribute("Type") == "39")
-                .Where(item => (int)item.Attribute("Number") == pcNumber)
+                .Where(value => (string)value.Attribute("Type") == "39")
+                .Where(value => (int)value.Attribute("Number") == pcNumber)
                 .Elements("Device")
-                .Where(item => (string)item.Attribute("Type") == "41");
+                .Where(value => (string)value.Attribute("Type") == "41");
 
             return output;
         }
@@ -281,9 +281,9 @@ namespace ToolkitLibrary
             {
                 string output = SelectPC(pcNumber)
                 .Elements("Device")
-                .Where(item => (string)item.Attribute("Type") == "16")
+                .Where(value => (string)value.Attribute("Type") == "16")
                 .Elements("Property")
-                .Where(item => (string)item.Attribute("Type") == "28")
+                .Where(value => (string)value.Attribute("Type") == "28")
                 .FirstOrDefault()
                 .Value;
 
@@ -319,10 +319,10 @@ namespace ToolkitLibrary
             {
                 var output = SelectDispensers(pcNumber)
                 .Elements("Device")
-                .Where(item => (string)item.Attribute("Type") == "9")
-                .Where(item => (int)item.Attribute("Number") == pumpNumber)
+                .Where(value => (string)value.Attribute("Type") == "9")
+                .Where(value => (int)value.Attribute("Number") == pumpNumber)
                 .Elements("Property")
-                .Where(item => (int)item.Attribute("Type") == 60)
+                .Where(value => (int)value.Attribute("Type") == 60)
                 .LastOrDefault()
                 .Value;
 
@@ -343,7 +343,7 @@ namespace ToolkitLibrary
         {
             var output = SelectPC(pcNumber)
                     .Elements("Device")
-                    .Where(item => (string)item.Attribute("Type") == "8");
+                    .Where(value => (string)value.Attribute("Type") == "8");
 
             return output;
         }
@@ -351,7 +351,7 @@ namespace ToolkitLibrary
         private XElement SelectPC(int pcNumber)
         {
             var output = _doc.Elements("Device")
-                .Where(item => (string)item.Attribute("Type") == "2" && item.Attribute("Number") != null)
+                .Where(value => (string)value.Attribute("Type") == "2" && value.Attribute("Number") != null)
                 .Where(number => (int)number.Attribute("Number") == pcNumber)
                 .FirstOrDefault();
 
@@ -361,8 +361,8 @@ namespace ToolkitLibrary
         {
             var output = SelectPC(pcNumber)
                     .Elements("Device")
-                    .Where(item => (string)item.Attribute("Type") == "8")
-                    .Where(item => (int)item.Attribute("Number") == pcNumber)
+                    .Where(value => (string)value.Attribute("Type") == "8")
+                    .Where(value => (int)value.Attribute("Number") == pcNumber)
                     .FirstOrDefault();
 
             return output;

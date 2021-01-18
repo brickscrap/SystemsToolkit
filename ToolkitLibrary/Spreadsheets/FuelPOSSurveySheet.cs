@@ -78,13 +78,13 @@ namespace ToolkitLibrary.Spreadsheets
 
                 var r = 3;
 
-                foreach (var item in data)
+                foreach (var value in data)
                 {
-                    worksheet.Cells[r, 1].Value = item.StationInfo.StationNumber;
-                    worksheet.Cells[r, 2].Value = item.StationInfo.StationName;
+                    worksheet.Cells[r, 1].Value = value.StationInfo.StationNumber;
+                    worksheet.Cells[r, 2].Value = value.StationInfo.StationName;
 
                     var col = 3;
-                    foreach (var pos in item.POS)
+                    foreach (var pos in value.POS)
                     {
                         worksheet.Cells[r, col].Value = pos.HardwareType;
                         worksheet.Cells[r, col+1].Value = pos.OperatingSystem;
@@ -109,7 +109,7 @@ namespace ToolkitLibrary.Spreadsheets
                         }
                     }
 
-                    var comms = item.Dispensers
+                    var comms = value.Dispensers
                         .Select(x => x.Protocol).Distinct();
 
                     col = 22;
