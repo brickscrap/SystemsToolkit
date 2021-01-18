@@ -1,0 +1,47 @@
+﻿<views:MvxWpfView x:Class="FuelPOSToolkitWPF.Views.LoginView"
+                  xmlns:views="clr-namespace:MvvmCross.Platforms.Wpf.Views;assembly=MvvmCross.Platforms.Wpf"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:FuelPOSToolkitWPF.Views"
+             xmlns:h="clr-namespace:FuelPOSToolkitWPF.Helpers"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!-- Header Row-->
+        <TextBlock Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" 
+                   FontSize="36" Margin="0 0 0 15">
+            Login Form
+        </TextBlock>
+        
+        <!-- Username Row -->
+        <TextBlock Grid.Row="2" Grid.Column="1">Username:</TextBlock>
+        <TextBox Grid.Row="2" Grid.Column="2" Text="{Binding Username, UpdateSourceTrigger=PropertyChanged}" />
+        
+        <!-- Password row -->
+        <TextBlock Grid.Row="3" Grid.Column="1">Password:</TextBlock>
+        <PasswordBox Grid.Row="3" Grid.Column="2" h:PasswordBoxAssistant.BindPassword="true"
+                     h:PasswordBoxAssistant.BoundPassword="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+        
+        <!-- Login button -->
+        <Button Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" 
+                Command="{Binding LoginCommand}" IsEnabled="{Binding CanLogIn}">
+            Login
+        </Button>
+    </Grid>
+</views:MvxWpfView>
