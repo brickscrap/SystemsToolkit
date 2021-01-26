@@ -1,17 +1,22 @@
-﻿using MvvmCross.Core;
-using MvvmCross.Platforms.Wpf.Core;
-using MvvmCross.Platforms.Wpf.Views;
+﻿using FuelPOSToolkitWPF.Views;
+using Prism.Ioc;
+using System.Windows;
 
 namespace FuelPOSToolkitWPF
 {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>
-    public partial class App : MvxApplication
+    public partial class App
     {
-        protected override void RegisterSetup()
+        protected override Window CreateShell()
         {
-            this.RegisterSetupType<MvxWpfSetup<Core.App>>();
+            return Container.Resolve<MainWindow>();
+        }
+
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+
         }
     }
 }
