@@ -65,6 +65,8 @@
     <Build Include="dbo\Tables\FTPCredentials.sql" />
     <Build Include="dbo\Tables\DebugProcesses.sql" />
     <Build Include="dbo\Tables\DebugParameters.sql" />
+    <Build Include="dbo\Tables\User.sql" />
+    <Build Include="dbo\StoredProcedures\spUserLookup.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="ToolkitDB.refactorlog" />

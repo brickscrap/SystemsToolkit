@@ -4,7 +4,18 @@
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
         Title="{Binding Title}" Height="350" Width="525" >
-    <Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" FontSize="12">
+            <MenuItem Header="_File">
+                <MenuItem Header="E_xit" Command="{Binding ExitCommand}" />
+            </MenuItem>
+            <MenuItem Header="_Access">
+                <MenuItem Header="_Log Out" />
+            </MenuItem>
+            <MenuItem Header="About">
+                
+            </MenuItem>
+        </Menu>
         <ContentControl prism:RegionManager.RegionName="ContentRegion" />
-    </Grid>
+    </DockPanel>
 </Window>

@@ -12,6 +12,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.OpenApi.Models;
+using FuelPOSToolkitApi.Swagger;
+using FuelPOSToolkitDataManager.Library.DataAccess;
 
 namespace FuelPOSToolkitApi
 {
@@ -33,8 +38,44 @@ namespace FuelPOSToolkitApi
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "JwtBearer";
+                options.DefaultChallengeScheme = "JwtBearer";
+            })
+                .AddJwtBearer("JwtBearer", jwtBearerOptions =>
+                {
+                    jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKeyIsATemporarySecretKey")),
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.FromMinutes(5)
+                    };
+                });
+
+            services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
+            services.AddScoped<IUserData, UserData>();
+
+            services.AddSwaggerGen(setup =>
+            {
+                setup.OperationFilter<AuthorisationOperationFilter>();
+
+                setup.SwaggerDoc(
+                    "v0_1",
+                    new OpenApiInfo
+                    {
+                        Title = "FuelPOS Toolkit API",
+                        Version = "v0.1"
+                    }
+                    );
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +99,12 @@ namespace FuelPOSToolkitApi
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(x =>
+            {
+                x.SwaggerEndpoint("/swagger/v0_1/swagger.json", "FuelPOS Toolkit API v0.1");
+            });
 
             app.UseEndpoints(endpoints =>
             {
