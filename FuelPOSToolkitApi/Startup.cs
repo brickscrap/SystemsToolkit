@@ -52,7 +52,7 @@ namespace FuelPOSToolkitApi
                     jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKeyIsATemporarySecretKey")),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("StkfDL6E8uxnz6VQebwcs4vGqYPORe08mVbaLIPyLQKcoFDQkd3zg61vCxBAMZI")),
                         ValidateIssuer = false,
                         ValidateAudience = false,
                         ValidateLifetime = true,
@@ -60,6 +60,7 @@ namespace FuelPOSToolkitApi
                     };
                 });
 
+            // Database services
             services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
             services.AddScoped<IUserData, UserData>();
 

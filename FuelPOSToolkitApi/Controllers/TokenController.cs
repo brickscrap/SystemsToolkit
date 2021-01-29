@@ -73,7 +73,7 @@ namespace FuelPOSToolkitApi.Controllers
 
             var token = new JwtSecurityToken(
                 new JwtHeader(
-                    new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("MySecretKeyIsATemporarySecretKey")),
+                    new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes("StkfDL6E8uxnz6VQebwcs4vGqYPORe08mVbaLIPyLQKcoFDQkd3zg61vCxBAMZI")),
                     SecurityAlgorithms.HmacSha256)),
                 new JwtPayload(claims));
 
