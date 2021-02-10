@@ -90,7 +90,7 @@ namespace FuelPOSToolkitWPF.Dialogs
 
                 RequestClose?.Invoke(new DialogResult());
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // TODO: Handle this
                 throw;

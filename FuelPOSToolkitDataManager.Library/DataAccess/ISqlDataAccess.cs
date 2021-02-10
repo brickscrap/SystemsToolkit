@@ -1,16 +1,19 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace FuelPOSToolkitDataManager.Library.DataAccess
 {
     public interface ISqlDataAccess
     {
+        string ConnectionStringName { get; set; }
+
         void CommitTransaction();
         void Dispose();
         string GetConnectionString(string name);
-        List<T> LoadData<T, U>(string storedProcedure, U parameters);
+        Task<List<T>> LoadDataAsync<T, U>(string storedProcedure, U parameters);
         List<T> LoadDataInTransaction<T, U>(string storedProcedure, U parameters);
         void RollbackTransaction();
-        void SaveData<T>(string storedProcedure, T parameters);
+        Task SaveDataAsync<T>(string storedProcedure, T parameters);
         void SaveDataInTransaction<T>(string storedProcedure, T parameters);
         void StartTransaction();
     }

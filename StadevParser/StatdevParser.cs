@@ -83,7 +83,8 @@ namespace StadevParser
                 CustomerDisplay = GetCustDisplay(pcNumber),
                 BarcodeScanner = GetBarcodeScanner(pcNumber),
                 UPS = GetUPS(pcNumber),
-                SerialDevices = GetSerialDevices(pcNumber)
+                SerialDevices = GetSerialDevices(pcNumber),
+                TouchScreen = GetTouchscreenType(pcNumber)
             };
 
             return output;
@@ -310,6 +311,8 @@ namespace StadevParser
                 .Where(item => (string)item.Attribute("Type") == "89")
                 .FirstOrDefault()
                 .Value;
+
+            return output;
         }
         #endregion
 

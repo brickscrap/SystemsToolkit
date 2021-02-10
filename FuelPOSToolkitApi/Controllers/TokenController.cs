@@ -1,4 +1,6 @@
 ﻿using FuelPOSToolkitApi.Data;
+using FuelPOSToolkitDataManager.Library.DataAccess;
+using FuelPOSToolkitDataManager.Library.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -20,12 +22,15 @@ namespace FuelPOSToolkitApi.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUserData _userData;
         private readonly ILogger<TokenController> _logger;
 
-        public TokenController(ApplicationDbContext context, UserManager<IdentityUser> userManager, ILogger<TokenController> logger)
+        public TokenController(ApplicationDbContext context, UserManager<IdentityUser> userManager, 
+            IUserData userData, ILogger<TokenController> logger)
         {
             _context = context;
             _userManager = userManager;
+            _userData = userData;
             _logger = logger;
         }
 
@@ -47,7 +52,44 @@ namespace FuelPOSToolkitApi.Controllers
         private async Task<bool> IsValidCredentials(string username, string password)
         {
             var user = await _userManager.FindByEmailAsync(username);
-            return await _userManager.CheckPasswordAsync(user, password);
+
+            bool output = await _userManager.CheckPasswordAsync(user, password);
+
+            if (output == true)
+            {
+                var userExists = await _userData.GetUserById(user.Id);
+
+                if (userExists.Count == 0)
+                {
+                    await AddUserToApplicationDb(user);
+                }
+            }
+
+            return output;
+        }
+
+        private async Task AddUserToApplicationDb(IdentityUser user)
+        {
+            var roles = from ur in _context.UserRoles
+                        join r in _context.Roles on ur.RoleId equals r.Id
+                        where ur.UserId == user.Id
+                        select new { ur.UserId, ur.RoleId, r.Name };
+
+            UserModel newUser = new()
+            {
+                EmailAddress = user.Email,
+                Id = user.Id,
+                CreatedDate = DateTime.UtcNow
+            };
+
+            foreach (var role in roles)
+            {
+                newUser.Roles += $"{role.Name},";
+            }
+
+            newUser.Roles = newUser.Roles.Trim(',');
+
+            await _userData.AddUser(newUser);
         }
 
         private async Task<dynamic> GenerateToken(string username)

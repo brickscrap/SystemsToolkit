@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FuelPOSToolkitDataManager.Library.DataAccess
 {
@@ -14,13 +15,18 @@ namespace FuelPOSToolkitDataManager.Library.DataAccess
         {
             _db = db;
         }
-        public List<UserModel> GetUserById(string id)
+        public async Task<List<UserModel>> GetUserById(string id)
         {
             var p = new { Id = id };
 
-            var output = _db.LoadData<UserModel, dynamic>("dbo.spUserLookup", p);
+            var output = await _db.LoadDataAsync<UserModel, dynamic>("dbo.spUserLookup", p);
 
             return output;
+        }
+
+        public async Task AddUser(UserModel user)
+        {
+            await _db.SaveDataAsync("dbo.spInsertUser", user);
         }
     }
 }

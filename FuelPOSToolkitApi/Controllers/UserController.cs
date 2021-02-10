@@ -27,12 +27,14 @@ namespace FuelPOSToolkitApi.Controllers
             _userManager = userManager;
             _userData = userData;
         }
+
         [HttpGet]
-        public UserModel GetById()
+        public async Task<UserModel> GetById()
         {
             string userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var output = await _userData.GetUserById(userId);
 
-            return _userData.GetUserById(userId).FirstOrDefault();
+            return output.FirstOrDefault();
         }
     }
 }

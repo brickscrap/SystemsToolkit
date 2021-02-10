@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace FuelPOSToolkitDesktopUI.Library.Models
 {
@@ -6,9 +7,8 @@ namespace FuelPOSToolkitDesktopUI.Library.Models
     {
         DateTime CreatedDate { get; set; }
         string EmailAddress { get; set; }
-        string FirstName { get; set; }
         string Id { get; set; }
-        string LastName { get; set; }
+        string Roles { get; set; }
         string Token { get; set; }
 
         void ResetUserModel();

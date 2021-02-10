@@ -6,6 +6,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace FuelPOSToolkitDataManager.Library.DataAccess
 {
@@ -28,27 +29,26 @@ namespace FuelPOSToolkitDataManager.Library.DataAccess
             // return ConfigurationManager.ConnectionStrings[name].ConnectionString;
         }
 
-        public List<T> LoadData<T, U>(string storedProcedure, U parameters)
+        public async Task<List<T>> LoadDataAsync<T, U>(string storedProcedure, U parameters)
         {
             string connectionString = GetConnectionString(ConnectionStringName);
 
             using (IDbConnection cnn = new SqlConnection(connectionString))
             {
-                List<T> rows = cnn.Query<T>(storedProcedure, parameters,
-                    commandType: CommandType.StoredProcedure)
-                    .ToList();
+                var rows = await cnn.QueryAsync<T>(storedProcedure, parameters,
+                    commandType: CommandType.StoredProcedure);
 
-                return rows;
+                return rows.ToList();
             }
         }
 
-        public void SaveData<T>(string storedProcedure, T parameters)
+        public async Task SaveDataAsync<T>(string storedProcedure, T parameters)
         {
             string connectionString = GetConnectionString(ConnectionStringName);
 
             using (IDbConnection cnn = new SqlConnection(connectionString))
             {
-                cnn.Execute(storedProcedure, parameters,
+                await cnn.ExecuteAsync(storedProcedure, parameters,
                     commandType: CommandType.StoredProcedure);
             }
         }

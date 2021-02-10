@@ -17,6 +17,7 @@ namespace StadevParser.Models
         public string CustomerDisplay { get; set; }
         public string BarcodeScanner { get; set; }
         public string LevelGauge { get; set; }
+        public string TouchScreen { get; set; }
         public int NumSerialPorts { get; set; }
         public List<SerialDeviceModel> SerialDevices { get; set; }
         public string UPS { get; set; }

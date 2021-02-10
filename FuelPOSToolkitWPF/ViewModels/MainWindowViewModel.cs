@@ -42,10 +42,10 @@ namespace FuelPOSToolkitWPF.ViewModels
 
             ExitCommand = new DelegateCommand(Exit);
 
-            if (_loggedInUser.EmailAddress == null)
-            {
-                _dialogService.ShowDialog("LoginDialog");
-            }
+            //if (_loggedInUser.EmailAddress == null)
+            //{
+            //    _dialogService.ShowDialog("LoginDialog");
+            //}
         }
 
         private void OnLoggedIn()

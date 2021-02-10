@@ -7,4 +7,18 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Name" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="58dcc8e0-ca5e-4977-a1a2-403d460411a4" ChangeDateTime="02/09/2021 14:44:32">
+    <Property Name="ElementName" Value="[dbo].[POSHardware].[NumSerialPorts]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[POSHardware]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="UPS" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="05c5e913-30fb-44d1-9b25-b08314186be0" ChangeDateTime="02/10/2021 11:40:01">
+    <Property Name="ElementName" Value="[dbo].[FK_FTPCredentials_ToTable]" />
+    <Property Name="ElementType" Value="SqlForeignKeyConstraint" />
+    <Property Name="ParentElementName" Value="[dbo].[FTPCredentials]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="[FK_FTPCredentials_Stations]" />
+  </Operation>
 </Operations>
