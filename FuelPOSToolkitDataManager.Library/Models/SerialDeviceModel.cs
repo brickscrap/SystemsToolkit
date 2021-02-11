@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ToolkitLibrary.Models
+namespace FuelPOSToolkitDataManager.Library.Models
 {
     public class SerialDeviceModel
     {

@@ -7,10 +7,9 @@ using StadevParser.Models;
 
 namespace StadevParser
 {
-    public class StatdevParser
+    public class StatdevParser : IStatdevParser
     {
         private IEnumerable<XElement> _doc;
-        public IEnumerable<XElement> MyProperty { get; set; }
         public StatdevParser()
         {
 
@@ -25,6 +24,20 @@ namespace StadevParser
         public StatdevModel Parse(XDocument xmlDoc)
         {
             _doc = xmlDoc.Elements("ROOT")
+                .Elements("TREE")
+                .Elements("Device");
+
+            StatdevModel output = CreateStatdev();
+
+            output = AddAllPCs(output);
+
+            return output;
+        }
+
+        public StatdevModel Parse(string xmlDoc)
+        {
+            var document = XDocument.Parse(xmlDoc);
+            _doc = document.Elements("ROOT")
                 .Elements("TREE")
                 .Elements("Device");
 
@@ -269,7 +282,7 @@ namespace StadevParser
 
             foreach (var item in serialDevices)
             {
-                int portNumber = int.Parse(item.Attribute("Number").Value);
+                string portNumber = item.Attribute("Number").Value;
                 string device = item.Elements("Property")
                         .Where(elem => (string)elem.Attribute("Type") == "85")
                         .FirstOrDefault()
@@ -300,14 +313,23 @@ namespace StadevParser
             return output;
         }
 
-        private string GetTouchscreenType(int pcNumber) 
+        private string GetTouchscreenType(int pcNumber)
         {
+            //string output = SelectPC(pcNumber)
+            //    .Elements("Device")
+            //    .Where(item => (string)item.Attribute("Type") == "42")
+            //    .Elements("Device")
+            //    .Where(item => (string)item.Attribute("Number") == "259")
+            //    .Elements("Property")
+            //    .Where(item => (string)item.Attribute("Type") == "89")
+            //    .FirstOrDefault()
+            //    .Value;
+
             string output = SelectPC(pcNumber)
                 .Elements("Device")
                 .Where(item => (string)item.Attribute("Type") == "42")
-                .Elements("Device")
-                .Where(item => (string)item.Attribute("Number") == "259")
                 .Elements("Property")
+                .Where(item => (string)item.Value == "TouchScreenType")
                 .Where(item => (string)item.Attribute("Type") == "89")
                 .FirstOrDefault()
                 .Value;
@@ -335,7 +357,7 @@ namespace StadevParser
         #endregion
 
         #region HelperMethods
-        
+
         private IEnumerable<XElement> GetDispenserXML(int pcNumber)
         {
             var output = SelectPC(pcNumber)
@@ -367,7 +389,7 @@ namespace StadevParser
 
         #endregion
 
-        public string GetTouchScreenTest() 
+        public string GetTouchScreenTest()
         {
             return GetTouchscreenType(1);
         }

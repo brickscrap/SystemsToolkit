@@ -29,6 +29,8 @@ namespace FuelPOSToolkitCmdLineUI
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
 
+            StatDevParserTests(@"C:\Users\omgit\source\repos\FuelPOSToolkit\FuelPOSToolkitCmdLineUI\");
+
             watch.Stop();
             Console.WriteLine($"Execution time: {watch.ElapsedMilliseconds}");
             Console.ReadLine();

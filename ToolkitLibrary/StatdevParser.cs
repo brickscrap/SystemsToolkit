@@ -7,7 +7,7 @@ using ToolkitLibrary.Models;
 
 namespace ToolkitLibrary
 {
-    public class StatdevParser
+    public class StatdevParser : IStatdevParser
     {
         private IEnumerable<XElement> _doc;
         public IEnumerable<XElement> MyProperty { get; set; }
@@ -48,7 +48,7 @@ namespace ToolkitLibrary
 
                 foreach (var value in GetSerialDevices(i))
                 {
-                    int portNumber = int.Parse(value.Attribute("Number").Value);
+                    string portNumber = value.Attribute("Number").Value;
                     string device = value.Elements("Property")
                             .Where(elem => (string)elem.Attribute("Type") == "85")
                             .FirstOrDefault()
@@ -258,7 +258,7 @@ namespace ToolkitLibrary
             {
                 return null;
             }
-            
+
         }
         private IEnumerable<XElement> GetSerialDevices(int pcNumber)
         {
@@ -295,7 +295,7 @@ namespace ToolkitLibrary
             }
         }
 
-        private string GetTouchscreenType(int pcNumber) 
+        private string GetTouchscreenType(int pcNumber)
         {
             var output = SelectPC(pcNumber)
                 .Elements("Device")
@@ -332,7 +332,7 @@ namespace ToolkitLibrary
             {
                 return null;
             }
-            
+
         }
 
         #endregion

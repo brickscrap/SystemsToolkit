@@ -17,6 +17,7 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using FuelPOSToolkitApi.Swagger;
 using FuelPOSToolkitDataManager.Library.DataAccess;
+using ToolkitLibrary;
 
 namespace FuelPOSToolkitApi
 {
@@ -40,7 +41,8 @@ namespace FuelPOSToolkitApi
             services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-            services.AddControllersWithViews();
+            services.AddControllersWithViews()
+                .AddXmlDataContractSerializerFormatters();
 
             services.AddAuthentication(options =>
             {
@@ -63,6 +65,11 @@ namespace FuelPOSToolkitApi
             // Database services
             services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
             services.AddScoped<IUserData, UserData>();
+            services.AddScoped<IStationData, StationData>();
+            services.AddScoped<IPosData, PosData>();
+
+            // Business services
+            services.AddTransient<IStatdevParser, StatdevParser>();
 
             services.AddSwaggerGen(setup =>
             {
