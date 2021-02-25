@@ -8,5 +8,6 @@ namespace FuelPOSToolkitDataManager.Library.DataAccess
     public interface IPosData
     {
         Task AddPOSData(string stationId, List<PCInfoModel> posModels);
+        Task<List<POSModel>> GetPOSByStationId(string stationId);
     }
 }

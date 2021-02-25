@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Net.Http;
 using System.Text;
+using System.Net.Http.Handlers;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 

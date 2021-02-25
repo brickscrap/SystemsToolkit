@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using FuelPOSToolkitDataManager.Library.DataAccess;
 using ToolkitLibrary;
 using ToolkitLibrary.Models;
+using FuelPOSToolkitDataManager.Library.Models;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -33,10 +34,12 @@ namespace FuelPOSToolkitApi.Controllers
         }
 
         // GET api/<POSController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{stationId}")]
+        public async Task<List<POSModel>> GetPOSBySiteId(string stationId)
         {
-            return "value";
+            var output = await _posData.GetPOSByStationId(stationId);
+
+            return output;
         }
 
         // POST api/<POSController>

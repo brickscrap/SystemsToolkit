@@ -18,7 +18,7 @@ namespace FuelPOSToolkitDataManager.Library.Models
         public string CustomerDisplay { get; set; }
         public string BarcodeScanner { get; set; }
         public string LevelGauge { get; set; }
-        public string TouchScreen { get; set; }
+        public string TouchScreenType { get; set; }
         public string UPS { get; set; }
         public int NumSerialPorts { get; set; }
     }

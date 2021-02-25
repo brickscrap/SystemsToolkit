@@ -5,6 +5,8 @@ using FuelPOSToolkitWPF.Views;
 using Prism.DryIoc;
 using Prism.Ioc;
 using Prism.Services.Dialogs;
+using System;
+using System.Net.Http.Handlers;
 using System.Windows;
 
 namespace FuelPOSToolkitWPF
@@ -28,9 +30,13 @@ namespace FuelPOSToolkitWPF
             // Register services
             containerRegistry.RegisterSingleton<ILoggedInUserModel, LoggedInUserModel>();
             containerRegistry.RegisterSingleton<IAPIHelper, APIHelper>();
+            containerRegistry.RegisterScoped<IStationEndpoint, StationEndpoint>();
 
             // Register views
             containerRegistry.RegisterForNavigation<MainWindow>();
+            containerRegistry.RegisterForNavigation<HardwareView>();
+            containerRegistry.RegisterForNavigation<StationView>();
+            containerRegistry.RegisterForNavigation<StationDetailView>();
 
             // Register dialogs
             containerRegistry.RegisterDialog<LoginDialog, LoginDialogViewModel>();

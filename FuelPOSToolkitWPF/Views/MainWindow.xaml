@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
-        Title="{Binding Title}" Height="350" Width="525" WindowStartupLocation="CenterScreen">
+        Title="{Binding Title}" Height="450" MinHeight="550" Width="525" WindowStartupLocation="CenterScreen">
     <DockPanel>
         <Menu DockPanel.Dock="Top" FontSize="12">
             <MenuItem Header="_File">
@@ -12,10 +12,15 @@
             <MenuItem Header="_Access">
                 <MenuItem Header="_Log Out" />
             </MenuItem>
+            <MenuItem Header="_Tools">
+                <MenuItem Header="_Stations" Command="{Binding NavigateCommand}" CommandParameter="StationView" />
+                <MenuItem Header="FuelPOS _Hardware" Command="{Binding NavigateCommand}" CommandParameter="HardwareView" />
+            </MenuItem>
             <MenuItem Header="About">
-                
+
             </MenuItem>
         </Menu>
+        <ContentControl prism:RegionManager.RegionName="StatusBarRegion" DockPanel.Dock="Bottom" />
         <ContentControl prism:RegionManager.RegionName="ContentRegion" />
     </DockPanel>
 </Window>

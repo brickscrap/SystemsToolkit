@@ -22,6 +22,7 @@ namespace FuelPOSToolkitWPF.ViewModels
         private readonly IDialogService _dialogService;
 
         public DelegateCommand ExitCommand { get; private set; }
+        public DelegateCommand<string> NavigateCommand { get; private set; }
 
         public string Title
         {
@@ -40,7 +41,10 @@ namespace FuelPOSToolkitWPF.ViewModels
             _loggedInEvent = _events.GetEvent<LoggedInEvent>();
             _token = _loggedInEvent.Subscribe(OnLoggedIn);
 
+            _regionManager.RegisterViewWithRegion("StatusBarRegion", typeof(StatusBarView));
+
             ExitCommand = new DelegateCommand(Exit);
+            NavigateCommand = new DelegateCommand<string>(Navigate);
 
             //if (_loggedInUser.EmailAddress == null)
             //{
@@ -51,6 +55,11 @@ namespace FuelPOSToolkitWPF.ViewModels
         private void OnLoggedIn()
         {
 
+        }
+
+        private void Navigate(string uri)
+        {
+            _regionManager.RequestNavigate("ContentRegion", uri);
         }
 
         private void Exit()
