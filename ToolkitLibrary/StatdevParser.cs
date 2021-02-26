@@ -103,118 +103,162 @@ namespace ToolkitLibrary
         #region StationInfo
         private string GetStationNumber()
         {
-            string output = _doc.Elements("Property")
+            var output = _doc.Elements("Property")
                 .Where(value => (string)value.Attribute("Type") == "1")
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
-            return output;
+            if (output != null)
+            {
+                return output.Value;
+            }
+
+            return "None/unknown";
         }
         private string GetStationName()
         {
-            string output = _doc.Elements("Property")
+            var output = _doc.Elements("Property")
                 .Where(value => (string)value.Attribute("Type") == "2")
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
-            return output;
+            if (output != null)
+            {
+                return output.Value;
+            }
+
+            return "None/unknown";
         }
         private string GetCompany()
         {
-            string output = _doc.Elements("Property")
+            var output = _doc.Elements("Property")
                 .Where(value => (string)value.Attribute("Type") == "6")
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
-            return output;
+            if (output != null)
+            {
+                return output.Value;
+            }
+
+            return "None/unknown";
         }
         private int GetNumberOfTills()
         {
-            string number = _doc.Elements("Property")
+            var number = _doc.Elements("Property")
                 .Where(value => (string)value.Attribute("Type") == "10")
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
-            var output = int.Parse(number);
+            if (number != null)
+            {
+                var output = int.Parse(number.Value);
 
-            return output;
+                return output;
+            }
+
+            return 0;
         }
         #endregion
 
         #region POSInfo
         private string GetPCType(int pcNumber)
         {
-            string output = SelectPC(pcNumber)
+            var output = SelectPC(pcNumber)
                 .Elements("Property")
                 .Where(value => (string)value.Attribute("Type") == "34")
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
-            return output;
+            if (output != null)
+            {
+                return output.Value;
+            }
+
+            return "None/unknown";
         }
         private string GetOS(int pcNumber)
         {
-            string output = SelectPC(pcNumber)
+            var output = SelectPC(pcNumber)
                 .Elements("Property")
                 .Where(value => (string)value.Attribute("Type") == "54")
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
-            return output;
+            if (output != null)
+            {
+                return output.Value;
+            }
+
+            return "None/unknown";
         }
         private int GetPCNumber(int pcNumber)
         {
-            string output = SelectPC(pcNumber)
+            var output = SelectPC(pcNumber)
                 .Elements("Property")
                 .Where(value => (string)value.Attribute("Type") == "68")
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
-            return int.Parse(output);
+            if (output != null)
+            {
+                return int.Parse(output.Value);
+            }
+
+            return 0;
         }
         private string GetHardwareType(int pcNumber)
         {
-            string output = SelectPC(pcNumber)
+            var output = SelectPC(pcNumber)
                 .Elements("Property")
                 .Where(value => (string)value.Attribute("Type") == "147")
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
-            return output;
+            if (output != null)
+            {
+                return output.Value;
+            }
+
+            return "None/unknown";
         }
         private string GetSoftwareVersion(int pcNumber)
         {
-            string output = SelectPC(pcNumber)
+            var output = SelectPC(pcNumber)
                 .Elements("Property")
                 .Where(value => (string)value.Attribute("Type") == "35")
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
-            return output;
+            if (output != null)
+            {
+                return output.Value;
+            }
+
+            return "None/unknown";
         }
         private string GetIP(int pcNumber)
         {
-            string output = SelectPC(pcNumber)
+            var output = SelectPC(pcNumber)
                 .Elements("Property")
                 .Where(value => (string)value.Attribute("Type") == "56")
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
-            return output;
+            if (output != null)
+            {
+                return output.Value;
+            }
+
+            return "None/unknown";
         }
         private string GetReceiptPrinter(int pcNumber)
         {
             try
             {
-                string output = SelectPC(pcNumber)
+                var output = SelectPC(pcNumber)
                         .Elements("Device")
                         .Where(item => (string)item.Attribute("Type") == "30")
                         .Elements("Property")
                         .Where(item => (string)item.Attribute("Type") == "34")
-                        .FirstOrDefault()
-                        .Value;
+                        .FirstOrDefault();
 
-                return output;
+                if (output != null)
+                {
+                    return output.Value;
+                }
+
+                return "None/unknown";
             }
             catch (Exception)
             {
@@ -225,15 +269,19 @@ namespace ToolkitLibrary
         {
             try
             {
-                string output = SelectPC(pcNumber)
+                var output = SelectPC(pcNumber)
                         .Elements("Device")
                         .Where(item => (string)item.Attribute("Type") == "27")
                         .Elements("Property")
                         .Where(item => (string)item.Attribute("Type") == "34")
-                        .FirstOrDefault()
-                        .Value;
+                        .FirstOrDefault();
 
-                return output;
+                if (output != null)
+                {
+                    return output.Value;
+                }
+
+                return "None/unknown";
             }
             catch (Exception)
             {
@@ -244,15 +292,19 @@ namespace ToolkitLibrary
         {
             try
             {
-                string output = SelectPC(pcNumber)
+                var output = SelectPC(pcNumber)
                 .Elements("Device")
                 .Where(value => (string)value.Attribute("Type") == "26")
                 .Elements("Property")
                 .Where(value => (string)value.Attribute("Type") == "34")
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
-                return output;
+                if (output != null)
+                {
+                    return output.Value;
+                }
+
+                return "None/unknown";
             }
             catch (Exception)
             {
@@ -279,15 +331,19 @@ namespace ToolkitLibrary
         {
             try
             {
-                string output = SelectPC(pcNumber)
+                var output = SelectPC(pcNumber)
                 .Elements("Device")
                 .Where(value => (string)value.Attribute("Type") == "16")
                 .Elements("Property")
                 .Where(value => (string)value.Attribute("Type") == "28")
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
-                return output;
+                if (output != null)
+                {
+                    return output.Value;
+                }
+
+                return "None/unknown";
             }
             catch (Exception)
             {
@@ -304,10 +360,14 @@ namespace ToolkitLibrary
                 .Where(item => item.Value.Contains("TouchScreenType"))
                 .Elements("Property")
                 .Where(item => (string)item.Attribute("Type") == "89")
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
-            return output;
+            if (output != null)
+            {
+                return output.Value;
+            }
+
+            return "None/unknown";
         }
         #endregion
 
