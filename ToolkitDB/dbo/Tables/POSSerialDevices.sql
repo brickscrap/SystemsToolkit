@@ -1,0 +1,18 @@
+﻿CREATE TABLE [dbo].[POSSerialDevices](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[POSHardwareId] [int] NOT NULL,
+	[PortNumber] [nvarchar](2) NOT NULL,
+	[Device] [nvarchar](50) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[POSSerialDevices]  WITH CHECK ADD  CONSTRAINT [FK_POSSerialDevices_POSHardware] FOREIGN KEY([POSHardwareId])
+REFERENCES [dbo].[POSHardware] ([Id])
+GO
+
+ALTER TABLE [dbo].[POSSerialDevices] CHECK CONSTRAINT [FK_POSSerialDevices_POSHardware]
+GO

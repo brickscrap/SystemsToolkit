@@ -65,8 +65,24 @@
     <Build Include="dbo\Tables\FTPCredentials.sql" />
     <Build Include="dbo\Tables\DebugProcesses.sql" />
     <Build Include="dbo\Tables\DebugParameters.sql" />
+    <Build Include="dbo\Tables\User.sql" />
+    <Build Include="dbo\StoredProcedures\spUserLookup.sql" />
+    <Build Include="dbo\StoredProcedures\spInsertUser.sql" />
+    <Build Include="dbo\Tables\POSHardware.sql" />
+    <Build Include="dbo\Tables\POSSerialDevices.sql" />
+    <Build Include="dbo\StoredProcedures\spGetStationById.sql" />
+    <Build Include="dbo\StoredProcedures\spStationInsert.sql" />
+    <Build Include="dbo\StoredProcedures\spGetAllStations.sql" />
+    <Build Include="dbo\StoredProcedures\spGetPOSIdByNumber.sql" />
+    <Build Include="dbo\StoredProcedures\spSerialDeviceInsert.sql" />
+    <Build Include="dbo\StoredProcedures\spPOSInsert.sql" />
+    <Build Include="dbo\StoredProcedures\spGetPOSByStationId.sql" />
+    <Build Include="dbo\StoredProcedures\spGetSerialDevicesByPOSId.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="ToolkitDB.refactorlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ToolkitDB.publish.xml" />
   </ItemGroup>
 </Project>

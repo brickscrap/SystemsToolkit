@@ -6,7 +6,7 @@ namespace ToolkitLibrary.Models
 {
     public class SerialDeviceModel
     {
-        public int PortNumber { get; set; }
+        public string PortNumber { get; set; }
         public string Device { get; set; }
     }
 }
