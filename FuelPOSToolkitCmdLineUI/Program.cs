@@ -29,6 +29,10 @@ namespace FuelPOSToolkitCmdLineUI
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
 
+            ScriptSamples script = new ScriptSamples();
+
+            script.ReadStatDevWriteSpreadsheet();
+
             watch.Stop();
             Console.WriteLine($"Execution time: {watch.ElapsedMilliseconds}");
             Console.ReadLine();

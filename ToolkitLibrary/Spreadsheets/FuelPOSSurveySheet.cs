@@ -124,7 +124,7 @@ namespace ToolkitLibrary.Spreadsheets
 
                 r++;
 
-                Utils.OutputDir = new DirectoryInfo($"C:/Output");
+                Utils.OutputDir = new DirectoryInfo($"C:/surveys");
 
                 var xlFile = Utils.GetFileInfo("fuelpos_surveys.xlsx");
                 // save our new workbook in the output directory and we are done!
