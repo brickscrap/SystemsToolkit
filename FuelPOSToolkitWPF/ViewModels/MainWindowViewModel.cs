@@ -1,4 +1,5 @@
 ﻿using FuelPOSToolkitDesktopUI.Library.Models;
+using FuelPOSToolkitWPF.Core;
 using FuelPOSToolkitWPF.Core.Events;
 using FuelPOSToolkitWPF.Views;
 using Prism.Commands;
@@ -41,7 +42,7 @@ namespace FuelPOSToolkitWPF.ViewModels
             _loggedInEvent = _events.GetEvent<LoggedInEvent>();
             _token = _loggedInEvent.Subscribe(OnLoggedIn);
 
-            _regionManager.RegisterViewWithRegion("StatusBarRegion", typeof(StatusBarView));
+            _regionManager.RegisterViewWithRegion(RegionNames.StatusBarRegion, typeof(StatusBarView));
 
             ExitCommand = new DelegateCommand(Exit);
             NavigateCommand = new DelegateCommand<string>(Navigate);
@@ -59,7 +60,7 @@ namespace FuelPOSToolkitWPF.ViewModels
 
         private void Navigate(string uri)
         {
-            _regionManager.RequestNavigate("ContentRegion", uri);
+            _regionManager.RequestNavigate(RegionNames.ContentRegion, uri);
         }
 
         private void Exit()

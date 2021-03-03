@@ -1,5 +1,6 @@
 ﻿using FuelPOSToolkitDesktopUI.Library.API;
 using FuelPOSToolkitDesktopUI.Library.Models;
+using FuelPOSToolkitWPF.Core;
 using FuelPOSToolkitWPF.Models;
 using Mapster;
 using Prism.Commands;
@@ -52,7 +53,7 @@ namespace FuelPOSToolkitWPF.ViewModels
                     p.Add("pos", pos);
                     p.Add("siteId", SelectedStation.Id);
 
-                    _regionManager.RequestNavigate("POSDetailRegion", "PosDetailView", p);
+                    _regionManager.RequestNavigate(RegionNames.POSDetailRegion, ViewNames.PosDetaiView, p);
                 }
             }            
         }
@@ -60,7 +61,7 @@ namespace FuelPOSToolkitWPF.ViewModels
         public void OnNavigatedFrom(NavigationContext navigationContext)
         {
             ClearViewModel();
-            IRegion region = _regionManager.Regions["POSDetailRegion"];
+            IRegion region = _regionManager.Regions[RegionNames.POSDetailRegion];
             region.RemoveAll();
         }
 

@@ -1,5 +1,6 @@
 ﻿using FuelPOSToolkitDesktopUI.Library.API;
 using FuelPOSToolkitDesktopUI.Library.Models;
+using FuelPOSToolkitWPF.Core;
 using FuelPOSToolkitWPF.Models;
 using Mapster;
 using Prism.Commands;
@@ -70,7 +71,7 @@ namespace FuelPOSToolkitWPF.ViewModels
             p.Add("station", _selectedStation);
             p.Add("pos", posDisplayList);
 
-            _regionManager.RequestNavigate("StationDetailRegion", "StationDetailView", p);
+            _regionManager.RequestNavigate(RegionNames.StationDetailRegion, ViewNames.StationDetailView, p);
         }
 
         private bool FilterStations(object obj)

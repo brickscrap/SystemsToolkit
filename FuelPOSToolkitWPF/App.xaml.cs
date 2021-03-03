@@ -1,5 +1,6 @@
 ﻿using FuelPOSToolkitDesktopUI.Library.API;
 using FuelPOSToolkitDesktopUI.Library.Models;
+using FuelPOSToolkitWPF.Core;
 using FuelPOSToolkitWPF.Dialogs;
 using FuelPOSToolkitWPF.Views;
 using Prism.DryIoc;
@@ -56,7 +57,7 @@ namespace FuelPOSToolkitWPF
 
             if (loggedInUser.EmailAddress == null)
             {
-                dialogService.ShowDialog("LoginDialog");
+                dialogService.ShowDialog(DialogNames.LoginDialog);
             }
 
             // TODO: Handle loading of Admin moduleI 

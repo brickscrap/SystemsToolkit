@@ -4,6 +4,7 @@
              xmlns:prism="http://prismlibrary.com/"  
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:core="clr-namespace:FuelPOSToolkitWPF.Core;assembly=FuelPOSToolkitWPF.Core"
              xmlns:behaviours="clr-namespace:FuelPOSToolkitWPF">
     <StackPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
@@ -30,10 +31,6 @@
             </Button>
         </StackPanel>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" MaxHeight="40" DockPanel.Dock="Bottom"  Grid.Row="3" Grid.Column="0">
-
-        </StackPanel>
-
-        <ContentControl prism:RegionManager.RegionName="StationDetailRegion" Grid.RowSpan="4" Grid.Column="3" Margin="10"/>
+        <ContentControl prism:RegionManager.RegionName="{x:Static core:RegionNames.StationDetailRegion}" Grid.RowSpan="4" Grid.Column="3" Margin="10"/>
     </StackPanel>
 </UserControl>

@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:prism="http://prismlibrary.com/"
         prism:ViewModelLocator.AutoWireViewModel="True"
+        xmlns:core="clr-namespace:FuelPOSToolkitWPF.Core;assembly=FuelPOSToolkitWPF.Core"
         Title="{Binding Title}" Height="450" MinHeight="550" Width="525" WindowStartupLocation="CenterScreen">
     <DockPanel>
         <Menu DockPanel.Dock="Top" FontSize="12">
@@ -20,7 +21,7 @@
 
             </MenuItem>
         </Menu>
-        <ContentControl prism:RegionManager.RegionName="StatusBarRegion" DockPanel.Dock="Bottom" />
-        <ContentControl prism:RegionManager.RegionName="ContentRegion" />
+        <ContentControl prism:RegionManager.RegionName="{x:Static core:RegionNames.StatusBarRegion}" DockPanel.Dock="Bottom" />
+        <ContentControl prism:RegionManager.RegionName="{x:Static core:RegionNames.ContentRegion}" />
     </DockPanel>
 </Window>
