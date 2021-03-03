@@ -31,12 +31,14 @@ namespace FuelPOSToolkitWPF
             containerRegistry.RegisterSingleton<ILoggedInUserModel, LoggedInUserModel>();
             containerRegistry.RegisterSingleton<IAPIHelper, APIHelper>();
             containerRegistry.RegisterScoped<IStationEndpoint, StationEndpoint>();
+            containerRegistry.RegisterScoped<IPosEndpoint, PosEndpoint>();
 
             // Register views
             containerRegistry.RegisterForNavigation<MainWindow>();
             containerRegistry.RegisterForNavigation<HardwareView>();
             containerRegistry.RegisterForNavigation<StationView>();
             containerRegistry.RegisterForNavigation<StationDetailView>();
+            containerRegistry.RegisterForNavigation<PosDetailView>();
 
             // Register dialogs
             containerRegistry.RegisterDialog<LoginDialog, LoginDialogViewModel>();

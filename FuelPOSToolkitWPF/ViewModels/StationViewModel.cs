@@ -1,5 +1,7 @@
 ﻿using FuelPOSToolkitDesktopUI.Library.API;
 using FuelPOSToolkitDesktopUI.Library.Models;
+using FuelPOSToolkitWPF.Models;
+using Mapster;
 using Prism.Commands;
 using Prism.Events;
 using Prism.Mvvm;
@@ -17,9 +19,16 @@ namespace FuelPOSToolkitWPF.ViewModels
     {
         private readonly IStationEndpoint _stationEndpoint;
         private readonly IRegionManager _regionManager;
-        private StationModel _selectedStation;
+        private readonly IPosEndpoint _posEndpoint;
+        private StationDisplayModel _selectedStation;
         private string _filter = "";
         private ICollectionView _stationsView;
+
+        public StationDisplayModel SelectedStation
+        {
+            get { return _selectedStation; }
+            set { SetProperty(ref _selectedStation, value); }
+        }
 
         public DelegateCommand OpenStationCommand { get; private set; }
 
@@ -39,29 +48,34 @@ namespace FuelPOSToolkitWPF.ViewModels
             set { SetProperty(ref _stationsView, value); }
         }
 
-        public StationViewModel(IStationEndpoint stationEndpoint, IRegionManager regionManager)
+        public StationViewModel(IStationEndpoint stationEndpoint, IRegionManager regionManager, IPosEndpoint posEndpoint)
         {
             _stationEndpoint = stationEndpoint;
             _regionManager = regionManager;
+            _posEndpoint = posEndpoint;
             OpenStationCommand = new DelegateCommand(OpenStation);
         }
 
-        private void OpenStation()
+        private async void OpenStation()
         {
             if (_selectedStation == null)
             {
                 return;
             }
 
+            var posList = await _posEndpoint.GetAllByStationId(_selectedStation.Id);
+            var posDisplayList = posList.Adapt<IEnumerable<POSDisplayModel>>().ToList();
+
             var p = new NavigationParameters();
             p.Add("station", _selectedStation);
+            p.Add("pos", posDisplayList);
 
             _regionManager.RequestNavigate("StationDetailRegion", "StationDetailView", p);
         }
 
         private bool FilterStations(object obj)
         {
-            StationModel station = obj as StationModel;
+            StationDisplayModel station = obj as StationDisplayModel;
             bool output = false;
 
             if (station != null)
@@ -77,16 +91,16 @@ namespace FuelPOSToolkitWPF.ViewModels
 
         public async void OnNavigatedTo(NavigationContext navigationContext)
         {
-            List<StationModel> stations = await _stationEndpoint.GetAll();
+            var stations = await _stationEndpoint.GetAll();
 
-            StationsView = new ListCollectionView(stations);
+            StationsView = new ListCollectionView(stations.Adapt<IEnumerable<StationDisplayModel>>().ToList());
             StationsView.Filter = FilterStations;
             StationsView.CurrentChanged += SelectedStationChanged;
         }
 
         private void SelectedStationChanged(object sender, EventArgs e)
         {
-            _selectedStation = StationsView.CurrentItem as StationModel;
+            _selectedStation = StationsView.CurrentItem as StationDisplayModel;
             OpenStation();
         }
 
