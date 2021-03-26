@@ -10,7 +10,7 @@
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
             <ComboBox ItemsSource="{Binding Path=StationsView}" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
                   IsEditable="True" SelectedItem="{Binding SelectedStation}" IsTextSearchEnabled="True"
-                  TextSearch.TextPath="Description"
+                  TextSearch.TextPath="Description" SelectedIndex="0"
                       Padding="5" Margin="5 5 0 5" MinWidth="350">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
@@ -20,14 +20,14 @@
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
-            <Button Padding="10 5 10 5" Margin="5 5 0 5">
-                Add
+            <Button Command="{Binding OpenStationCommand}" Padding="10 5 10 5" Margin="5 5 0 5">
+                Open
             </Button>
             <Button Padding="10 5 10 5" Margin="5 5 0 5">
                 Edit
             </Button>
             <Button Padding="10 5 10 5" Margin="5 5 5 5">
-                Remove
+                Add New
             </Button>
         </StackPanel>
 

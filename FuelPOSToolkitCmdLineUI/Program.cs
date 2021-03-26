@@ -19,6 +19,7 @@ using Serilog;
 using Serilog.Events;
 using Microsoft.Extensions.Logging;
 using Serilog.Extensions.Logging;
+using FuelPOSToolkitCmdLineUI.TestFuncs;
 
 namespace FuelPOSToolkitCmdLineUI
 {
@@ -29,9 +30,8 @@ namespace FuelPOSToolkitCmdLineUI
             var watch = new System.Diagnostics.Stopwatch();
             watch.Start();
 
-            ScriptSamples script = new ScriptSamples();
-
-            script.ReadStatDevWriteSpreadsheet();
+            GaugeFileTests gauge = new GaugeFileTests();
+            gauge.RunGaugeTest();
 
             watch.Stop();
             Console.WriteLine($"Execution time: {watch.ElapsedMilliseconds}");

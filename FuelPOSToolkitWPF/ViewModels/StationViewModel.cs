@@ -31,8 +31,6 @@ namespace FuelPOSToolkitWPF.ViewModels
             set { SetProperty(ref _selectedStation, value); }
         }
 
-        public DelegateCommand OpenStationCommand { get; private set; }
-
         public string Filter
         {
             get { return _filter; }
@@ -48,6 +46,8 @@ namespace FuelPOSToolkitWPF.ViewModels
             get { return _stationsView; }
             set { SetProperty(ref _stationsView, value); }
         }
+
+        public DelegateCommand OpenStationCommand { get; private set; }
 
         public StationViewModel(IStationEndpoint stationEndpoint, IRegionManager regionManager, IPosEndpoint posEndpoint)
         {
@@ -74,35 +74,17 @@ namespace FuelPOSToolkitWPF.ViewModels
             _regionManager.RequestNavigate(RegionNames.StationDetailRegion, ViewNames.StationDetailView, p);
         }
 
-        private bool FilterStations(object obj)
-        {
-            StationDisplayModel station = obj as StationDisplayModel;
-            bool output = false;
-
-            if (station != null)
-            {
-                if (station.Id.StartsWith(Filter) || station.Company.StartsWith(Filter) || station.Name.StartsWith(Filter))
-                {
-                    output = true;
-                }
-            }
-
-            return output;
-        }
-
         public async void OnNavigatedTo(NavigationContext navigationContext)
         {
             var stations = await _stationEndpoint.GetAll();
 
             StationsView = new ListCollectionView(stations.Adapt<IEnumerable<StationDisplayModel>>().ToList());
-            StationsView.Filter = FilterStations;
             StationsView.CurrentChanged += SelectedStationChanged;
         }
 
         private void SelectedStationChanged(object sender, EventArgs e)
         {
             _selectedStation = StationsView.CurrentItem as StationDisplayModel;
-            OpenStation();
         }
 
         public bool IsNavigationTarget(NavigationContext navigationContext)

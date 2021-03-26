@@ -70,9 +70,12 @@ namespace TankTableToolkit
                 var newLine = regex.Replace(line, ";").Trim();
                 if (!string.IsNullOrWhiteSpace(newLine))
                 {
-                    if (char.IsDigit(newLine[0]))
+                    if (char.IsDigit(newLine[0]) || newLine.Contains("TANK"))
                     {
-                        output.Add(regex.Replace(line, ";"));
+                        if (!newLine.Contains("TANK CALIBRATION"))
+                        {
+                            output.Add(regex.Replace(line, ";"));
+                        }
                     }
                 }
             }
