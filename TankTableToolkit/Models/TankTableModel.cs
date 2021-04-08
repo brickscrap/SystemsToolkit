@@ -28,7 +28,6 @@ namespace TankTableToolkit.Models
         public TankTableModel()
         {
             Measurements = new List<(double, double)>();
-            Measurements.Add((0, 0));
         }
     }
 }

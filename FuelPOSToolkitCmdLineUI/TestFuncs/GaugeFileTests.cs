@@ -9,7 +9,9 @@ namespace FuelPOSToolkitCmdLineUI.TestFuncs
     {
         public void RunGaugeTest()
         {
-            GaugeFileParser table = new GaugeFileParser(@"C:\Users\omgit\source\repos\FuelPOSToolkit\TankTableToolkit\Example\Solihu02.cal");
+            GaugeFileParser table = new GaugeFileParser(@"C:\Users\omgit\source\repos\FuelPOSToolkit\TankTableToolkit\Example\chiswe02.cap");
+
+            // GaugeFileParser table = new GaugeFileParser(@"C:\Users\omgit\source\repos\FuelPOSToolkit\TankTableToolkit\Example\Solihu02.cal");
 
             var tables = table.Parse();
             // table.DisplayTablesInConsole();

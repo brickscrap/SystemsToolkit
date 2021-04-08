@@ -12,8 +12,8 @@ namespace TankTableToolkit
     public class GaugeFileParser
     {
         private string _filePath;
-        private List<string> _file;
-        private string _site;
+        private List<string> _serialisedFile;
+        private string _siteName;
         private string _currentTank;
         private string _nextTank;
 
@@ -26,6 +26,7 @@ namespace TankTableToolkit
         public GaugeFileParser(string filePath)
         {
             _filePath = filePath;
+            _siteName = Path.GetFileNameWithoutExtension(filePath);
         }
         
         /// <summary>
@@ -35,13 +36,13 @@ namespace TankTableToolkit
         public List<TankTableModel> Parse()
         {
             LoadFile();
-            _site = _file[0].Split(';')[0];
-            _nextTank = _file[0].Split(';')[1];
+            _nextTank = _serialisedFile.Where(x => x.Contains("TANK")).First();
 
             CreateTankTables();
 
             return _tankTables;
         }
+
         public void DisplayTablesInConsole()
         {
             foreach (var item in _tankTables)
@@ -57,31 +58,51 @@ namespace TankTableToolkit
         private void LoadFile()
         {
             var file = File.ReadAllLines(_filePath);
-            _file = RemoveExcessData(file);
+            _serialisedFile = SerialiseGaugeFile(file);
         }
 
-        private List<string> RemoveExcessData(string[] file)
+        private List<string> SerialiseGaugeFile(string[] file)
         {
             List<string> output = new List<string>();
-            var regex = new Regex("  +");
+            var regex = new Regex("   +");
 
             foreach (var line in file)
             {
-                var newLine = regex.Replace(line, ";").Trim();
-                if (!string.IsNullOrWhiteSpace(newLine))
+                var parsedLine = ParseLine(line);
+                if (parsedLine != null)
                 {
-                    if (char.IsDigit(newLine[0]) || newLine.Contains("TANK"))
-                    {
-                        if (!newLine.Contains("TANK CALIBRATION"))
-                        {
-                            output.Add(regex.Replace(line, ";"));
-                        }
-                    }
+                    output.Add(parsedLine);
                 }
             }
 
             return output;
         }
+
+        private string ParseLine(string line)
+        {
+            if (line.Contains("TANK CALIBRATION") || line.Contains("-"))
+            {
+                return null;
+            }
+
+            var regex = new Regex("   +");
+            var newLine = line.Trim();
+            newLine = regex.Replace(newLine, ";").Trim();
+
+            if (newLine.Contains("TANK"))
+            {
+                var sub = newLine.IndexOf("TANK");
+                return newLine.Substring(sub);
+            }
+
+            if (newLine.Any(Char.IsDigit) && !newLine.Any(Char.IsLetter))
+            {
+                return newLine;
+            }
+
+            return null;
+        }
+
         private TankTableModel CreateValuePairs(TankTableModel tankTable, List<string> line)
         {
             for (int i = 0; i < line.Count; i = i + 2)
@@ -93,6 +114,7 @@ namespace TankTableToolkit
 
             return tankTable;
         }
+
         private string GetTankNumber(string input)
         {
             char[] matchOn = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
@@ -108,36 +130,35 @@ namespace TankTableToolkit
 
             return null;
         }
+
         private void CreateTankTables()
         {
             List<TankTableModel> output = new List<TankTableModel>();
             TankTableModel table = new TankTableModel();
 
-            foreach (var line in _file)
+            foreach (var line in _serialisedFile)
             {
                 var newLine = line.Split(';').ToList();
 
-                // If this line is the tank number indicator
-                if (newLine[0] == _site)
+                if (newLine.Any(x => x.Contains("TANK")))
                 {
-                    _currentTank = newLine[1];
+                    _currentTank = newLine.First();
+
                     if (_nextTank == _currentTank)
                     {
                         table.TankNumber = GetTankNumber(_currentTank);
-                        continue;
                     }
                     else
                     {
                         _tankTables.Add(table);
                         _nextTank = _currentTank;
                         table = new TankTableModel();
-                        table.TankNumber = GetTankNumber(_currentTank);
                     }
+
+                    continue;
                 }
-                else
-                {
-                    CreateValuePairs(table, newLine);
-                }
+
+                CreateValuePairs(table, newLine);
             }
 
             // Add the last tank
