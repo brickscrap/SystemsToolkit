@@ -153,6 +153,7 @@ namespace TankTableToolkit
                         _tankTables.Add(table);
                         _nextTank = _currentTank;
                         table = new TankTableModel();
+                        table.TankNumber = GetTankNumber(_currentTank);
                     }
 
                     continue;
