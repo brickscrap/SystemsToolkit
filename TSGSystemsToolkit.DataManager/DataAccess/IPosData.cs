@@ -1,0 +1,13 @@
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using ToolkitLibrary.Models;
+using TsgSystemsToolkit.DataManager.Models;
+
+namespace TsgSystemsToolkit.DataManager.DataAccess
+{
+    public interface IPosData
+    {
+        Task AddPOSData(string stationId, List<PCInfoModel> posModels);
+        Task<List<POSModel>> GetPOSByStationId(string stationId);
+    }
+}

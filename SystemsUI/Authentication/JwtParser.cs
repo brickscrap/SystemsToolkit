@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -9,6 +10,13 @@ namespace SystemsUI.Authentication
 {
     public class JwtParser
     {
+        private readonly ILogger<JwtParser> _logger;
+
+        public JwtParser(ILogger<JwtParser> logger)
+        {
+            _logger = logger;
+        }
+
         public static IEnumerable<Claim> ParseClaimsFromJwt(string jwt)
         {
             var claims = new List<Claim>();

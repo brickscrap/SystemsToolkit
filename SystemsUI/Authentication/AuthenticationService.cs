@@ -1,5 +1,6 @@
 ﻿using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,14 +17,19 @@ namespace SystemsUI.Authentication
         private readonly HttpClient _client;
         private readonly AuthenticationStateProvider _authStateProvider;
         private readonly ILocalStorageService _localStorage;
+        private readonly IConfiguration _config;
+        private string _authTokenStorageKey;
 
         public AuthenticationService(HttpClient client,
                                      AuthenticationStateProvider authStateProvider,
-                                     ILocalStorageService localStorage)
+                                     ILocalStorageService localStorage,
+                                     IConfiguration config)
         {
             _client = client;
             _authStateProvider = authStateProvider;
             _localStorage = localStorage;
+            _config = config;
+            _authTokenStorageKey = _config["authTokenStorageKey"];
         }
 
         public async Task<AuthenticatedUserModel> Login(AuthenticationUserModel userForAuthentication)
@@ -35,7 +41,8 @@ namespace SystemsUI.Authentication
                 new KeyValuePair<string, string>("password", userForAuthentication.Password)
             });
 
-            var authResult = await _client.PostAsync("https://localhost:5001/api/token", data);
+            var tokenEndpoint = _config["tokenEndpoint"];
+            var authResult = await _client.PostAsync(tokenEndpoint, data);
             var authContent = await authResult.Content.ReadAsStringAsync();
 
             if (authResult.IsSuccessStatusCode == false)
@@ -46,7 +53,10 @@ namespace SystemsUI.Authentication
             var result = JsonSerializer.Deserialize<AuthenticatedUserModel>(authContent,
                 options: new JsonSerializerOptions() { PropertyNameCaseInsensitive = true });
 
-            await _localStorage.SetItemAsync("authToken", result.Access_Token);
+            var expiry = JwtParser.ParseClaimsFromJwt(result.Access_Token).Where(x => x.Type == "exp").FirstOrDefault().Value;
+
+            await _localStorage.SetItemAsync(_authTokenStorageKey, result.Access_Token);
+            await _localStorage.SetItemAsync("authTokenExpiry", expiry);
 
             ((AuthStateProvider)_authStateProvider).NotifyUserAuthentication(result.Access_Token);
 
@@ -57,7 +67,7 @@ namespace SystemsUI.Authentication
 
         public async Task Logout()
         {
-            await _localStorage.RemoveItemAsync("authToken");
+            await _localStorage.RemoveItemAsync(_authTokenStorageKey);
             ((AuthStateProvider)_authStateProvider).NotifyUserLogout();
             _client.DefaultRequestHeaders.Authorization = null;
         }

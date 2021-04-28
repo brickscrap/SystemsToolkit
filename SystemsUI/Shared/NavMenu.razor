@@ -1,37 +1,105 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">SystemsUI</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>
+﻿<nav class="menu has-background-grey-darker">
+    <figure class="image p-3">
+        <img src="/img/tsg-logo.svg" />
+    </figure>
 
-<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <ul class="nav flex-column">
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Home
+    <ul class="menu-list">
+        <li>
+            <NavLink class="menu-item" href="" Match="NavLinkMatch.All" ActiveClass="is-active">
+                <span class="icon" aria-hidden="true">
+                    <i class="fas fa-home"></i>
+                </span>
+                <span>
+                    Home
+                </span>
             </NavLink>
         </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="oi oi-plus" aria-hidden="true"></span> Counter
-            </NavLink>
-        </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="fetchdata">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
-            </NavLink>
-        </li>
+        <AuthorizeView>
+            <Authorized>
+                <li>
+                    <NavLink class="menu-item" href="stations" ActiveClass="is-active">
+                        <span class="icon" aria-hidden="true">
+                            <i class="fas fa-desktop"></i>
+                        </span>
+                        <span>
+                            FuelPOS Stations
+                        </span>
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink class="menu-item" href="debugger" ActiveClass="is-active">
+                        <span class="icon" aria-hidden="true">
+                            <i class="fas fa-bug"></i>
+                        </span>
+                        <span>
+                            FuelPOS Debugger
+                        </span>
+                    </NavLink>
+                </li>
+            </Authorized>
+        </AuthorizeView>
     </ul>
-</div>
+
+    <ul class="menu-list sticky-bottom">
+
+        <AuthorizeView>
+            <Authorized>
+                <li>
+                    <span class="is-size-7 info">Logged in as:</span>
+                </li>
+                <li>
+                    <span class="is-size-7 info">@userName</span>
+                </li>
+                <li>
+                    <span class="is-size-7 info">
+                        @foreach (var item in roles)
+                        {
+                            @item.Value 
+                        }
+                    </span>
+                </li>
+                <li>
+                    <NavLink href="logout" ActiveClass="is-active">
+                        <span class="icon">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </span>
+                        <span>
+                            Log Out
+                        </span>
+                    </NavLink>
+                </li>
+            </Authorized>
+            <NotAuthorized>
+                <li>
+                    <NavLink href="login" ActiveClass="is-active">
+                        <span class="icon">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </span>
+                        <span>
+                            Log In
+                        </span>
+                    </NavLink>
+                </li>
+            </NotAuthorized>
+        </AuthorizeView>
+
+    </ul>
+</nav>
 
 @code {
-    private bool collapseNavMenu = true;
+    [CascadingParameter] public Task<AuthenticationState> AuthState { get; set; }
 
-    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+    private string userName = "";
+    private List<Claim> roles = new();
 
-    private void ToggleNavMenu()
+    protected override async Task OnInitializedAsync()
     {
-        collapseNavMenu = !collapseNavMenu;
+        var authState = await AuthState;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            userName = authState.User.FindFirst(ClaimTypes.Name).Value;
+            roles = authState.User.Claims.Where(c => c.Type == ClaimTypes.Role).ToList();
+        }
     }
 }

@@ -80,7 +80,7 @@ namespace TankTableToolkit
 
         private string ParseLine(string line)
         {
-            if (line.Contains("TANK CALIBRATION") || line.Contains("-"))
+            if (line.Contains("TANK CALIBRATION") || line.Contains("--"))
             {
                 return null;
             }

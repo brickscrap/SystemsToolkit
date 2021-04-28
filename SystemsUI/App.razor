@@ -4,7 +4,10 @@
             <Authorizing>
                 <text>Please wait, we are authorising you...</text>
             </Authorizing>
-            </AuthorizeRouteView>
+            <NotAuthorized>
+                <RedirectToLogin />
+            </NotAuthorized>
+        </AuthorizeRouteView>
     </Found>
     <NotFound>
         <CascadingAuthenticationState>

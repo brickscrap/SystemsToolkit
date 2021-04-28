@@ -1,0 +1,93 @@
+@charset "utf-8";
+
+@import "C:/Users/omgit/source/sass/bulma/bulma-0.9.2/sass/utilities/functions.sass";
+@import "C:/Users/omgit/source/sass/bulma/bulma-0.9.2/sass/utilities/initial-variables.sass";
+@import url('https://fonts.googleapis.com/css2?family=Oswald&family=Roboto&display=swap');
+
+// Set your brand colors
+$red: #E30613;
+$white: #fff;
+$black: #121212;
+$grey: #808080;
+
+$shadow: 0 0.5em 1em -0.125em rgba($black, 0.5), 0 0px 0 1px rgba($black, 0.5);
+
+// Update Bulma's global variables
+$grey-dark: hsl(0, 0%, 23%);
+$grey-darker: hsl(0, 0%, 15%);
+$grey-light: hsl(0, 0%, 71%);
+$family-sans-serif: 'Roboto', sans-serif;
+$widescreen-enabled: false;
+$fullhd-enabled: false;
+
+// Update some of Bulma's component variables
+$control-border-width: 2px;
+$input-border-color: transparent;
+$input-shadow: none;
+
+// Mine
+$scheme-main: $grey-darker;
+$scheme-invert: $white;
+$text: $scheme-invert;
+$body-background-color: $black;
+
+$primary: $grey;
+$primary-invert: findColorInvert($grey);
+
+$link: $red;
+$link-invert: findColorInvert($red);
+$link-hover: findLightColor($red);
+
+// Box
+$box-shadow: $shadow;
+
+// Titles
+$text-strong: $white;
+
+
+// Inputs
+$input-color: $grey-darker;
+$input-background-color: $white;
+
+// Panels
+
+// Cards
+$card-shadow: $shadow;
+$card-header-shadow: 0 0.125em 0.25em rgba($black, 0.1);
+$card-footer-border-top: 1px solid $black;
+
+// Menu
+$menu-item-active-background-color: $red;
+$menu-item-hover-background-color: $grey-light;
+
+// Tables
+$table-striped-row-even-background-color: $grey-dark;
+$table-row-hover-background-color: $black;
+$table-striped-row-even-hover-background-color: $black;
+
+// Navbar
+.navbar {
+    min-height: 6rem !important;
+}
+
+.field {
+    min-width: 300px;
+}
+
+.full-height {
+    min-height: calc(100% - 6rem);
+}
+
+.vertical-center {
+    display: flex;
+    margin: auto;
+    height: calc(100vh - 10em);
+    justify-content: center;
+    align-items: center;
+    padding: 0 10rem;
+}
+
+@import "_typeahead.scss";
+@import "C:/Users/omgit/source/sass/bulma/bulma-0.9.2/bulma.sass";
+
+// Run this in Powershell to monitor for changes:  sass --watch --no-source-map bulmaStyles.scss:../wwwroot/css/bulma/bulmaStyles.css

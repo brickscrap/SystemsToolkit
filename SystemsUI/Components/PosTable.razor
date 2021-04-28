@@ -1,0 +1,43 @@
+﻿<table class="table is-striped is-bordered is-fullwidth is-hoverable">
+    <thead>
+        <tr>
+            <th>POS #</th>
+            <th>Type</th>
+            <th>OS</th>
+            <th>H/W</th>
+            <th>S/W</th>
+            <th>IP</th>
+            <th>Printer</th>
+            <th>CDU</th>
+            <th>Scanner</th>
+            <th>LGM</th>
+            <th>Screen</th>
+            <th>UPS</th>
+            <th>Serial Ports</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in PosModels)
+        {
+            <tr>
+                <th>@item.Number</th>
+                <td>@item.Type</td>
+                <td>@item.OperatingSystem</td>
+                <td>@item.HardwareType</td>
+                <td>@item.SoftwareVersion</td>
+                <td>@item.PrimaryIP</td>
+                <td>@item.ReceiptPrinter</td>
+                <td>@item.CustomerDisplay</td>
+                <td>@item.BarcodeScanner</td>
+                <td>@item.LevelGauge</td>
+                <td>@item.TouchScreen</td>
+                <td>@item.UPS</td>
+                <td>@item.NumSerialPorts</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    [Parameter] public List<PosModel> PosModels { get; set; }
+}

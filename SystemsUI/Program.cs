@@ -10,6 +10,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using SystemsUI.Authentication;
+using SystemsUI.Library.API;
 
 namespace SystemsUI
 {
@@ -20,12 +21,22 @@ namespace SystemsUI
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
-            builder.Services.AddBlazoredLocalStorage();
-            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+            // Authentication/authorisation
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
+            builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddBlazoredLocalStorage();
+            
+            builder.Services.AddTransient<IPosEndpoint, PosEndpoint>();
+            builder.Services.AddTransient<IStationEndpoint, StationEndpoint>();
+
+            builder.Services.AddScoped(sp =>
+            {
+                var cfg = sp.GetRequiredService<IConfiguration>();
+
+                return new HttpClient { BaseAddress = new Uri(cfg["apiLocation"]) };
+            });
 
             await builder.Build().RunAsync();
         }

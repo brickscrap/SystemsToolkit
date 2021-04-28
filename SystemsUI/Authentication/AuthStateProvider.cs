@@ -26,10 +26,27 @@ namespace SystemsUI.Authentication
         public override async Task<AuthenticationState> GetAuthenticationStateAsync()
         {
             var token = await _localStorage.GetItemAsync<string>("authToken");
+            var expiry = await _localStorage.GetItemAsync<string>("authTokenExpiry");
 
             if (string.IsNullOrWhiteSpace(token))
             {
                 return _anonymous;
+            }
+
+            if (expiry is not null)
+            {
+                if (DateTimeOffset.FromUnixTimeSeconds(long.Parse(expiry)) > DateTimeOffset.Now)
+                {
+                    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
+
+                    return new AuthenticationState(
+                        new ClaimsPrincipal(
+                            new ClaimsIdentity(JwtParser.ParseClaimsFromJwt(token), "jwtAuthType")));
+                }
+                else
+                {
+                    NotifyUserLogout();
+                }
             }
 
             _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", token);
