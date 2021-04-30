@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace StadevParser.Models
+namespace FuelPOS.StatDevParser.Models
 {
     public class PCInfoModel
     {
@@ -17,20 +16,20 @@ namespace StadevParser.Models
         public string CustomerDisplay { get; set; }
         public string BarcodeScanner { get; set; }
         public string LevelGauge { get; set; }
-        public string TouchScreen { get; set; }
         public int NumSerialPorts { get; set; }
         public List<SerialDeviceModel> SerialDevices { get; set; }
         public string UPS { get; set; }
-        public int SerialPortsUsed 
+        public string TouchScreenType { get; set; }
+        public int SerialPortsUsed
         {
-            get 
+            get
             {
                 int numDevices = SerialDevices
-                    .Where(number => number.Device != "Unknown")
+                    .Where(number => !number.Device.Contains("Unknown"))
                     .Count();
 
                 return numDevices;
-            } 
+            }
         }
     }
 }

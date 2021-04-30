@@ -1,12 +1,12 @@
 ﻿using FuelPOS.DebugTools;
+using FuelPOS.StatDevParser;
+using FuelPOS.StatDevParser.Models;
 using Newtonsoft.Json;
 using POSFileParser;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Linq;
-using ToolkitLibrary;
-using ToolkitLibrary.Models;
 using TSGSystemsToolkit.CmdLine.TestFuncs;
 
 namespace TSGSystemsToolkit.CmdLine
@@ -75,7 +75,7 @@ namespace TSGSystemsToolkit.CmdLine
             {
 
                 XDocument doc = XDocument.Load(file);
-                StatdevParser parser = new (doc);
+                StatDevParser parser = new (doc);
                 data.Add(parser.Parse(doc));
             }
         }

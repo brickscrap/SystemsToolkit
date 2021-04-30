@@ -16,8 +16,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FuelPOS.DebugTools\FuelPOS.DebugTools.csproj" />
+    <ProjectReference Include="..\FuelPOS.FileParser\FuelPOS.FileParser.csproj" />
+    <ProjectReference Include="..\FuelPOS.StatDevParser\FuelPOS.StatDevParser.csproj" />
+    <ProjectReference Include="..\FuelPOS.TankTableTools\FuelPOS.TankTableTools.csproj" />
     <ProjectReference Include="..\FuelPOSFTPLib\FuelPOSFTPLib.csproj" />
-    <ProjectReference Include="..\POSFileParser\POSFileParser.csproj" />
+    <ProjectReference Include="..\POSFileParser\FuelPOS.FileParser.csproj" />
     <ProjectReference Include="..\TankTableToolkit\FuelPOS.TankTableTools.csproj" />
     <ProjectReference Include="..\ToolkitLibrary\ToolkitLibrary.csproj" />
   </ItemGroup>

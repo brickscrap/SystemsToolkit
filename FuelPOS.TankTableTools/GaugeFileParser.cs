@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Xml;
 using TankTableToolkit.Models;
 
-namespace TankTableToolkit
+namespace FuelPOS.TankTableTools
 {
     public class GaugeFileParser
     {
@@ -28,7 +28,7 @@ namespace TankTableToolkit
             _filePath = filePath;
             _siteName = Path.GetFileNameWithoutExtension(filePath);
         }
-        
+
         /// <summary>
         /// Create a list of tank tables based on the file provided to the constructor
         /// </summary>
@@ -95,7 +95,7 @@ namespace TankTableToolkit
                 return newLine.Substring(sub);
             }
 
-            if (newLine.Any(Char.IsDigit) && !newLine.Any(Char.IsLetter))
+            if (newLine.Any(char.IsDigit) && !newLine.Any(char.IsLetter))
             {
                 return newLine;
             }

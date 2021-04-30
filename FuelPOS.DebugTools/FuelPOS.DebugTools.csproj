@@ -10,4 +10,8 @@
     <None Remove="Properties\**" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="BUG_DEF.ASC" />
+  </ItemGroup>
+
 </Project>

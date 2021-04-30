@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
-namespace StadevParser.Models
+namespace FuelPOS.StatDevParser.Models
 {
     public class StatdevModel
     {

@@ -1,11 +1,10 @@
-﻿using System;
+﻿using FuelPOS.StatDevParser;
+using FuelPOS.StatDevParser.Models;
 using System.Collections.Generic;
-using System.Text;
 using System.Xml.Linq;
 using ToolkitLibrary;
-using ToolkitLibrary.Models;
 
-namespace FuelPOSToolkitCmdLineUI
+namespace TSGSystemsToolkit.CmdLine
 {
     public static class ScriptSamples
     {
@@ -13,8 +12,8 @@ namespace FuelPOSToolkitCmdLineUI
         {
             string[] files = System.IO.Directory.GetFiles("C:\\surveys", "*.xml");
 
-            StatdevParser parser = new ();
-            List<StatdevModel> data = new ();
+            StatDevParser parser = new();
+            List<StatdevModel> data = new();
 
             foreach (var file in files)
             {
@@ -22,7 +21,7 @@ namespace FuelPOSToolkitCmdLineUI
                 data.Add(parser.Parse(doc));
             }
 
-            SpreadsheetWriter writer = new ();
+            SpreadsheetWriter writer = new();
 
             writer.CreateFuelPOSSurvey(data);
         }

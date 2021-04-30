@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using TankTableToolkit.Models;
 
-namespace TankTableToolkit
+namespace FuelPOS.TankTableTools
 {
     public static class POSFileCreator
     {

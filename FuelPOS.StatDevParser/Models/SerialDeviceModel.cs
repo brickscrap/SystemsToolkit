@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace StadevParser.Models
+﻿namespace FuelPOS.StatDevParser.Models
 {
     public class SerialDeviceModel
     {

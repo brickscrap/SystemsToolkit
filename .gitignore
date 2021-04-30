@@ -343,3 +343,10 @@ healthchecksdb
 /FuelPOSDebugTools/BUG_DEF.ASC
 /POSFileParser/Tests/trx.json
 /StadevParser/StadevParser.sln
+
+# FuelPOS Specifics
+*.cap
+*.INP
+*.ASC
+*.TRX
+*.PU

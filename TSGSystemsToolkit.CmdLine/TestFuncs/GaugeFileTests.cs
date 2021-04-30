@@ -1,4 +1,4 @@
-﻿using TankTableToolkit;
+﻿using FuelPOS.TankTableTools;
 
 namespace TSGSystemsToolkit.CmdLine.TestFuncs
 {
