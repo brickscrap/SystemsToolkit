@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spGetPOSByStationId]
+﻿CREATE PROCEDURE [dbo].[spPos_GetByStationId]
 	@StationId char(5)
 AS
 BEGIN

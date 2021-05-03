@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using TsgSystemsToolkit.DataManager.Constants;
 using TsgSystemsToolkit.DataManager.Models;
 
 namespace TsgSystemsToolkit.DataManager.DataAccess
@@ -19,14 +20,14 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
         {
             var p = new { Id = id };
 
-            var output = await _db.LoadDataAsync<UserModel, dynamic>("dbo.spUserLookup", p);
+            var output = await _db.LoadDataAsync<UserModel, dynamic>(StoredProcedures.User_GetById, p);
 
             return output;
         }
 
         public async Task AddUser(UserModel user)
         {
-            await _db.SaveDataAsync("dbo.spInsertUser", user);
+            await _db.SaveDataAsync(StoredProcedures.User_Insert, user);
         }
     }
 }

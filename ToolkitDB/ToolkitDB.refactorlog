@@ -21,4 +21,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="[FK_FTPCredentials_Stations]" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="7f46b461-4a08-4987-9624-79b3acad1296" ChangeDateTime="05/03/2021 11:54:14">
+    <Property Name="ElementName" Value="[dbo].[DebugProcesses].[FPName]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[DebugProcesses]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="PosProcessName" />
+  </Operation>
 </Operations>

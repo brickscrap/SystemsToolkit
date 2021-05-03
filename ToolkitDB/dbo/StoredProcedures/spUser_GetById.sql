@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spUserLookup]
+﻿CREATE PROCEDURE [dbo].[spUser_GetById]
 	@Id nvarchar(128)
 AS
 begin

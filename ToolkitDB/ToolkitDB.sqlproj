@@ -66,18 +66,21 @@
     <Build Include="dbo\Tables\DebugProcesses.sql" />
     <Build Include="dbo\Tables\DebugParameters.sql" />
     <Build Include="dbo\Tables\User.sql" />
-    <Build Include="dbo\StoredProcedures\spUserLookup.sql" />
-    <Build Include="dbo\StoredProcedures\spInsertUser.sql" />
+    <Build Include="dbo\StoredProcedures\spUser_GetById.sql" />
+    <Build Include="dbo\StoredProcedures\spUser_Insert.sql" />
     <Build Include="dbo\Tables\POSHardware.sql" />
     <Build Include="dbo\Tables\POSSerialDevices.sql" />
-    <Build Include="dbo\StoredProcedures\spGetStationById.sql" />
-    <Build Include="dbo\StoredProcedures\spStationInsert.sql" />
-    <Build Include="dbo\StoredProcedures\spGetAllStations.sql" />
-    <Build Include="dbo\StoredProcedures\spGetPOSIdByNumber.sql" />
-    <Build Include="dbo\StoredProcedures\spSerialDeviceInsert.sql" />
-    <Build Include="dbo\StoredProcedures\spPOSInsert.sql" />
-    <Build Include="dbo\StoredProcedures\spGetPOSByStationId.sql" />
-    <Build Include="dbo\StoredProcedures\spGetSerialDevicesByPOSId.sql" />
+    <Build Include="dbo\StoredProcedures\spStations_GetById.sql" />
+    <Build Include="dbo\StoredProcedures\spStations_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spStations_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spPos_GetIdByNumber.sql" />
+    <Build Include="dbo\StoredProcedures\spSerialDevices_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spPos_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spPos_GetByStationId.sql" />
+    <Build Include="dbo\StoredProcedures\spSerialDevices_GetByPosId.sql" />
+    <Build Include="dbo\StoredProcedures\spDebugProcesses_Insert.sql" />
+    <Build Include="dbo\StoredProcedures\spDebugProcesses_GetByName.sql" />
+    <Build Include="dbo\StoredProcedures\spDebugProcesses_GetAll.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="ToolkitDB.refactorlog" />

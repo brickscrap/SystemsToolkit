@@ -65,24 +65,23 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
             _isClosed = false;
         }
 
-        public void SaveDataInTransaction<T>(string storedProcedure, T parameters)
+        public async Task SaveDataInTransactionAsync<T>(string storedProcedure, T parameters)
         {
-            _connection.Execute(storedProcedure,
+            await _connection.ExecuteAsync(storedProcedure,
                 parameters,
                     commandType: CommandType.StoredProcedure,
                     transaction: _transaction);
         }
 
-        public List<T> LoadDataInTransaction<T, U>(string storedProcedure, U parameters)
+        public async Task<List<T>> LoadDataInTransactionAsync<T, U>(string storedProcedure, U parameters)
         {
 
-            List<T> rows = _connection.Query<T>(storedProcedure,
+            var rows = await _connection.QueryAsync<T>(storedProcedure,
                 parameters,
                 commandType: CommandType.StoredProcedure,
-                transaction: _transaction)
-                .ToList();
+                transaction: _transaction);
 
-            return rows;
+            return rows.ToList();
         }
 
         public void CommitTransaction()

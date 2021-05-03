@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spInsertUser]
+﻿CREATE PROCEDURE [dbo].[spUser_Insert]
 	@Id nvarchar(450),
 	@EmailAddress nvarchar(256),
 	@CreatedDate datetime2(7),

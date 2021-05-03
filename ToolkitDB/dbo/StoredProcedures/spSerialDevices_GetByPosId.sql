@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spGetSerialDevicesByPOSId]
+﻿CREATE PROCEDURE [dbo].[spSerialDevices_GetByPosId]
 	@Id int
 AS
 BEGIN

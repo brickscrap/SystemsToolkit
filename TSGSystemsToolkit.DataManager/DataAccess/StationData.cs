@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TsgSystemsToolkit.DataManager.Constants;
 using TsgSystemsToolkit.DataManager.Models;
 
 namespace TsgSystemsToolkit.DataManager.DataAccess
@@ -18,21 +19,21 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
 
         public async Task<List<StationModel>> GetAllStations()
         {
-            var output = await _db.LoadDataAsync<StationModel, dynamic>("dbo.spGetAllStations", new { });
+            var output = await _db.LoadDataAsync<StationModel, dynamic>(StoredProcedures.Stations_GetAll, new { });
 
             return output;
         }
 
         public async Task<StationModel> GetStationByID(string stationId)
         {
-            var output = await _db.LoadDataAsync<StationModel, dynamic>("dbo.spGetStationById", new { Id = stationId });
+            var output = await _db.LoadDataAsync<StationModel, dynamic>(StoredProcedures.Stations_GetById, new { Id = stationId });
 
             return output.FirstOrDefault();
         }
 
         public async Task AddStation(StationModel station)
         {
-            await _db.SaveDataAsync("dbo.spStationInsert", station);
+            await _db.SaveDataAsync(StoredProcedures.Stations_Insert, station);
         }
     }
 }

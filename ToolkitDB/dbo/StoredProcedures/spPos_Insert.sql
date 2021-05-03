@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spPOSInsert]
+﻿CREATE PROCEDURE [dbo].[spPos_Insert]
 	@StationId char(5),
 	@Number int,
 	@Type varchar(10),

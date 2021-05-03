@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using FuelPOS.StatDevParser.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using ToolkitLibrary.Models;
 using TsgSystemsToolkit.DataManager.Models;
 
 namespace TsgSystemsToolkit.DataManager.DataAccess

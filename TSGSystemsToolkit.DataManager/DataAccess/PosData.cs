@@ -1,9 +1,10 @@
-﻿using System;
+﻿using FuelPOS.StatDevParser.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ToolkitLibrary.Models;
+using TsgSystemsToolkit.DataManager.Constants;
 using TsgSystemsToolkit.DataManager.DataAccess;
 using TsgSystemsToolkit.DataManager.Models;
 
@@ -22,8 +23,8 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
         {
             List<POSModel> output = new List<POSModel>();
 
-            var pos = await _db.LoadDataAsync<POSDbModel, dynamic>("dbo.spGetPOSByStationId", 
-                new { StationId = stationId });
+            var pos = await _db.LoadDataAsync<POSDbModel, dynamic>(StoredProcedures.Pos_GetByStationId,
+                                                                   new { StationId = stationId });
 
             foreach (var p in pos)
             {
@@ -44,8 +45,8 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
                     UPS = p.UPS,
                 };
 
-                List<Models.SerialDeviceModel> serialDevices = await _db.LoadDataAsync<Models.SerialDeviceModel, dynamic>("dbo.spGetSerialDevicesByPOSId",
-                    new { Id = p.Id });
+                List<Models.SerialDeviceModel> serialDevices = await _db.LoadDataAsync<Models.SerialDeviceModel, dynamic>(StoredProcedures.SerialDevices_GetByPosId,
+                                                                                                                          new { Id = p.Id });
                 posModel.SerialDevices = serialDevices;
 
                 output.Add(posModel);
@@ -60,7 +61,7 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
             // TODO: Make this more DRY/SRP
             foreach (var pos in posModels)
             {
-                await _db.SaveDataAsync("dbo.spPOSInsert", 
+                await _db.SaveDataAsync(StoredProcedures.Pos_Insert, 
                     new 
                     {
                         StationId = stationId,
@@ -79,15 +80,15 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
                         NumSerialPorts = pos.NumSerialPorts
                     });
 
-                var posIDs = await _db.LoadDataAsync<int, dynamic>("dbo.spGetPOSIdByNumber",
-                        new { StationId = stationId, POSNumber = pos.Number });
+                var posIDs = await _db.LoadDataAsync<int, dynamic>(StoredProcedures.Pos_GetIdByNumber,
+                                                                   new { StationId = stationId, POSNumber = pos.Number });
 
                 int posID = posIDs.FirstOrDefault();
 
                 foreach (var serialDevice in pos.SerialDevices)
                 {
 
-                    await _db.SaveDataAsync("dbo.spSerialDeviceInsert",
+                    await _db.SaveDataAsync(StoredProcedures.SerialDevices_Insert,
                         new 
                         {
                             POSHardwareId = posID,

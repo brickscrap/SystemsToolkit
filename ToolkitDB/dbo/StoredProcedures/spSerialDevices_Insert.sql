@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE [dbo].[spSerialDeviceInsert]
+﻿CREATE PROCEDURE [dbo].[spSerialDevices_Insert]
 	@POSHardwareId int,
 	@Device nvarchar(50),
 	@PortNumber nvarchar(2)
