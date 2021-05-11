@@ -2,7 +2,6 @@
 using FuelPOS.StatDevParser.Models;
 using System.Collections.Generic;
 using System.Xml.Linq;
-using ToolkitLibrary;
 
 namespace TSGSystemsToolkit.CmdLine
 {
@@ -21,9 +20,9 @@ namespace TSGSystemsToolkit.CmdLine
                 data.Add(parser.Parse(doc));
             }
 
-            SpreadsheetWriter writer = new();
+            // SpreadsheetWriter writer = new();
 
-            writer.CreateFuelPOSSurvey(data);
+            // writer.CreateFuelPOSSurvey(data);
         }
     }
 }

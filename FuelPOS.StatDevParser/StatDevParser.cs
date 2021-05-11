@@ -7,7 +7,7 @@ using System.Xml.Linq;
 
 namespace FuelPOS.StatDevParser
 {
-    public class StatDevParser
+    public class StatDevParser : IStatDevParser
     {
         private IEnumerable<XElement> _statDev;
 
