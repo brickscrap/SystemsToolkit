@@ -8,7 +8,7 @@ using TsgSystemsToolkit.DataManager.Queries;
 
 namespace TsgSystemsToolkit.DataManager.Handlers
 {
-    public class GetStationListHandler : IRequestHandler<GetStationListQuery, List<StationModel>>
+    public class GetStationListHandler : IRequestHandler<GetStationListQuery, List<StationDbModel>>
     {
         private readonly IStationData _stationData;
 
@@ -17,7 +17,7 @@ namespace TsgSystemsToolkit.DataManager.Handlers
             _stationData = stationData;
         }
 
-        public async Task<List<StationModel>> Handle(GetStationListQuery request, CancellationToken cancellationToken)
+        public async Task<List<StationDbModel>> Handle(GetStationListQuery request, CancellationToken cancellationToken)
         {
             var output = await _stationData.GetAllStations();
 

@@ -1,3 +1,4 @@
+using FuelPOS.StatDevParser;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -10,10 +11,11 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System;
 using System.Text;
-using ToolkitLibrary;
 using TsgSystems.Api.Data;
+using TsgSystems.Api.Services;
 using TsgSystems.Api.Swagger;
 using TsgSystemsToolkit.DataManager;
+using TsgSystemsToolkit.DataManager.Dapper;
 using TsgSystemsToolkit.DataManager.DataAccess;
 
 namespace TsgSystems.Api
@@ -72,10 +74,11 @@ namespace TsgSystems.Api
             services.AddScoped<IUserData, UserData>();
             services.AddScoped<IStationData, StationData>();
             services.AddScoped<IPosData, PosData>();
+            services.AddScoped<IPosDebugData, PosDebugData>();
             services.AddMediatR(typeof(MediatREntryPoint).Assembly);
 
             // Business services
-            services.AddTransient<IStatdevParser, StatdevParser>();
+            services.AddTransient<IStatDevParser, StatDevParser>();
 
             services.AddSwaggerGen(setup =>
             {
@@ -90,6 +93,11 @@ namespace TsgSystems.Api
                     }
                     );
             });
+
+            // gRPC
+            services.AddGrpc();
+
+            DapperMappings.Initialise();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -112,6 +120,9 @@ namespace TsgSystems.Api
 
             app.UseRouting();
 
+            // gRPC
+            app.UseGrpcWeb();
+
             app.UseAuthentication();
             app.UseAuthorization();
 
@@ -127,6 +138,10 @@ namespace TsgSystems.Api
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
+
+                // gRPC
+                endpoints.MapGrpcService<GreeterService>().EnableGrpcWeb();
+                endpoints.MapGrpcService<FpDebugService>().EnableGrpcWeb();
             });
         }
     }

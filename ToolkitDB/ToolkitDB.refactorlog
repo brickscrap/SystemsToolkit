@@ -28,4 +28,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="PosProcessName" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="5fa548e2-412d-4276-8053-cb1a0960cf13" ChangeDateTime="05/10/2021 16:53:58">
+    <Property Name="ElementName" Value="[dbo].[DebugParameters].[Decription]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[DebugParameters]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Description" />
+  </Operation>
 </Operations>

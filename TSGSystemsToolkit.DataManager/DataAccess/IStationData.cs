@@ -6,8 +6,8 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
 {
     public interface IStationData
     {
-        Task AddStation(StationModel station);
-        Task<List<StationModel>> GetAllStations();
-        Task<StationModel> GetStationByID(string stationId);
+        Task<StationDbModel> AddStation(StationModel station);
+        Task<List<StationDbModel>> GetAllStations();
+        Task<StationDbModel> GetStationByID(string stationId);
     }
 }

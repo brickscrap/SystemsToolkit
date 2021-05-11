@@ -3,5 +3,5 @@ using TsgSystemsToolkit.DataManager.Models;
 
 namespace TsgSystemsToolkit.DataManager.Queries
 {
-    public record GetStationByIdQuery(string Id) : IRequest<StationModel>;
+    public record GetStationByIdQuery(string Id) : IRequest<StationDbModel>;
 }

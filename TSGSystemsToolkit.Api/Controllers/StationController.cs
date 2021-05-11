@@ -3,11 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using TsgSystemsToolkit.DataManager.Commands;
 using TsgSystemsToolkit.DataManager.DataAccess;
 using TsgSystemsToolkit.DataManager.Models;
 using TsgSystemsToolkit.DataManager.Queries;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace TsgSystems.Api.Controllers
 {
@@ -26,23 +25,23 @@ namespace TsgSystems.Api.Controllers
         }
         // GET: api/<StationController>
         [HttpGet]
-        public async Task<List<StationModel>> Get()
+        public async Task<List<StationDbModel>> Get()
         {
             return await _mediator.Send(new GetStationListQuery());
         }
 
         // GET api/<StationController>/5
         [HttpGet("{id}")]
-        public async Task<StationModel> Get(string id)
+        public async Task<StationDbModel> Get(string id)
         {
-            return await _stationData.GetStationByID(id);
+            return await _mediator.Send(new GetStationByIdQuery(id));
         }
 
         // POST api/<StationController>
         [HttpPost]
-        public async Task Post([FromBody] StationModel station)
+        public async Task<StationDbModel> Post([FromBody] StationModel station)
         {
-            await _stationData.AddStation(station);
+            return await _mediator.Send(new InsertStationCommand(station));
         }
     }
 }

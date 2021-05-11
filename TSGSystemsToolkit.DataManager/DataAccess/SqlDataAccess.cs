@@ -53,6 +53,19 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
             }
         }
 
+        public async Task<List<T>> LoadMultiMappedAsync<T, V, U>(string storedProcedure, Func<T, V, T> mapping, U parameters, string splitOn)
+        {
+            string connectionString = GetConnectionString(ConnectionStringName);
+
+            using (IDbConnection cnn = new SqlConnection(connectionString))
+            {
+                var rows = await cnn.QueryAsync<T, V, T>(storedProcedure, mapping, parameters, splitOn: splitOn,
+                                                         commandType: CommandType.StoredProcedure);
+
+                return rows.ToList();
+            }
+        }
+
         public void StartTransaction()
         {
             string connectionString = GetConnectionString(ConnectionStringName);

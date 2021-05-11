@@ -17,23 +17,46 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
             _db = db;
         }
 
-        public async Task<List<StationModel>> GetAllStations()
+        public async Task<List<StationDbModel>> GetAllStations()
         {
-            var output = await _db.LoadDataAsync<StationModel, dynamic>(StoredProcedures.Stations_GetAll, new { });
+            var output = await _db.LoadDataAsync<StationDbModel, dynamic>(StoredProcedures.Stations.GetAll, new { });
 
             return output;
         }
 
-        public async Task<StationModel> GetStationByID(string stationId)
+        public async Task<StationDbModel> GetStationByID(string stationId)
         {
-            var output = await _db.LoadDataAsync<StationModel, dynamic>(StoredProcedures.Stations_GetById, new { Id = stationId });
+            var output = await _db.LoadDataAsync<StationDbModel, dynamic>(StoredProcedures.Stations.GetById, new { Id = stationId });
 
             return output.FirstOrDefault();
         }
 
-        public async Task AddStation(StationModel station)
+        public async Task<StationDbModel> AddStation(StationModel station)
         {
-            await _db.SaveDataAsync(StoredProcedures.Stations_Insert, station);
+            StationDbModel output = new();
+
+            try
+            {
+                _db.StartTransaction();
+
+                await _db.SaveDataInTransactionAsync(StoredProcedures.Stations.Insert, station);
+
+                var newStation = await _db.LoadDataInTransactionAsync<StationDbModel, dynamic>(StoredProcedures.Stations.GetByKimoceId,
+                                                                                               new { station.KimoceId });
+
+                if (newStation is not null)
+                {
+                    output = newStation.FirstOrDefault();
+                }
+
+                _db.CommitTransaction();
+            }
+            catch
+            {
+                _db.RollbackTransaction();
+            }
+
+            return output;
         }
     }
 }

@@ -6,7 +6,8 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
 {
     public interface IPosDebugData
     {
-        Task<DebugProcessDbModel> AddDebugProcess(DebugProcessModel process);
-        Task<List<DebugProcessDbModel>> GetAllDebugProcessesAsync();
+        Task<DebugProcessModel> AddDebugProcess(DebugProcessModel process);
+        Task<List<DebugProcessModel>> GetAllDebugProcessesAsync();
+        Task<List<DebugProcessParametersModel>> GetAllWithParameters();
     }
 }

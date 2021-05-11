@@ -81,6 +81,9 @@
     <Build Include="dbo\StoredProcedures\spDebugProcesses_Insert.sql" />
     <Build Include="dbo\StoredProcedures\spDebugProcesses_GetByName.sql" />
     <Build Include="dbo\StoredProcedures\spDebugProcesses_GetAll.sql" />
+    <Build Include="dbo\StoredProcedures\spStations_GetByKimoceId.sql" />
+    <Build Include="dbo\StoredProcedures\spDebugProcesses_GetAllWithParams.sql" />
+    <Build Include="dbo\StoredProcedures\spDebugParameters_GetByProcessId.sql" />
   </ItemGroup>
   <ItemGroup>
     <RefactorLog Include="ToolkitDB.refactorlog" />

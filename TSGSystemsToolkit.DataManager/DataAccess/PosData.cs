@@ -23,7 +23,7 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
         {
             List<POSModel> output = new List<POSModel>();
 
-            var pos = await _db.LoadDataAsync<POSDbModel, dynamic>(StoredProcedures.Pos_GetByStationId,
+            var pos = await _db.LoadDataAsync<POSDbModel, dynamic>(StoredProcedures.Pos.GetByStationId,
                                                                    new { StationId = stationId });
 
             foreach (var p in pos)
@@ -45,7 +45,7 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
                     UPS = p.UPS,
                 };
 
-                List<Models.SerialDeviceModel> serialDevices = await _db.LoadDataAsync<Models.SerialDeviceModel, dynamic>(StoredProcedures.SerialDevices_GetByPosId,
+                List<Models.SerialDeviceModel> serialDevices = await _db.LoadDataAsync<Models.SerialDeviceModel, dynamic>(StoredProcedures.SerialDevices.GetByPosId,
                                                                                                                           new { Id = p.Id });
                 posModel.SerialDevices = serialDevices;
 
@@ -61,7 +61,7 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
             // TODO: Make this more DRY/SRP
             foreach (var pos in posModels)
             {
-                await _db.SaveDataAsync(StoredProcedures.Pos_Insert, 
+                await _db.SaveDataAsync(StoredProcedures.Pos.Insert, 
                     new 
                     {
                         StationId = stationId,
@@ -80,7 +80,7 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
                         NumSerialPorts = pos.NumSerialPorts
                     });
 
-                var posIDs = await _db.LoadDataAsync<int, dynamic>(StoredProcedures.Pos_GetIdByNumber,
+                var posIDs = await _db.LoadDataAsync<int, dynamic>(StoredProcedures.Pos.GetIdByNumber,
                                                                    new { StationId = stationId, POSNumber = pos.Number });
 
                 int posID = posIDs.FirstOrDefault();
@@ -88,7 +88,7 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
                 foreach (var serialDevice in pos.SerialDevices)
                 {
 
-                    await _db.SaveDataAsync(StoredProcedures.SerialDevices_Insert,
+                    await _db.SaveDataAsync(StoredProcedures.SerialDevices.Insert,
                         new 
                         {
                             POSHardwareId = posID,

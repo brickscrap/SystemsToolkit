@@ -2,29 +2,45 @@
 {
     public static class StoredProcedures
     {
-        // User
-        public const string User_GetById = "dbo.spUser_GetById";
-        public const string User_Insert = "dbo.spUser_Insert";
+        public static class User
+        {
+            public const string GetById = "dbo.spUser_GetById";
+            public const string Insert = "dbo.spUser_Insert";
+        }
 
-        // Station
-        public const string Stations_Insert = "dbo.spStations_Insert";
-        public const string Stations_GetById = "dbo.spStations_GetById";
-        public const string Stations_GetAll = "dbo.spStations_GetAll";
+        public static class Stations
+        {
+            public const string Insert = "dbo.spStations_Insert";
+            public const string GetById = "dbo.spStations_GetById";
+            public const string GetAll = "dbo.spStations_GetAll";
+            public const string GetByKimoceId = "dbo.spStations_GetByKimoceId";
+        }
+        
+        public static class SerialDevices
+        {
+            public const string Insert = "dbo.spSerialDevices_Insert";
+            public const string GetByPosId = "dbo.spSerialDevices_GetByPosId";
+        }
+        
+        public static class Pos
+        {
+            public const string Insert = "dbo.spPos_Insert";
+            public const string GetIdByNumber = "dbo.spPos_GetIdByNumber";
+            public const string GetByStationId = "dbo.spPos_GetByStationId";
+        }
+        
+        public static class DebugProcesses
+        {
+            public const string GetByName = "dbo.spDebugProcess_GetByName";
+            public const string GetAll = "dbo.spDebugProcesses_GetAll";
+            public const string Insert = "dbo.spDebugProcesses_Insert";
+            public const string GetAllWithParams = "spDebugProcesses_GetAllWithParams";
+        }
 
-        // SerialDevices
-        public const string SerialDevices_Insert = "dbo.spSerialDevices_Insert";
-        public const string SerialDevices_GetByPosId = "dbo.spSerialDevices_GetByPosId";
-
-        // POS
-        public const string Pos_Insert = "dbo.spPos_Insert";
-        public const string Pos_GetIdByNumber = "dbo.spPos_GetIdByNumber";
-        public const string Pos_GetByStationId = "dbo.spPos_GetByStationId";
-
-        // DebugProccesses
-        public const string DebugProcess_GetByName = "dbo.spDebugProcess_GetByName";
-        public const string DebugProcesses_GetAll = "dbo.spDebugProcesses_GetAll";
-        public const string DebugProcesses_Insert = "dbo.spDebugProcesses_Insert";
-
-        // DebugParameters
+        public static class DebugParameters
+        {
+            public const string GetByProcessId = "dbo.spDebugParameters_GetByProcessId";
+        }
+        
     }
 }
