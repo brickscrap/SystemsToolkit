@@ -1,13 +1,14 @@
 using Blazored.LocalStorage;
+using Grpc.Net.Client;
+using Grpc.Net.Client.Web;
+using GrpcGreeter;
+using GrpcServer;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
-using System.Text;
 using System.Threading.Tasks;
 using SystemsUI.Authentication;
 using SystemsUI.Library.API;
@@ -30,6 +31,28 @@ namespace SystemsUI
             
             builder.Services.AddTransient<IPosEndpoint, PosEndpoint>();
             builder.Services.AddTransient<IStationEndpoint, StationEndpoint>();
+            builder.Services.AddTransient<IDebugEndpoint, DebugEndpoint>();
+
+            // gRPC
+            builder.Services.AddSingleton(services =>
+            {
+                var cfg = services.GetRequiredService<IConfiguration>();
+                var httpClient = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()));
+                var grpcEndpoint = new Uri(cfg["grpcEndpoint"]);
+                var channel = GrpcChannel.ForAddress(grpcEndpoint, new GrpcChannelOptions { HttpClient = httpClient });
+
+                return new Greeter.GreeterClient(channel);
+            });
+
+            builder.Services.AddSingleton(services =>
+            {
+                var cfg = services.GetRequiredService<IConfiguration>();
+                var httpClient = new HttpClient(new GrpcWebHandler(GrpcWebMode.GrpcWeb, new HttpClientHandler()));
+                var grpcEndpoint = new Uri(cfg["grpcEndpoint"]);
+                var channel = GrpcChannel.ForAddress(grpcEndpoint, new GrpcChannelOptions { HttpClient = httpClient });
+
+                return new FpDebug.FpDebugClient(channel);
+            });
 
             builder.Services.AddScoped(sp =>
             {

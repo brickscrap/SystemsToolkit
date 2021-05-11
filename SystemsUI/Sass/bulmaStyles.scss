@@ -65,6 +65,9 @@ $table-striped-row-even-background-color: $grey-dark;
 $table-row-hover-background-color: $black;
 $table-striped-row-even-hover-background-color: $black;
 
+// Modals
+$modal-background-background-color: rgba($scheme-invert, 0.3);
+
 // Navbar
 .navbar {
     min-height: 6rem !important;

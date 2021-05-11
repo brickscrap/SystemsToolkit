@@ -1,0 +1,46 @@
+﻿@inject IDebugEndpoint debugEndpoint
+
+<div class="field">
+    <label class="label" for="process">Process</label>
+    <BlazoredTypeahead SearchMethod="@SearchProcesses" EnableDropDown="true"
+                       TValue="DebugProcessModel"
+                       TItem="DebugProcessModel"
+                       ValueChanged="SelectedProcessChanged"
+                       ValueExpression="@(() => selectedProcess)"
+                       name="process">
+        <SelectedTemplate Context="process">
+            @process.Name - @process.PosProcessName
+        </SelectedTemplate>
+        <ResultTemplate Context="process">
+            @process.Name - @process.PosProcessName 
+        </ResultTemplate>
+        <NotFoundTemplate>
+            Sorry, no results found.
+        </NotFoundTemplate>
+    </BlazoredTypeahead>
+</div>
+
+@code {
+    private List<DebugProcessModel> processModels { get; set; }
+    private DebugProcessModel selectedProcess { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        processModels = await debugEndpoint.GetAll();
+    }
+
+    private async Task<IEnumerable<DebugProcessModel>> SearchProcesses(string searchText)
+    {
+        return await Task.FromResult(processModels
+            .Where(x =>
+            x.Name.ToLower().Contains(searchText.ToLower()) ||
+            x.PosProcessName.ToLower().Contains(searchText.ToLower()) ||
+            x.Description.ToLower().Contains(searchText.ToLower()))
+            .ToList());
+    }
+
+    private async Task SelectedProcessChanged(DebugProcessModel result)
+    {
+        selectedProcess = result;
+    }
+}

@@ -13,6 +13,7 @@ namespace SystemsUI.Components
         protected override void OnInitialized()
         {
             NavigationManager.NavigateTo("login");
+            base.OnInitialized();
         }
     }
 }
