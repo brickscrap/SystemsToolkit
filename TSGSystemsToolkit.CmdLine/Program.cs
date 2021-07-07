@@ -1,12 +1,17 @@
-﻿using FuelPOS.DebugTools;
+﻿using CommandLine;
+using FuelPOS.DebugTools;
 using FuelPOS.StatDevParser;
 using FuelPOS.StatDevParser.Models;
+using FuelPOS.TankTableTools;
 using Newtonsoft.Json;
 using POSFileParser;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Linq;
+using TSGSystemsToolkit.CmdLine.Commands;
+using TSGSystemsToolkit.CmdLine.Options;
 using TSGSystemsToolkit.CmdLine.TestFuncs;
 
 namespace TSGSystemsToolkit.CmdLine
@@ -15,69 +20,49 @@ namespace TSGSystemsToolkit.CmdLine
     {
         static void Main(string[] args)
         {
-            var watch = new System.Diagnostics.Stopwatch();
-            watch.Start();
-
-            GaugeFileTests gauge = new ();
-            gauge.RunGaugeTest();
-
-            watch.Stop();
-            Console.WriteLine($"Execution time: {watch.ElapsedMilliseconds}");
-            Console.ReadLine();
+            Parser.Default.ParseArguments<TankTableOptions, object>(args)
+                .MapResult(
+                (TankTableOptions opts) => RunTankTablesAndReturnExitCode(opts),
+                errs => HandleParserError(errs));
         }
 
-        public static void ParserTests()
+        public static int RunTankTablesAndReturnExitCode(TankTableOptions opts)
         {
-            var output = Parser.LoadTRXFile("C:\\Users\\omgit\\source\\repos\\FuelPOSToolkit\\POSFileParser\\Tests\\11841179.TRX");
-            // Parser.LoadFile("C:\\Users\\omgit\\source\\repos\\FuelPOSToolkit\\POSFileParser\\Tests\\11841179.TRX");
-            // Parser.LoadFile("C:\\Users\\omgit\\source\\repos\\FuelPOSToolkit\\POSFileParser\\Tests\\61111042.PU");
+            var exitCode = 0;
 
-            JsonSerializerSettings settings = new ()
+            if (string.IsNullOrWhiteSpace(opts.DirectoryPath))
             {
-                NullValueHandling = NullValueHandling.Ignore,
-                DefaultValueHandling = DefaultValueHandling.Ignore
-            };
-            string json = JsonConvert.SerializeObject(output, Formatting.Indented, settings);
-
-            File.WriteAllText(@"C:\Users\omgit\source\repos\FuelPOSToolkit\POSFileParser\Tests\trx.json", json);
-        }
-
-        public static void DebuggerTests()
-        {
-            DebugFileCreator debugger = new ();
-            List<string> processes = new ()
+                TanktableCommands.ParseSingleFile(opts);
+            }
+            else
             {
-                "HTEC GEMPAY 1,S R X",
-                "OPT,X"
-            };
-
-            List<string> output = debugger.GenerateFileString(processes, 24);
-
-            foreach (var line in output)
-            {
-                Console.WriteLine(line);
+                TanktableCommands.ParseFilesInDirectory(opts);
             }
 
-            debugger.CreateFile(output, @"C:\Users\omgit\source\repos\FuelPOSToolkit\FuelPOSDebugTools\");
+            return exitCode;
         }
 
-        public static void FTPTests()
+        public static int HandleParserError(IEnumerable<Error> errs)
         {
+            var result = -2;
 
-        }
-
-        public static void StatDevParserTests(string filePath)
-        {
-            List<StatdevModel> data = new ();
-            string[] files = Directory.GetFiles(filePath, "*.xml");
-
-            foreach (var file in files)
+            if (errs.Any(x => x is HelpRequestedError || x is VersionRequestedError))
             {
-
-                XDocument doc = XDocument.Load(file);
-                StatDevParser parser = new (doc);
-                data.Add(parser.Parse(doc));
+                result = -1;
             }
+
+            if (result < 0 && result is not - 1)
+            {
+                Console.WriteLine($"Error - the program exitted with exit code {result}.");
+                foreach (var e in errs)
+                {
+                    Console.WriteLine($"Error - {e}.");
+                }
+            }
+
+            return result;
         }
+
+        
     }
 }

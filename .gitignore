@@ -350,3 +350,7 @@ healthchecksdb
 *.ASC
 *.TRX
 *.PU
+*.cal
+*.csv
+/FuelPOS.TankTableTools/Example/zcorrupt/dirlist.txt
+/FuelPOS.TankTableTools/Example

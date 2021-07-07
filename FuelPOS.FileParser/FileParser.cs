@@ -11,7 +11,7 @@ using System.Text.RegularExpressions;
 
 namespace POSFileParser
 {
-    public static class Parser
+    public static class FileParser
     {
         public static void LoadFile(string filePath)
         {

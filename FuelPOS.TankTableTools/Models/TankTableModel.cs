@@ -7,9 +7,18 @@ namespace TankTableToolkit.Models
 {
     public class TankTableModel
     {
+        private List<(double, double)> _measurements;
+
         public string TankNumber { get; set; }
 
-        private List<(double, double)> _measurements;
+        public string StockOut
+        {
+            get
+            {
+                var stockOut = Measurements.Where(x => x.Item1 == 250).FirstOrDefault().Item2.ToString();
+                return stockOut;
+            }
+        }
 
         public List<(double, double)> Measurements
         {

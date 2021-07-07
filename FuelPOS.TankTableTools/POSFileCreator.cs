@@ -8,9 +8,9 @@ namespace FuelPOS.TankTableTools
 {
     public static class POSFileCreator
     {
-        public static void CreateFile(List<TankTableModel> tankTables, string outputDirectory)
+        public static void CreateTmsAofFile(List<TankTableModel> tankTables, string outputDirectory)
         {
-            List<string> lines = new List<string>();
+            List<string> lines = new();
 
             lines.Add("[START_FILE]");
             lines.Add("[TANK_TABLE_INFO]");
@@ -20,10 +20,34 @@ namespace FuelPOS.TankTableTools
             lines.Add("[END_TANK_TABLE_INFO]");
             lines.Add("[END_FILE]");
 
-            string[] output = lines.ToArray();
+            Directory.CreateDirectory(outputDirectory);
 
             File.WriteAllLines($@"{outputDirectory}\TMS_AOF.INP", lines);
         }
+
+        public static void CreateFuelPosSetupCsv(GaugeFileParser parsedGaugeFile, string outputDirectory)
+        {
+            if (parsedGaugeFile.MaxVols is null || parsedGaugeFile.TankTables is null)
+            {
+                return;
+            }
+
+            if (parsedGaugeFile.TankTables.Count > 0 && parsedGaugeFile.MaxVols.Count > 0)
+            {
+                List<string> lines = new();
+                lines.Add("Tank;Grade;Theoretical Cap;Operational Cap;Height;Stock Out");
+
+                foreach (var tank in parsedGaugeFile.CsvOutput)
+                {
+                    lines.Add($"{tank.TankNumber};{tank.Grade};{tank.Theoretical};{tank.Operational};{tank.Height};{tank.StockOut}");
+                }
+
+                Directory.CreateDirectory(outputDirectory);
+
+                File.WriteAllLines($@"{outputDirectory}\{parsedGaugeFile.SiteName}.csv", lines);
+            }
+        }
+
         private static List<string> AddTankTables(List<TankTableModel> tankTables)
         {
             List<string> output = new List<string>();
