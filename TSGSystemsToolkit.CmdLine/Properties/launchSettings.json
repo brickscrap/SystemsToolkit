@@ -2,7 +2,7 @@
   "profiles": {
     "TSGSystemsToolkit.CmdLine": {
       "commandName": "Project",
-      "commandLineArgs": "tanktables -g \"C:\\Users\\omgit\\source\\repos\\TSGSystemsToolkit\\FuelPOS.TankTableTools\\Example\\Broken Cross\\Broken02.cap\" -o \"C:\\Users\\omgit\\source\\repos\\TSGSystemsToolkit\\FuelPOS.TankTableTools\\Example\\Broken Cross\" -f -p"
+      "commandLineArgs": "tanktables -g \"C:\\Users\\omgit\\source\\repos\\TSGSystemsToolkit\\FuelPOS.TankTableTools\\Example\\Broken Cross\\Broken02.cap\" -o \"C:\\Users\\omgit\\source\\repos\\TSGSystemsToolkit\\FuelPOS.TankTableTools\\Example\\Broken Cross\" -f -p -c"
     }
   }
 }

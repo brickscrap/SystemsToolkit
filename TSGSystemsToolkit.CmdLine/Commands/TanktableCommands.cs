@@ -16,15 +16,22 @@ namespace TSGSystemsToolkit.CmdLine.Commands
         {
             GaugeFileParser parser = new();
             parser = ParseFile(parser, opts);
+            var outputDir = opts.OutputPath;
 
+            if (string.IsNullOrWhiteSpace(opts.OutputPath))
+            {
+                outputDir = Path.GetDirectoryName(opts.GaugeFilePath);
+            }
+            
             if (opts.CreateFuelPosFile)
             {
-                var outputDir = opts.OutputPath;
-                if (string.IsNullOrWhiteSpace(opts.OutputPath))
-                {
-                    outputDir = Path.GetDirectoryName(opts.GaugeFilePath);
-                }
+                
                 POSFileCreator.CreateTmsAofFile(parser.TankTables, outputDir);
+            }
+
+            if (opts.CreateTankSetupFile)
+            {
+                POSFileCreator.CreateFuelPosSetupCsv(parser, outputDir);
             }
         }
 
