@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="FuelPOSToolkit.WPF.Views.StationDetailView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:prism="http://prismlibrary.com/"             
+             prism:ViewModelLocator.AutoWireViewModel="True"
+             xmlns:core="clr-namespace:FuelPOSToolkit.WPF.Core;assembly=FuelPOSToolkit.WPF.Core"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style TargetType="TabItem">
+            <Setter Property="Header" Value="{Binding DataContext.PosDisplay.TabHeader}" />
+        </Style>
+    </UserControl.Resources>
+    <StackPanel>
+        <StackPanel Orientation="Horizontal">
+            <TextBlock Text="{Binding SelectedStation.Header}" d:Text="20669 - Shell Discovery" FontSize="24"/>
+        </StackPanel>
+
+        <TextBlock Text="{Binding SelectedStation.Company}" d:Text="Independent" FontSize="16" Margin="0 0 0 5"/>
+        <TabControl prism:RegionManager.RegionName="{x:Static core:RegionNames.POSDetailRegion}" Padding="5"/>
+    </StackPanel>
+</UserControl>

@@ -1,0 +1,15 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page-container">
+    <AuthorizeView>
+        <Authorized>
+            <NavMenu />
+            <main class="page-content">
+                @Body
+            </main>
+        </Authorized>
+        <NotAuthorized>
+            <RedirectToLogin />
+        </NotAuthorized>
+    </AuthorizeView>
+</div>

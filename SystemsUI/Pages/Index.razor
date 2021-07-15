@@ -1,0 +1,55 @@
+﻿@page "/"
+@using GrpcServer
+@inject FpDebug.FpDebugClient FpDebugClient
+
+<div class="box">
+    <h1 class="title">
+        Bulma
+    </h1>
+
+    <p class="subtitle">
+        Modern CSS framework based on <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Flexible_Box_Layout/Basic_Concepts_of_Flexbox">Flexbox</a>
+    </p>
+
+    <div class="field">
+        <div class="control">
+            <input class="input" type="text" placeholder="Input">
+        </div>
+    </div>
+
+    <div class="field">
+        <p class="control">
+            <span class="select">
+                <select>
+                    <option>Select dropdown</option>
+                </select>
+            </span>
+        </p>
+    </div>
+
+    <div class="buttons">
+        <a class="button is-primary">Primary</a>
+        <a class="button is-link">Link</a>
+    </div>
+
+    <h1>Invoke gRPC service</h1>
+
+    <p>
+        <input @bind="yourName" placeholder="Type your name" />
+        <button @onclick="GetGreeting" class="btn btn-primary">Call gRPC service</button>
+    </p>
+
+    Server response: <strong>@serverResponse</strong>
+</div>
+
+@code {
+    string yourName = "Bert";
+    string serverResponse;
+
+    async Task GetGreeting()
+    {
+        var request = new FpDebugRequest { StationId = "L2950", DebugTime = 10, Processes = "Test" };
+        var reply = await FpDebugClient.DebugFuelPOSAsync(request);
+        serverResponse = reply.StatusCode;
+    }
+}

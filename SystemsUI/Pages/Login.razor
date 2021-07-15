@@ -1,0 +1,77 @@
+﻿@page "/login"
+@layout LoginLayout
+@inject IAuthenticationService authService
+@inject NavigationManager navManager
+
+@if (showAuthenticationError)
+{
+    <div class="alert alert-danger" role="alert">
+        <p>@authenticationErrorText</p>
+    </div>
+}
+
+<div class="container is-max-desktop">
+    <div class="modal is-active">
+        <div class="modal-content">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title is-centered is-size-3">
+                        Log In
+                    </p>
+                </header>
+                <EditForm Model="model" OnValidSubmit="ExecuteLogin" class="card-content">
+                    <div class="content">
+                        <DataAnnotationsValidator />
+                        <ValidationSummary />
+
+                        <div class="field">
+                            <label for="email" class="label">Email:</label>
+                            <div class="control">
+                                <InputText id="email" class="input" @bind-Value="model.Email" />
+                                <ValidationMessage For="@(() => model.Email)" />
+                            </div>
+                        </div>
+
+                        <div class="field">
+                            <label for="password" class="label">Password:</label>
+                            <div class="control">
+                                <InputText type="password" id="password" class="input" @bind-Value="model.Password" />
+                                <ValidationMessage For="@(() => model.Password)" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <footer class="card-footer">
+                        <button type="submit" class="card-footer-item">Log In</button>
+                    </footer>
+                </EditForm>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private AuthenticationUserModel model = new();
+
+    private bool showAuthenticationError = false;
+    private string authenticationErrorText = "";
+
+    private async Task ExecuteLogin()
+    {
+        showAuthenticationError = false;
+
+        var result = await authService.Login(model);
+
+        if (result is not null)
+        {
+            StateHasChanged();
+            navManager.NavigateTo("/");
+        }
+        else
+        {
+            authenticationErrorText = "There was an error when trying to login";
+            showAuthenticationError = true;
+        }
+    }
+}

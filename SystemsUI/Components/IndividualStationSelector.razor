@@ -1,0 +1,47 @@
+﻿@inject IStationEndpoint stationEndpoint
+
+<div class="field">
+    <label class="label" for="station">Station</label>
+    <BlazoredTypeahead SearchMethod="@SearchStations" EnableDropDown="true"
+                       TValue="StationModel"
+                       TItem="StationModel"
+                       ValueChanged="SelectedStationChanged"
+                       ValueExpression="@(() => selectedStation)"
+                       name="station">
+        <SelectedTemplate Context="station">
+            @station.Id - @station.Company - @station.Name
+        </SelectedTemplate>
+        <ResultTemplate Context="station">
+            @station.Id - @station.Company - @station.Name
+        </ResultTemplate>
+        <NotFoundTemplate>
+            Sorry, no results found.
+        </NotFoundTemplate>
+    </BlazoredTypeahead>
+</div>
+
+@code {
+    [Parameter] public EventCallback<StationModel> OnStationSelect { get; set; }
+    private List<StationModel> stationModels { get; set; }
+    private StationModel selectedStation { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        stationModels = await stationEndpoint.GetAll();
+    }
+
+    private async Task<IEnumerable<StationModel>> SearchStations(string searchText)
+    {
+        return await Task.FromResult(stationModels
+            .Where(x =>
+                x.Name.ToLower().Contains(searchText.ToLower()) ||
+                x.Id.ToLower().Contains(searchText.ToLower()) ||
+                x.Company.ToLower().Contains(searchText.ToLower())).ToList());
+    }
+
+    private async Task SelectedStationChanged(StationModel result)
+    {
+        selectedStation = result;
+        await OnStationSelect.InvokeAsync(result);
+    }
+}

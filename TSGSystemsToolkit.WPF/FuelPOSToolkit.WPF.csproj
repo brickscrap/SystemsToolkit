@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>FuelPOSToolkitWPF</AssemblyName>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Images\remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Mapster" Version="7.1.5" />
+    <PackageReference Include="Prism.DryIoc" Version="8.0.0.1909" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TSGSystemsToolkit.DesktopUI.Library\TSGSystemsToolkit.DesktopUI.Library.csproj" />
+    <ProjectReference Include="..\TSGSystemsToolkit.WPF.Core\FuelPOSToolkit.WPF.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\remove.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+</Project>
