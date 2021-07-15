@@ -382,11 +382,14 @@ namespace ToolkitLibrary
                 .Where(value => (string)value.Attribute("Type") == "9")
                 .Where(value => (int)value.Attribute("Number") == pumpNumber)
                 .Elements("Property")
-                .Where(value => (int)value.Attribute("Type") == 60)
-                .LastOrDefault()
-                .Value;
+                .Where(value => (int)value.Attribute("Type") == 60);
 
-                return output;
+                if (output != null && output.Count() > 0)
+                {
+                    return output.LastOrDefault().Value;
+                }
+
+                return "None/not found/error";
             }
             catch (Exception)
             {
