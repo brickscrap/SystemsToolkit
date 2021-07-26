@@ -20,9 +20,11 @@ namespace TSGSystemsToolkit.CmdLine
     {
         static void Main(string[] args)
         {
-            Parser.Default.ParseArguments<TankTableOptions, object>(args)
+            Parser.Default.ParseArguments<TankTableOptions, PseOptions, SurveyOptions>(args)
                 .MapResult(
                 (TankTableOptions opts) => RunTankTablesAndReturnExitCode(opts),
+                (PseOptions opts) => RunPseAndReturnExitCode(opts),
+                (SurveyOptions opts) => RunSurveyAndReturnExitCode(opts),
                 errs => HandleParserError(errs));
         }
 
@@ -38,6 +40,27 @@ namespace TSGSystemsToolkit.CmdLine
             {
                 TanktableCommands.ParseFilesInDirectory(opts);
             }
+
+            return exitCode;
+        }
+
+        public static int RunPseAndReturnExitCode(PseOptions opts)
+        {
+            var exitCode = 0;
+
+            if (!string.IsNullOrWhiteSpace(opts.TerminalsFilePath))
+            {
+                PseCommands.RunTerminalsCommands(opts);
+            }
+
+            return exitCode;
+        }
+
+        public static int RunSurveyAndReturnExitCode(SurveyOptions opts)
+        {
+            var exitCode = 0;
+
+            SurveyCommands.RunSurveyCommands(opts);
 
             return exitCode;
         }

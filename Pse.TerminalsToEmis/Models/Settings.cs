@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Pse.TerminalsToEmis
+namespace Pse.TerminalsToEmis.Models
 {
     [XmlRoot("Settings")]
     public class Settings

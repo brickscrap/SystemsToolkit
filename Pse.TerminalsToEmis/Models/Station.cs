@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Serialization;
 
-namespace Pse.TerminalsToEmis
+namespace Pse.TerminalsToEmis.Models
 {
     [XmlType(TypeName = "station")]
     public class Station

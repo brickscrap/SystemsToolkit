@@ -7,7 +7,8 @@ using ToolkitLibrary.Models;
 
 namespace ToolkitLibrary
 {
-    public class StatdevParser : IStatdevParser
+    //public class StatdevParser : IStatdevParser
+    public class StatdevParser
     {
         private IEnumerable<XElement> _doc;
         public IEnumerable<XElement> MyProperty { get; set; }

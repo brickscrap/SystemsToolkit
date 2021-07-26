@@ -19,10 +19,14 @@ namespace FuelPOS.StatDevParser.Helpers
                 .Where(value => (int)value.Attribute("Number") == pumpNumber)
                 .Elements("Property")
                 .Where(value => (int)value.Attribute("Type") == 60)
-                .LastOrDefault()
-                .Value;
+                .LastOrDefault();
 
-                return output;
+                if (output is null)
+                {
+                    return null;
+                }
+
+                return output.Value;
             }
             catch (Exception)
             {

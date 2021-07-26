@@ -1,6 +1,6 @@
 ﻿using System.Xml.Serialization;
 
-namespace Pse.TerminalsToEmis
+namespace Pse.TerminalsToEmis.Models
 {
     public class DownloadServer
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using ToolkitLibrary.Models;
+using FuelPOS.StatDevParser.Models;
 using OfficeOpenXml.Style;
 
 namespace ToolkitLibrary.Spreadsheets
@@ -124,6 +124,7 @@ namespace ToolkitLibrary.Spreadsheets
 
                 r++;
 
+                Directory.CreateDirectory($"C:\\surveys");
                 Utils.OutputDir = new DirectoryInfo($"C:/surveys");
 
                 var xlFile = Utils.GetFileInfo("fuelpos_surveys.xlsx");

@@ -1,24 +1,18 @@
 ﻿using Pse.TerminalsToEmis.Models;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Intrinsics.Arm;
+using System.Text;
+using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace Pse.TerminalsToEmis
 {
-    class Program
+    public static class TerminalsToEmis
     {
-        static void Main(string[] args)
+        public static void Run(string terminalsPath, string outputPath)
         {
-            var filePath = "";
-
-            if (args.Length == 0)
-            {
-                Console.WriteLine("Path to Terminals_044.csv: ");
-                filePath = Console.ReadLine();
-            }
-
             Settings settings = new();
 
             settings.Languages = new()
@@ -28,7 +22,7 @@ namespace Pse.TerminalsToEmis
 
             settings.Stations = new();
 
-            settings.Stations = File.ReadAllLines(filePath)
+            settings.Stations = File.ReadAllLines(terminalsPath)
                 .Skip(2)
                 .Select(v => Station.FromCsv(v))
                 .Where(station => station is not null)
@@ -39,15 +33,10 @@ namespace Pse.TerminalsToEmis
 
             XmlSerializer serializer = new XmlSerializer(typeof(Settings));
 
-            var outputPath = $"{Path.GetDirectoryName(filePath)}\\FmsSettings.xml";
+            outputPath = $"{outputPath}\\FmsSettings.xml";
             TextWriter writer = new StreamWriter(outputPath);
 
             serializer.Serialize(writer, settings);
-
-            Console.WriteLine($"Remote eMIS XML Generated:");
-            Console.WriteLine($"Output: {outputPath}");
-            Console.WriteLine("Press any key to close");
-            Console.ReadLine();
         }
     }
 }
