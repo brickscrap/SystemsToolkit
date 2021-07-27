@@ -23,7 +23,7 @@
     <ProjectReference Include="..\FuelPOS.StatDevParser\FuelPOS.StatDevParser.csproj" />
     <ProjectReference Include="..\FuelPOS.TankTableTools\FuelPOS.TankTableTools.csproj" />
     <ProjectReference Include="..\Pse.TerminalsToEmis\Pse.TerminalsToEmis.csproj" />
-    <ProjectReference Include="..\ToolkitLibrary\ToolkitLibrary.csproj" />
+    <ProjectReference Include="..\SysTk.Utils\SysTk.Utils.csproj" />
   </ItemGroup>
 
   <ItemGroup>

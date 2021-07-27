@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
+using SysTk.Utils;
 using TSGSystemsToolkit.CmdLine.Commands;
 using TSGSystemsToolkit.CmdLine.Options;
 using TSGSystemsToolkit.CmdLine.TestFuncs;
@@ -85,7 +86,5 @@ namespace TSGSystemsToolkit.CmdLine
 
             return result;
         }
-
-        
     }
 }

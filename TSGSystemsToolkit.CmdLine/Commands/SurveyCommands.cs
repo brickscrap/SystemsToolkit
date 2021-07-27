@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using SysTk.Utils;
 using ToolkitLibrary;
 using TSGSystemsToolkit.CmdLine.Options;
 
@@ -20,10 +21,11 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
             if (opts.CreateSurveySpreadsheet)
             {
+                List<StatdevModel> statdevs = new();
+
                 if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                 {
                     var xmlFiles = Directory.EnumerateFiles(opts.InputPath, "*.xml");
-                    List<StatdevModel> statdevs = new();
 
                     foreach (var item in xmlFiles)
                     {
@@ -34,15 +36,13 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
                         statdevs.Add(parser.Parse(xdoc));
                     }
-
-                    SpreadsheetWriter writer = new();
-
-                    writer.CreateFuelPOSSurvey(statdevs.ToList());
                 }
                 else
                 {
 
                 }
+
+                SpreadsheetCreator.CreateFuelPosSurvey(statdevs, opts.OutputPath);
             }
         }
     }
