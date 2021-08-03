@@ -16,7 +16,8 @@ namespace Pse.TerminalsToEmis.Models
         [XmlArray("stations")]
         public List<Station> Stations { get; set; }
 
-        public string Users { get; set; }
+        [XmlArray("Users")]
+        public List<User> Users { get; set; }
         public DownloadServer DownloadServer { get; set; } = new();
     }
 }
