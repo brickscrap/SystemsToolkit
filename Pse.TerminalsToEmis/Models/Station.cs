@@ -24,7 +24,7 @@ namespace Pse.TerminalsToEmis.Models
 
             string[] values = csvLine.Split(';');
 
-            if (values[16].Contains("TSG IE") || !values[12].Contains('.'))
+            if (values[17].Contains("TSG IE") || !values[13].Contains('.'))
             {
                 return null;
             }
@@ -35,7 +35,7 @@ namespace Pse.TerminalsToEmis.Models
                 values[i] = values[i].Trim(trimChars).Trim();
             }
 
-            var description = values[6].Trim('-').Split('-');
+            var description = values[7].Trim('-').Split('-');
             if (description.Length < 3)
             {
                 return null;
@@ -46,7 +46,7 @@ namespace Pse.TerminalsToEmis.Models
             Station output = new()
             {
                 Name = name,
-                IpAddress = values[12],
+                IpAddress = values[13],
                 Used = false
             };
 

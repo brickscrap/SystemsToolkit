@@ -8,10 +8,9 @@ using TankTableToolkit.Models;
 
 namespace FuelPOS.TankTableTools
 {
-    // TODO: Handle individual cal file
     public class GaugeFileParser
     {
-        private readonly static List<string> _possibleSections = new List<string>
+        private readonly static List<string> _possibleSections = new()
         {
                 "I20100",
                 "I60100",
@@ -42,7 +41,6 @@ namespace FuelPOS.TankTableTools
             get { return _filePath; }
             set { _filePath = value; }
         }
-
 
         public List<TankTableModel> TankTables { get; private set; }
         public List<MaxVolModel> MaxVols { get; set; }
