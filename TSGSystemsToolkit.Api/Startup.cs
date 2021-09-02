@@ -17,6 +17,7 @@ using TsgSystems.Api.Swagger;
 using TsgSystemsToolkit.DataManager;
 using TsgSystemsToolkit.DataManager.Dapper;
 using TsgSystemsToolkit.DataManager.DataAccess;
+using TsgSystemsToolkit.DataManager.Extensions;
 
 namespace TsgSystems.Api
 {
@@ -70,11 +71,8 @@ namespace TsgSystems.Api
                 });
 
             // Database services
-            services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
-            services.AddScoped<IUserData, UserData>();
-            services.AddScoped<IStationData, StationData>();
-            services.AddScoped<IPosData, PosData>();
-            services.AddScoped<IPosDebugData, PosDebugData>();
+            services.RegisterDependencies();
+
             services.AddMediatR(typeof(MediatREntryPoint).Assembly);
 
             // Business services

@@ -20,9 +20,24 @@
     </BlazoredTypeahead>
 </div>
 
+<div class="field">
+    <label class="label">Display Name:</label>
+    <div class="control">
+        <input class="input" type="text" placeholder="Enter name..." value="@selectedProcess?.Name"/>
+    </div>
+    <label class="label">FuelPOS Process Name:</label>
+    <div class="control">
+        <input class="input" type="text" placeholder="PAYT HTEC GEMPAY 1.. etc" value="@selectedProcess?.PosProcessName"/>
+    </div>
+    <label class="label">Description:</label>
+    <div class="control">
+        <input class="input" type="text" placeholder="A description of the process, what it does etc" value="@selectedProcess?.Description"/>
+    </div>
+</div>
+
 @code {
     private List<DebugProcessModel> processModels { get; set; }
-    private DebugProcessModel selectedProcess { get; set; }
+    private DebugProcessModel selectedProcess { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -41,6 +56,11 @@
 
     private async Task SelectedProcessChanged(DebugProcessModel result)
     {
+        if (result is null)
+        {
+            selectedProcess = new();
+        }
+
         selectedProcess = result;
     }
 }

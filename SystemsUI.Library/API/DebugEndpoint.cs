@@ -23,7 +23,7 @@ namespace SystemsUI.Library.API
 
         public async Task<List<DebugProcessModel>> GetAll()
         {
-            using (HttpResponseMessage response = await _client.GetAsync($"PosDebug"))
+            using (HttpResponseMessage response = await _client.GetAsync($"PosDebug/GetWithParams"))
             {
                 if (response.IsSuccessStatusCode)
                 {

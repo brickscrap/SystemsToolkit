@@ -1,11 +1,8 @@
 ﻿using FuelPOS.StatDevParser.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using TsgSystemsToolkit.DataManager.Constants;
-using TsgSystemsToolkit.DataManager.DataAccess;
 using TsgSystemsToolkit.DataManager.Models;
 
 namespace TsgSystemsToolkit.DataManager.DataAccess
@@ -21,7 +18,7 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
 
         public async Task<List<POSModel>> GetPOSByStationId(string stationId)
         {
-            List<POSModel> output = new List<POSModel>();
+            List<POSModel> output = new ();
 
             var pos = await _db.LoadDataAsync<POSDbModel, dynamic>(StoredProcedures.Pos.GetByStationId,
                                                                    new { StationId = stationId });
