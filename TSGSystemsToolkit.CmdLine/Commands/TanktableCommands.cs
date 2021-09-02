@@ -12,7 +12,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 {
     public static class TanktableCommands
     {
-        public static void ParseSingleFile(TankTableOptions opts)
+        public static void ParseSingleGaugeFile(TankTableOptions opts)
         {
             GaugeFileParser parser = new();
             parser = ParseFile(parser, opts);
@@ -35,7 +35,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             }
         }
 
-        public static void ParseFilesInDirectory(TankTableOptions opts)
+        public static void ParseGaugeFilesInDir(TankTableOptions opts)
         {
             var parsers = CreateParsers(opts);
 
@@ -54,6 +54,21 @@ namespace TSGSystemsToolkit.CmdLine.Commands
                     {
                         POSFileCreator.CreateFuelPosSetupCsv(p, newDirectory);
                     }
+                }
+            }
+        }
+
+        public static void ParseBasicFileInDir(TankTableOptions opts)
+        {
+            BasicFileParser parser = new(opts.DirectoryPath);
+
+            parser.LoadFilesAndParse();
+
+            if (parser.TankTables is not null)
+            {
+                if (opts.CreateFuelPosFile)
+                {
+                    POSFileCreator.CreateTmsAofFile(parser.TankTables, opts.DirectoryPath);
                 }
             }
         }

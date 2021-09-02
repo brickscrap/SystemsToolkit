@@ -1,21 +1,16 @@
-﻿using FuelPOS.TankTableTools.Models;
+﻿using FuelPOS.TankTableTools.Helpers;
+using FuelPOS.TankTableTools.Models;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Design.Serialization;
-using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Xml;
 using TankTableToolkit.Models;
 
 namespace FuelPOS.TankTableTools
 {
-    // TODO: Handle individual cal file
     public class GaugeFileParser
     {
-        private readonly static List<string> _possibleSections = new List<string>
+        private readonly static List<string> _possibleSections = new()
         {
                 "I20100",
                 "I60100",
@@ -47,28 +42,13 @@ namespace FuelPOS.TankTableTools
             set { _filePath = value; }
         }
 
-
         public List<TankTableModel> TankTables { get; private set; }
         public List<MaxVolModel> MaxVols { get; set; }
         public List<CsvOutputModel> CsvOutput
         {
-            // TODO: If there's a tank with a grade but no measurements, an exception occurs
             get
             {
-                var output = TankTables.Join(MaxVols,
-                    tank => tank.TankNumber,
-                    maxVol => maxVol.TankNumber,
-                    (tank, maxVol) => new CsvOutputModel
-                    {
-                        TankNumber = tank.TankNumber,
-                        Height = tank.Measurements.Last().Item1.ToString(),
-                        Grade = maxVol.Grade,
-                        Theoretical = tank.Measurements.Last().Item2.ToString(),
-                        Operational = maxVol.Litres,
-                        StockOut = tank.StockOut
-                    }).ToList();
-
-                return output;
+                return CsvOutputCreator.Create(TankTables, MaxVols);
             }
         }
 

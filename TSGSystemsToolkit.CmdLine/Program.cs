@@ -1,19 +1,9 @@
 ﻿using CommandLine;
-using FuelPOS.DebugTools;
-using FuelPOS.StatDevParser;
-using FuelPOS.StatDevParser.Models;
-using FuelPOS.TankTableTools;
-using Newtonsoft.Json;
-using POSFileParser;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Xml.Linq;
-using SysTk.Utils;
 using TSGSystemsToolkit.CmdLine.Commands;
 using TSGSystemsToolkit.CmdLine.Options;
-using TSGSystemsToolkit.CmdLine.TestFuncs;
 
 namespace TSGSystemsToolkit.CmdLine
 {
@@ -35,11 +25,18 @@ namespace TSGSystemsToolkit.CmdLine
 
             if (string.IsNullOrWhiteSpace(opts.DirectoryPath))
             {
-                TanktableCommands.ParseSingleFile(opts);
+                TanktableCommands.ParseSingleGaugeFile(opts);
             }
             else
             {
-                TanktableCommands.ParseFilesInDirectory(opts);
+                if (opts.FromTextFiles)
+                {
+                    TanktableCommands.ParseBasicFileInDir(opts);
+                }
+                else
+                {
+                    TanktableCommands.ParseGaugeFilesInDir(opts);
+                }
             }
 
             return exitCode;

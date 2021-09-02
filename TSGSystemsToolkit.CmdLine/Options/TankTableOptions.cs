@@ -29,8 +29,11 @@ namespace TSGSystemsToolkit.CmdLine.Options
         [Option('p', "fuelposfile", HelpText = "Creates a FuelPOS tank table file (TMS_AOF.INP)")]
         public bool CreateFuelPosFile { get; set; }
 
-        [Option('c', "csv", HelpText = "Creates a CSV file containing tank setup information")]
+        [Option('c', "csv", HelpText = "Creates a CSV file containing tank setup information - Does NOT work in conjunction with t/fromtxt")]
         public bool CreateTankSetupFile { get; set; }
+
+        [Option('t', "fromtxt", HelpText = "To be used when pointing to a directory containing one text file per tank (basic files sent from tank gauge team)", SetName = "dirPath")]
+        public bool FromTextFiles { get; set; }
 
         [Usage(ApplicationAlias = "systk")]
         public static IEnumerable<Example> Examples
@@ -40,7 +43,9 @@ namespace TSGSystemsToolkit.CmdLine.Options
                 return new List<Example>()
                 {
                     new Example("Convert a Veeder Root tank table file into a FuelPOS TMS_AOF.INP",
-                        new TankTableOptions {GaugeFilePath = "C:\\Path\\To Your\\File\\file.cap", OutputPath = "C:\\Output\\Directory", FullFile = true, CreateFuelPosFile = true})
+                        new TankTableOptions {GaugeFilePath = "C:\\Path\\To Your\\File\\file.cap", OutputPath = "C:\\Output\\Directory", FullFile = true, CreateFuelPosFile = true}),
+                    new Example("Convert all files in a directory (1.txt, 2.txt etc..) into a FuelPOS TMS_AOF.INP",
+                        new TankTableOptions {DirectoryPath = "C:\\Path\\To\\Text Files", OutputPath = "C\\Output\\Directory", FromTextFiles = true, CreateFuelPosFile = true })
                 };
             }
         }

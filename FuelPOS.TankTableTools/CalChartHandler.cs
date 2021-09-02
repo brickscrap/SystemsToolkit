@@ -69,18 +69,6 @@ namespace FuelPOS.TankTableTools
             return null;
         }
 
-        private TankTableModel CreateValuePairs(TankTableModel tankTable, List<string> line)
-        {
-            for (int i = 0; i < line.Count; i = i + 2)
-            {
-                double mm = double.Parse(line[i].Trim());
-                double litres = double.Parse(line[i + 1].Trim());
-                tankTable.Measurements.Add((mm, litres));
-            }
-
-            return tankTable;
-        }
-
         private string GetTankNumber(string input)
         {
             char[] matchOn = new char[] { '1', '2', '3', '4', '5', '6', '7', '8', '9', '0' };
@@ -99,8 +87,8 @@ namespace FuelPOS.TankTableTools
 
         private void CreateTankTables()
         {
-            List<TankTableModel> output = new List<TankTableModel>();
-            TankTableModel table = new TankTableModel();
+            List<TankTableModel> output = new();
+            TankTableModel table = new();
 
             _nextTank = _serialisedCalChart.Where(x => x.Contains("TANK")).FirstOrDefault();
 
@@ -127,7 +115,7 @@ namespace FuelPOS.TankTableTools
                     continue;
                 }
 
-                CreateValuePairs(table, newLine);
+                table.CreateValuePairs(newLine);
             }
 
             // Add the last tank
