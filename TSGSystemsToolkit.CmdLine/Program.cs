@@ -11,12 +11,27 @@ namespace TSGSystemsToolkit.CmdLine
     {
         static void Main(string[] args)
         {
-            Parser.Default.ParseArguments<TankTableOptions, PseOptions, SurveyOptions>(args)
-                .MapResult(
+            ParserResult<object> parsed = Parser.Default
+                .ParseSetArguments<FuelPosVerbSet>(args,
+                                                   OnVerbSetParsed,
+                                                   typeof(TankTableOptions),
+                                                   typeof(PseOptions),
+                                                   typeof(SurveyOptions));
+
+            parsed.MapResult(
                 (TankTableOptions opts) => RunTankTablesAndReturnExitCode(opts),
                 (PseOptions opts) => RunPseAndReturnExitCode(opts),
                 (SurveyOptions opts) => RunSurveyAndReturnExitCode(opts),
+                (CreateMutationOptions opts) => RunCreateMutationAndReturnExitCode(opts),
                 errs => HandleParserError(errs));
+
+            //Parser.Default
+            //    .ParseArguments<TankTableOptions, PseOptions, SurveyOptions>(args)
+            //    .MapResult(
+            //    (TankTableOptions opts) => RunTankTablesAndReturnExitCode(opts),
+            //    (PseOptions opts) => RunPseAndReturnExitCode(opts),
+            //    (SurveyOptions opts) => RunSurveyAndReturnExitCode(opts),
+            //    errs => HandleParserError(errs));
         }
 
         public static int RunTankTablesAndReturnExitCode(TankTableOptions opts)
@@ -63,6 +78,13 @@ namespace TSGSystemsToolkit.CmdLine
             return exitCode;
         }
 
+        public static int RunCreateMutationAndReturnExitCode(CreateMutationOptions opts)
+        {
+            Console.WriteLine("Parsed");
+
+            return 0;
+        }
+
         public static int HandleParserError(IEnumerable<Error> errs)
         {
             var result = -2;
@@ -82,6 +104,13 @@ namespace TSGSystemsToolkit.CmdLine
             }
 
             return result;
+        }
+
+        private static ParserResult<object> OnVerbSetParsed(Parser parser, Parsed<object> parsed, IEnumerable<string> args, bool containedHelpOrVersion)
+        {
+            return parsed.MapResult(
+                    (FuelPosVerbSet _) => parser.ParseArguments<object, CreateMutationOptions>(args),
+                    (_) => parsed);
         }
     }
 }

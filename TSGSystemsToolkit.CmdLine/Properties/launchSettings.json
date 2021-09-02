@@ -2,7 +2,7 @@
   "profiles": {
     "TSGSystemsToolkit.CmdLine": {
       "commandName": "Project",
-      "commandLineArgs": "tanktables -d \"T:\\Tech Support\\Shell\\Deployment Tank Tables\\Kingston Hill\" -t -p"
+      "commandLineArgs": "fuelpos"
     }
   }
 }
