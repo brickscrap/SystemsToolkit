@@ -80,7 +80,7 @@ namespace TSGSystemsToolkit.CmdLine
 
         public static int RunCreateMutationAndReturnExitCode(CreateMutationOptions opts)
         {
-            Console.WriteLine("Parsed");
+            FuelPosCommands.RunCreateMutationCommands(opts);
 
             return 0;
         }

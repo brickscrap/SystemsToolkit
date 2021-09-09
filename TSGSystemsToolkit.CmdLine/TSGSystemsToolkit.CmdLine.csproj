@@ -21,9 +21,11 @@
   <ItemGroup>
     <ProjectReference Include="..\FuelPOS.DebugTools\FuelPOS.DebugTools.csproj" />
     <ProjectReference Include="..\FuelPOS.FileParser\FuelPOS.FileParser.csproj" />
+    <ProjectReference Include="..\FuelPOS.MutationCreator\FuelPOS.MutationCreator.csproj" />
     <ProjectReference Include="..\FuelPOS.StatDevParser\FuelPOS.StatDevParser.csproj" />
     <ProjectReference Include="..\FuelPOS.TankTableTools\FuelPOS.TankTableTools.csproj" />
     <ProjectReference Include="..\Pse.TerminalsToEmis\Pse.TerminalsToEmis.csproj" />
+    <ProjectReference Include="..\SysTk.DataManager\SysTk.DataManager.csproj" />
     <ProjectReference Include="..\SysTk.Utils\SysTk.Utils.csproj" />
   </ItemGroup>
 
