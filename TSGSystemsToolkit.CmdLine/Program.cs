@@ -24,14 +24,6 @@ namespace TSGSystemsToolkit.CmdLine
                 (SurveyOptions opts) => RunSurveyAndReturnExitCode(opts),
                 (CreateMutationOptions opts) => RunCreateMutationAndReturnExitCode(opts),
                 errs => HandleParserError(errs));
-
-            //Parser.Default
-            //    .ParseArguments<TankTableOptions, PseOptions, SurveyOptions>(args)
-            //    .MapResult(
-            //    (TankTableOptions opts) => RunTankTablesAndReturnExitCode(opts),
-            //    (PseOptions opts) => RunPseAndReturnExitCode(opts),
-            //    (SurveyOptions opts) => RunSurveyAndReturnExitCode(opts),
-            //    errs => HandleParserError(errs));
         }
 
         public static int RunTankTablesAndReturnExitCode(TankTableOptions opts)
