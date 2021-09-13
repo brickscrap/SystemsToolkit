@@ -10,7 +10,7 @@ namespace FuelPOS.MutationCreator.Helpers
     {
         public static string ToMutation(this bool input)
         {
-            return (input ? "1" : "0");
+            return (input ? "YES" : "NO");
         }
     }
 }
