@@ -133,7 +133,7 @@ namespace TSGSystemsToolkit.CmdLine
 
             var output = current.Except(master);
 
-            return output is not null;
+            return output.Count() > 0;
         }
 
         private static void ParseArgs(string[] args)
