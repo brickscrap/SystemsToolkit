@@ -102,7 +102,8 @@ namespace TSGSystemsToolkit.CmdLine
         private static void CheckForUpdates()
         {
             var updater = new { MasterLocation = ""};
-            using (StreamReader r = File.OpenText("updater.json"))
+            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
+            using (StreamReader r = File.OpenText(Path.Combine(baseDir, "updater.json")))
             {
                 string json = r.ReadToEnd();
                 updater = JsonConvert.DeserializeAnonymousType(json, updater);
@@ -119,7 +120,7 @@ namespace TSGSystemsToolkit.CmdLine
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.WriteLine($"Current Version: {currentVersion}");
                 Console.WriteLine($"Version Available: {masterVersion}");
-                Console.WriteLine($"To update, copy all files from \"{updater.MasterLocation}\" to \"{AppDomain.CurrentDomain.BaseDirectory}\"");
+                Console.WriteLine($"To update, copy all files from \"{updater.MasterLocation}\" to \"{baseDir}\"");
                     
                 Console.WriteLine();
             }
