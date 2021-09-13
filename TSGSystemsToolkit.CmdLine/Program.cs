@@ -1,7 +1,11 @@
 ﻿using CommandLine;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using TSGSystemsToolkit.CmdLine.Commands;
 using TSGSystemsToolkit.CmdLine.Options;
 
@@ -11,19 +15,9 @@ namespace TSGSystemsToolkit.CmdLine
     {
         static void Main(string[] args)
         {
-            ParserResult<object> parsed = Parser.Default
-                .ParseSetArguments<FuelPosVerbSet>(args,
-                                                   OnVerbSetParsed,
-                                                   typeof(TankTableOptions),
-                                                   typeof(PseOptions),
-                                                   typeof(SurveyOptions));
+            CheckForUpdates();
 
-            parsed.MapResult(
-                (TankTableOptions opts) => RunTankTablesAndReturnExitCode(opts),
-                (PseOptions opts) => RunPseAndReturnExitCode(opts),
-                (SurveyOptions opts) => RunSurveyAndReturnExitCode(opts),
-                (CreateMutationOptions opts) => RunCreateMutationAndReturnExitCode(opts),
-                errs => HandleParserError(errs));
+            ParseArgs(args);
         }
 
         public static int RunTankTablesAndReturnExitCode(TankTableOptions opts)
@@ -103,6 +97,59 @@ namespace TSGSystemsToolkit.CmdLine
             return parsed.MapResult(
                     (FuelPosVerbSet _) => parser.ParseArguments<object, CreateMutationOptions>(args),
                     (_) => parsed);
+        }
+
+        private static void CheckForUpdates()
+        {
+            var updater = new { MasterLocation = ""};
+            using (StreamReader r = File.OpenText("updater.json"))
+            {
+                string json = r.ReadToEnd();
+                updater = JsonConvert.DeserializeAnonymousType(json, updater);
+            };
+
+            var currentVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
+            var masterVersion = FileVersionInfo.GetVersionInfo(Path.Combine(updater.MasterLocation, "SysTk.exe")).FileVersion;
+
+            if (IsUpdateAvailable(currentVersion, masterVersion))
+            {
+                Console.BackgroundColor = ConsoleColor.DarkGreen;
+                Console.WriteLine($"A new version of SystemsToolkit is available!");
+
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.WriteLine($"Current Version: {currentVersion}");
+                Console.WriteLine($"Version Available: {masterVersion}");
+                Console.WriteLine($"To update, copy all files from \"{updater.MasterLocation}\" to \"{AppDomain.CurrentDomain.BaseDirectory}\"");
+                    
+                Console.WriteLine();
+            }
+        }
+
+        private static bool IsUpdateAvailable(string currentVersion, string masterVersion)
+        {
+            var current = currentVersion.Split('.').Select(x => int.Parse(x)).ToList();
+            var master = masterVersion.Split('.').Select(x => int.Parse(x)).ToList();
+
+            var output = current.Except(master);
+
+            return output is not null;
+        }
+
+        private static void ParseArgs(string[] args)
+        {
+            ParserResult<object> parsed = Parser.Default
+                .ParseSetArguments<FuelPosVerbSet>(args,
+                                                   OnVerbSetParsed,
+                                                   typeof(TankTableOptions),
+                                                   typeof(PseOptions),
+                                                   typeof(SurveyOptions));
+
+            parsed.MapResult(
+                (TankTableOptions opts) => RunTankTablesAndReturnExitCode(opts),
+                (PseOptions opts) => RunPseAndReturnExitCode(opts),
+                (SurveyOptions opts) => RunSurveyAndReturnExitCode(opts),
+                (CreateMutationOptions opts) => RunCreateMutationAndReturnExitCode(opts),
+                errs => HandleParserError(errs));
         }
     }
 }
