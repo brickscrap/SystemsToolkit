@@ -2,7 +2,7 @@
   "profiles": {
     "TSGSystemsToolkit.CmdLine": {
       "commandName": "Project",
-      "commandLineArgs": "fuelpos create-mutation -c \"C:\\projects\\systk\\CardIdentifications.db3\""
+      "commandLineArgs": "fuelpos --version"
     }
   }
 }
