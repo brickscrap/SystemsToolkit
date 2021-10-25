@@ -145,19 +145,18 @@ namespace TSGSystemsToolkit.CmdLine
 
         private static bool IsUpdateAvailable(string currentVersion, string masterVersion)
         {
-            var current = currentVersion.Split('.')
-                .Select(x => int.Parse(x))
-                .ToList();
-            var master = masterVersion
-                .Split('.')
-                .Select(x => int.Parse(x))
-                .ToList();
+            for (int i = 0; i < 3; i++)
+            {
+                var master = masterVersion.Split('.');
+                var current = currentVersion.Split('.');
 
-            var output = current.Except(master);
+                if (int.Parse(master[i]) > int.Parse(current[i]))
+                {
+                    return true;
+                }
+            }
 
-            return output.Any();
+            return false;
         }
-
-        
     }
 }
