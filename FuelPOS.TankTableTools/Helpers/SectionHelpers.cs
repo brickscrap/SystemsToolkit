@@ -18,7 +18,9 @@ namespace FuelPOS.TankTableTools.Helpers
         internal static string ToSemiColonSeparated(this string line)
         {
             var regex = new Regex("   +");
+            var whitespaceRegex = new Regex(@"\s+");
             var newLine = line.Trim();
+            newLine = regex.Replace(newLine, string.Empty);
             return regex.Replace(newLine, ";").Trim();
         }
     }

@@ -11,6 +11,8 @@ namespace FuelPOS.TankTableTools
     {
         private string _folderPath;
         private Dictionary<string, List<string>> _tableFiles = new();
+        private bool _isFirstTank = true;
+        private bool _tankNumZeroIndexed = false;
 
         public List<TankTableModel> TankTables { get; private set; } = new();
 
@@ -30,7 +32,7 @@ namespace FuelPOS.TankTableTools
             foreach (var file in Directory.EnumerateFiles(FolderPath))
             {
                 var fileName = Path.GetFileNameWithoutExtension(file);
-                string tankNumber = string.Join("", fileName.Where(char.IsDigit));
+                string tankNumber = GetTankNumber(fileName);
 
                 if (tankNumber.Length > 0)
                 {
@@ -82,6 +84,29 @@ namespace FuelPOS.TankTableTools
             newLine = $"{split[0]};{split[1]}";
 
             return newLine;
+        }
+
+        private string GetTankNumber(string fileName)
+        {
+            string tankNumber = string.Join("", fileName.Where(char.IsDigit));
+
+            if (_isFirstTank)
+            {
+                if (tankNumber.Length > 1)
+                {
+                    _tankNumZeroIndexed = true;
+                }
+
+                _isFirstTank = false;
+            }
+
+            if (_tankNumZeroIndexed)
+            {
+                var tankInt = int.Parse(tankNumber) + 1;
+                tankNumber = tankInt.ToString();
+            }
+
+            return tankNumber;
         }
 
         private void CreateTankTables()
