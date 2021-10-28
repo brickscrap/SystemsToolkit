@@ -14,7 +14,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
     {
         public static void ParseSingleGaugeFile(TankTableOptions opts)
         {
-            GaugeFileParser parser = new();
+            VdrRootFileParser parser = new();
             parser = ParseFile(parser, opts);
             var outputDir = opts.OutputPath;
 
@@ -73,12 +73,12 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             }
         }
 
-        private static List<GaugeFileParser> CreateParsers(TankTableOptions opts)
+        private static List<VdrRootFileParser> CreateParsers(TankTableOptions opts)
         {
-            GaugeFileParser parser;
+            VdrRootFileParser parser;
 
             List<string> filesToConvert = GetFilesInDirectory(opts.DirectoryPath);
-            List<GaugeFileParser> parsers = new();
+            List<VdrRootFileParser> parsers = new();
 
             foreach (var file in filesToConvert)
             {
@@ -90,7 +90,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             return parsers;
         }
 
-        private static string CreateNewDirectoryName(TankTableOptions opts, GaugeFileParser parser)
+        private static string CreateNewDirectoryName(TankTableOptions opts, VdrRootFileParser parser)
         {
             string newDirectory;
             if (string.IsNullOrWhiteSpace(parser.SiteName))
@@ -105,7 +105,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             return newDirectory;
         }
 
-        private static GaugeFileParser ParseFile(GaugeFileParser parser, TankTableOptions opts)
+        private static VdrRootFileParser ParseFile(VdrRootFileParser parser, TankTableOptions opts)
         {
             parser.FilePath = opts.GaugeFilePath;
 

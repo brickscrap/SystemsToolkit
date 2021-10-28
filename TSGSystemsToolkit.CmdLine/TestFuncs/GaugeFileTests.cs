@@ -7,7 +7,7 @@ namespace TSGSystemsToolkit.CmdLine.TestFuncs
     {
         public void RunGaugeTest()
         {
-            GaugeFileParser parser = new (@"C:\Users\omgit\source\repos\TSGSystemsToolkit\FuelPOS.TankTableTools\Example\Broken Cross\Broken02.cap");
+            VdrRootFileParser parser = new (@"C:\Users\omgit\source\repos\TSGSystemsToolkit\FuelPOS.TankTableTools\Example\Broken Cross\Broken02.cap");
 
             // GaugeFileParser table = new GaugeFileParser(@"C:\Users\omgit\source\repos\FuelPOSToolkit\TankTableToolkit\Example\Solihu02.cal");
 
@@ -26,7 +26,7 @@ namespace TSGSystemsToolkit.CmdLine.TestFuncs
 
             foreach (var file in files)
             {
-                GaugeFileParser parser = new(file);
+                VdrRootFileParser parser = new(file);
                 parser.Parse(true);
                 var newDirectory = $"{directoryPath}\\{parser.SiteName}";
 

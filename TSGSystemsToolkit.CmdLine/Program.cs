@@ -145,7 +145,7 @@ namespace TSGSystemsToolkit.CmdLine
 
         private static bool IsUpdateAvailable(string currentVersion, string masterVersion)
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < currentVersion.Split('.').Length; i++)
             {
                 var master = masterVersion.Split('.');
                 var current = currentVersion.Split('.');

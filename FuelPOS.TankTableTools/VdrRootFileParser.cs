@@ -8,7 +8,7 @@ using TankTableToolkit.Models;
 
 namespace FuelPOS.TankTableTools
 {
-    public class GaugeFileParser
+    public class VdrRootFileParser
     {
         private readonly static List<string> _possibleSections = new()
         {
@@ -52,7 +52,7 @@ namespace FuelPOS.TankTableTools
             }
         }
 
-        public GaugeFileParser()
+        public VdrRootFileParser()
         {
 
         }
@@ -61,7 +61,7 @@ namespace FuelPOS.TankTableTools
         /// Reads and converts a tank table file from a VeederRoot
         /// </summary>
         /// <param name="filePath">The full path to the table file</param>
-        public GaugeFileParser(string filePath)
+        public VdrRootFileParser(string filePath)
         {
             _filePath = filePath;
             _siteName = Path.GetFileNameWithoutExtension(filePath);

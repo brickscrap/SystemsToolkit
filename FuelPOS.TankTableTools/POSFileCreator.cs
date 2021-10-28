@@ -25,7 +25,7 @@ namespace FuelPOS.TankTableTools
             File.WriteAllLines($@"{outputDirectory}\TMS_AOF.INP", lines);
         }
 
-        public static void CreateFuelPosSetupCsv(GaugeFileParser parsedGaugeFile, string outputDirectory)
+        public static void CreateFuelPosSetupCsv(VdrRootFileParser parsedGaugeFile, string outputDirectory)
         {
             if (parsedGaugeFile.MaxVols is null || parsedGaugeFile.TankTables is null)
             {
