@@ -150,7 +150,7 @@ namespace TSGSystemsToolkit.CmdLine
                 var master = masterVersion.Split('.');
                 var current = currentVersion.Split('.');
 
-                if (int.Parse(master[i]) > int.Parse(current[i]))
+                if (int.Parse(master[i]) > int.Parse(current[i]) || current.Count() > master.Count())
                 {
                     return true;
                 }
