@@ -77,9 +77,9 @@ namespace FuelPOS.TankTableTools
             LoadFile();
             ParseSections();
 
-            foreach (var item in _sections)
+            foreach (var line in _sections)
             {
-                Serialise(item);
+                Serialise(line);
             }
         }
 

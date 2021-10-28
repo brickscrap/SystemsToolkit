@@ -29,10 +29,13 @@ namespace FuelPOS.TankTableTools
 
             foreach (var line in maxVolChart)
             {
-                var maxVol = ParseLine(line);
-                if (maxVol is not null)
+                if (line.Length > 0)
                 {
-                    _maxVols.Add(ParseLine(line));
+                    var maxVol = ParseLine(line);
+                    if (maxVol is not null)
+                    {
+                        _maxVols.Add(ParseLine(line));
+                    }
                 }
             }
 

@@ -21,21 +21,22 @@ namespace FuelPOS.TankTableTools.Helpers
             var newLine = line.Trim();
             var output = regex.Replace(newLine, ";").Trim();
 
-            char p = output[0];
-            for (int i = 1; i < output.Length; i++)
-            {
-                if (output[i] == ';')
-                {
-                    if (output[i] == p)
-                    {
-                        output = output.Remove(i, 1);
-                    }
-                }
-
-                p = output[i];
-            }
+            output = output.RemoveConsecutiveDuplicateChars(';');
 
             return output;
+        }
+
+        internal static string RemoveConsecutiveDuplicateChars(this string input, char character)
+        {
+            if (input.Length <= 1)
+                return input;
+
+            if (input[0] == input[1] && input[1] == character)
+                return input.Substring(1)
+                            .RemoveConsecutiveDuplicateChars(character);
+            else
+                return input[0] + input.Substring(1)
+                                            .RemoveConsecutiveDuplicateChars(character);
         }
     }
 }
