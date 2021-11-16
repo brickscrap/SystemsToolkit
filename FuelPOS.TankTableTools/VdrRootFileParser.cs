@@ -117,6 +117,14 @@ namespace FuelPOS.TankTableTools
             }
         }
 
+        private string ValidateFileName(string fileName)
+        {
+            // TODO: Implement ValidateFileName
+            // Reason: Some filenames being corrupted by having date/time on line 2
+
+            return "";
+        }
+
         private void ParseSections()
         {
             List<KeyValuePair<string, int>> sectionPositions = new();
