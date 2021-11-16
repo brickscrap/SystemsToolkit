@@ -1,11 +1,18 @@
 ﻿using CommandLine;
+using FluentFTP;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
+using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Commands;
 using TSGSystemsToolkit.CmdLine.Options;
 
@@ -13,150 +20,35 @@ namespace TSGSystemsToolkit.CmdLine
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            CheckForUpdates();
+            var builder = new ConfigurationBuilder();
+            BuildConfig(builder);
 
-            ParseArgs(args);
-        }
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .Enrich.FromLogContext()
+                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+                .CreateLogger();
 
-        private static void CheckForUpdates()
-        {
-            var updater = new { MasterLocation = "" };
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            using (StreamReader r = File.OpenText(Path.Combine(baseDir, "updater.json")))
-            {
-                string json = r.ReadToEnd();
-                updater = JsonConvert.DeserializeAnonymousType(json, updater);
-            };
-
-            var currentVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
-            var masterVersion = FileVersionInfo.GetVersionInfo(Path.Combine(updater.MasterLocation, "SysTk.exe")).FileVersion;
-
-            if (IsUpdateAvailable(currentVersion, masterVersion))
-            {
-                Console.BackgroundColor = ConsoleColor.DarkGreen;
-                Console.WriteLine($"A new version of SystemsToolkit is available!");
-
-                Console.BackgroundColor = ConsoleColor.Black;
-                Console.WriteLine($"Current Version: {currentVersion}");
-                Console.WriteLine($"Version Available: {masterVersion}");
-                Console.WriteLine($"To update, copy all files from \"{updater.MasterLocation}\" to \"{baseDir}\"");
-
-                Console.WriteLine();
-            }
-        }
-
-        private static void ParseArgs(string[] args)
-        {
-            ParserResult<object> parsed = Parser.Default
-                .ParseSetArguments<FuelPosVerbSet>(args,
-                                                   OnVerbSetParsed,
-                                                   typeof(TankTableOptions),
-                                                   typeof(PseOptions),
-                                                   typeof(SurveyOptions));
-
-            parsed.MapResult(
-                (TankTableOptions opts) => RunTankTablesAndReturnExitCode(opts),
-                (PseOptions opts) => RunPseAndReturnExitCode(opts),
-                (SurveyOptions opts) => RunSurveyAndReturnExitCode(opts),
-                (CreateMutationOptions opts) => RunCreateMutationAndReturnExitCode(opts),
-                errs => HandleParserError(errs));
-        }
-
-        public static int RunTankTablesAndReturnExitCode(TankTableOptions opts)
-        {
-            var exitCode = 0;
-
-            if (string.IsNullOrWhiteSpace(opts.DirectoryPath))
-            {
-                TanktableCommands.ParseSingleGaugeFile(opts);
-            }
-            else
-            {
-                if (opts.FromTextFiles)
+            var host = Host.CreateDefaultBuilder()
+                .ConfigureServices((context, services) =>
                 {
-                    TanktableCommands.ParseBasicFileInDir(opts);
-                }
-                else
-                {
-                    TanktableCommands.ParseGaugeFilesInDir(opts);
-                }
-            }
+                    services.AddTransient<IAppService, AppService>();
+                })
+                .UseSerilog()
+                .Build();
 
-            return exitCode;
+            var svc = ActivatorUtilities.CreateInstance<AppService>(host.Services);
+
+            svc.Run(args);
         }
 
-        public static int RunPseAndReturnExitCode(PseOptions opts)
+        static void BuildConfig(IConfigurationBuilder builder)
         {
-            var exitCode = 0;
-
-            if (!string.IsNullOrWhiteSpace(opts.TerminalsFilePath))
-            {
-                PseCommands.RunTerminalsCommands(opts);
-            }
-
-            return exitCode;
-        }
-
-        public static int RunSurveyAndReturnExitCode(SurveyOptions opts)
-        {
-            var exitCode = 0;
-
-            SurveyCommands.RunSurveyCommands(opts);
-
-            return exitCode;
-        }
-
-        public static int RunCreateMutationAndReturnExitCode(CreateMutationOptions opts)
-        {
-            FuelPosCommands.RunCreateMutationCommands(opts);
-
-            return 0;
-        }
-
-        public static int HandleParserError(IEnumerable<Error> errs)
-        {
-            var result = -2;
-
-            if (errs.Any(x => x is HelpRequestedError || x is VersionRequestedError || x is HelpVerbRequestedError))
-            {
-                result = -1;
-            }
-
-            if (result < -1)
-            {
-                Console.WriteLine($"Error - the program exited with code {result}.");
-                foreach (var e in errs)
-                {
-                    Console.WriteLine($"Error - {e}.");
-                }
-            }
-
-            return result;
-        }
-
-        private static ParserResult<object> OnVerbSetParsed(Parser parser, Parsed<object> parsed, IEnumerable<string> args, bool containedHelpOrVersion)
-        {
-            return parsed.MapResult(
-                    (FuelPosVerbSet _) => parser.ParseArguments<object, CreateMutationOptions>(args),
-                    (_) => parsed);
-        }        
-
-        private static bool IsUpdateAvailable(string currentVersion, string masterVersion)
-        {
-            for (int i = 0; i < currentVersion.Split('.').Length; i++)
-            {
-                var master = masterVersion.Split('.');
-                var current = currentVersion.Split('.');
-
-                if (int.Parse(master[i]) > int.Parse(current[i]) || current.Count() > master.Count())
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            builder.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("updater.json", optional: false, reloadOnChange: true)
+                .AddEnvironmentVariables();
         }
     }
 }
