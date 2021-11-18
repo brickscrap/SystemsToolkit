@@ -1,8 +1,7 @@
 {
   "profiles": {
     "TSGSystemsToolkit.CmdLine": {
-      "commandName": "Project",
-      "commandLineArgs": "tanktables progauge \"T:\\Tech Support\\FuelPOS\\Tank Tables\\GREAT PONTON FUEL EXPRESS (7570\" -p"
+      "commandName": "Project"
     }
   }
 }

@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Commands;
 using System.CommandLine.Builder;
 using Spectre.Console;
+using System.CommandLine.Help;
 
 namespace TSGSystemsToolkit.CmdLine
 {
@@ -28,13 +29,21 @@ namespace TSGSystemsToolkit.CmdLine
 
         public async Task<int> Run(string[] args)
         {
-            CheckForUpdates();
+            // TODO: Better update method
+            // CheckForUpdates();
 
             var cmd = _rootCommands.Create();
             cmd.Name = "SysTk";
             cmd.Description = "A series of command-line tools to help ease the burden of your left-click button.";
 
             AnsiConsole.Write(new FigletText("TSG Systems Toolkit").Color(Color.OrangeRed1));
+
+            if (args.Length == 0)
+            {
+                var helpBuilder = new HelpBuilder(LocalizationResources.Instance);
+                helpBuilder.Write(cmd, Console.Out);
+                return 1;
+            }
 
             return await cmd.InvokeAsync(args);
         }
@@ -72,7 +81,7 @@ namespace TSGSystemsToolkit.CmdLine
                 var master = masterVersion.Split('.');
                 var current = currentVersion.Split('.');
 
-                if (int.Parse(master[i]) > int.Parse(current[i]) || current.Count() > master.Count())
+                if (int.Parse(master[i]) > int.Parse(current[i]) || current.Length > master.Length)
                 {
                     return true;
                 }
