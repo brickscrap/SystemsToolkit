@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -7,6 +7,7 @@
     <AssemblyName>SysTk</AssemblyName>
     <AssemblyVersion>1.2.2.0</AssemblyVersion>
     <FileVersion>1.0.2.0</FileVersion>
+	  <Nullable>annotations</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,6 +22,10 @@
     <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
     <PackageReference Include="Serilog.Sinks.Console" Version="4.0.0" />
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
+    <PackageReference Include="Serilog.Sinks.SpectreConsole" Version="0.1.1" />
+    <PackageReference Include="Spectre.Console" Version="0.42.0" />
+    <PackageReference Include="System.CommandLine" Version="2.0.0-beta1.21308.1" />
+    <PackageReference Include="System.CommandLine.Rendering" Version="0.3.0-alpha.21216.1" />
   </ItemGroup>
 
   <ItemGroup>

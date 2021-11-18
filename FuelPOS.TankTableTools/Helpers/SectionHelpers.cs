@@ -22,6 +22,7 @@ namespace FuelPOS.TankTableTools.Helpers
             var output = regex.Replace(newLine, ";").Trim();
 
             output = output.RemoveConsecutiveDuplicateChars(';');
+            output = output.Replace(',', ';');
 
             return output;
         }

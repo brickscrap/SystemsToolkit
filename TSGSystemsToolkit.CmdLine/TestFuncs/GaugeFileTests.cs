@@ -11,7 +11,7 @@ namespace TSGSystemsToolkit.CmdLine.TestFuncs
 
             // GaugeFileParser table = new GaugeFileParser(@"C:\Users\omgit\source\repos\FuelPOSToolkit\TankTableToolkit\Example\Solihu02.cal");
 
-            parser.Parse(true);
+            parser.Parse();
             // table.DisplayTablesInConsole();
 
             var outputDir = @"C:\Users\omgit\source\repos\TSGSystemsToolkit\FuelPOS.TankTableTools\Example\Broken Cross";
@@ -27,7 +27,7 @@ namespace TSGSystemsToolkit.CmdLine.TestFuncs
             foreach (var file in files)
             {
                 VdrRootFileParser parser = new(file);
-                parser.Parse(true);
+                parser.Parse();
                 var newDirectory = $"{directoryPath}\\{parser.SiteName}";
 
                 if (parser.TankTables is not null)

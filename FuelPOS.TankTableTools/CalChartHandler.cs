@@ -12,16 +12,13 @@ namespace FuelPOS.TankTableTools
 {
     internal class CalChartHandler
     {
-        private bool _isFullFile;
-        private string _siteName;
         private string _currentTank;
         private string _nextTank;
         private List<string> _serialisedCalChart = new();
         private List<TankTableModel> _tankTables = new List<TankTableModel>();
 
-        public CalChartHandler(bool isFullFile)
+        public CalChartHandler()
         {
-            _isFullFile = isFullFile;
         }
 
         public List<TankTableModel> Parse(List<string> tankCalChart)

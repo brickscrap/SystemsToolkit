@@ -1,4 +1,5 @@
 ﻿using FuelPOS.TankTableTools.Helpers;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,12 +8,13 @@ using TankTableToolkit.Models;
 
 namespace FuelPOS.TankTableTools
 {
-    public class BasicFileParser
+    public class ProgaugeFileParser : IProgaugeFileParser
     {
         private string _folderPath;
         private Dictionary<string, List<string>> _tableFiles = new();
         private bool _isFirstTank = true;
         private bool _tankNumZeroIndexed = false;
+        private readonly ILogger<ProgaugeFileParser> _logger;
 
         public List<TankTableModel> TankTables { get; private set; } = new();
 
@@ -22,14 +24,17 @@ namespace FuelPOS.TankTableTools
             set { _folderPath = value; }
         }
 
-        public BasicFileParser(string folderPath)
+        public ProgaugeFileParser(ILogger<ProgaugeFileParser> logger)
         {
-            FolderPath = folderPath;
+            _logger = logger;
         }
 
         public void LoadFilesAndParse()
         {
-            foreach (var file in Directory.EnumerateFiles(FolderPath))
+            var files = Directory.EnumerateFiles(FolderPath, "*.csv").ToList();
+            files.AddRange(Directory.EnumerateFiles(FolderPath, ".txt").ToList());
+            
+            foreach (var file in files)
             {
                 var fileName = Path.GetFileNameWithoutExtension(file);
                 string tankNumber = GetTankNumber(fileName);
@@ -46,7 +51,6 @@ namespace FuelPOS.TankTableTools
             }
 
             ParseFiles();
-
             CreateTankTables();
         }
 
@@ -61,9 +65,7 @@ namespace FuelPOS.TankTableTools
                     var newLine = ParseLine(line);
 
                     if (newLine is not null)
-                    {
                         newValue.Add(newLine);
-                    }
                 }
 
                 _tableFiles[file.Key] = newValue;
@@ -122,9 +124,7 @@ namespace FuelPOS.TankTableTools
                     List<string> newLine = line.Split(';').ToList();
 
                     if (newLine.Count > 1)
-                    {
                         table.CreateValuePairs(newLine);
-                    }
                 }
 
                 TankTables.Add(table);

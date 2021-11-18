@@ -1,5 +1,6 @@
 ﻿using FuelPOS.TankTableTools.Helpers;
 using FuelPOS.TankTableTools.Models;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,24 +9,23 @@ using TankTableToolkit.Models;
 
 namespace FuelPOS.TankTableTools
 {
-    public class VdrRootFileParser
+    public class VdrRootFileParser : IVdrRootFileParser
     {
         private readonly static List<string> _possibleSections = new()
         {
-                "I20100",
-                "I60100",
-                "I60200",
-                "I60700",
-                "I62800",
-                "I60600",
-                "I79S00",
-                "I21100",
-                "I61L00",
-                "I62100",
-                "I62500"
+            "I20100",
+            "I60100",
+            "I60200",
+            "I60700",
+            "I62800",
+            "I60600",
+            "I79S00",
+            "I21100",
+            "I61L00",
+            "I62100",
+            "I62500"
         };
-
-        private bool _isFullFileFlag;
+        private readonly ILogger<VdrRootFileParser> _logger;
         private string _filePath;
         private List<string> _file;
         private Dictionary<string, List<string>> _sections = new();
@@ -54,7 +54,11 @@ namespace FuelPOS.TankTableTools
 
         public VdrRootFileParser()
         {
+        }
 
+        public VdrRootFileParser(ILogger<VdrRootFileParser> logger)
+        {
+            _logger = logger;
         }
 
         /// <summary>
@@ -71,16 +75,20 @@ namespace FuelPOS.TankTableTools
         /// Create a list of tank tables based on the file provided to the constructor
         /// </summary>
         /// <returns>A <see cref="List{T}"/> of <see cref="TankTableModel"/></returns>
-        public void Parse(bool isFullFile = false)
+        public void Parse()
         {
-            _isFullFileFlag = isFullFile;
-            LoadFile();
+            _file = LoadFile();
             ParseSections();
+            var i21100Section = _sections.Where(x => x.Key == "I21100")
+                .ToList()
+                .FirstOrDefault()
+                .Value;
+            _siteName = FindSiteName(i21100Section);
+
+            _logger.LogInformation("Parsing");
 
             foreach (var line in _sections)
-            {
                 Serialise(line);
-            }
         }
 
         public void DisplayTablesInConsole()
@@ -95,34 +103,22 @@ namespace FuelPOS.TankTableTools
             }
         }
 
-        private void LoadFile()
-        {
-            _file = File.ReadAllLines(_filePath).ToList();
-            if (_isFullFileFlag)
-            {
-                if (_file[1].Contains("Site Count"))
-                {
-                    _siteName = _file[2];
-                }
-                else
-                {
-                    _siteName = _file[1];
-                }
+        private List<string> LoadFile() => File.ReadAllLines(_filePath).ToList();
 
-                if (SiteName.Contains("450+"))
+        private string FindSiteName(List<string> i2110Section)
+        {
+            List<string> stripped = new();
+            for (int i = 0; i < 10; i++)
+            {
+                if (!string.IsNullOrWhiteSpace(i2110Section[i]))
                 {
-                    var position = _siteName.IndexOf("450");
-                    _siteName = _siteName.Substring(0, position).Trim();
+                    stripped.Add(i2110Section[i]);
                 }
             }
-        }
 
-        private string ValidateFileName(string fileName)
-        {
-            // TODO: Implement ValidateFileName
-            // Reason: Some filenames being corrupted by having date/time on line 2
+            var siteName = stripped[2].Split("   ");
 
-            return "";
+            return siteName[0];
         }
 
         private void ParseSections()
@@ -152,7 +148,7 @@ namespace FuelPOS.TankTableTools
             {
                 list.Add(new KeyValuePair<string, int>(key, _file.IndexOf(key)));
             }
-            
+
             return list;
         }
 
@@ -180,7 +176,7 @@ namespace FuelPOS.TankTableTools
             switch (kvp.Key)
             {
                 case "I21100":
-                    CalChartHandler calChart = new(_isFullFileFlag);
+                    CalChartHandler calChart = new();
                     TankTables = calChart.Parse(kvp.Value);
                     break;
                 case "I62800":

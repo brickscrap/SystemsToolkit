@@ -1,33 +1,42 @@
-﻿using CommandLine;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.CommandLine;
+using System.CommandLine.Invocation;
+using System.CommandLine.Rendering;
 using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Commands;
-using TSGSystemsToolkit.CmdLine.Options;
+using System.CommandLine.Builder;
+using Spectre.Console;
 
 namespace TSGSystemsToolkit.CmdLine
 {
     internal class AppService : IAppService
     {
         private readonly ILogger<AppService> _log;
+        private readonly IRootCommands _rootCommands;
 
-        public AppService(ILogger<AppService> log)
+        public AppService(ILogger<AppService> log, IRootCommands rootCommands)
         {
             _log = log;
+            _rootCommands = rootCommands;
         }
 
-        public void Run(string[] args)
+        public async Task<int> Run(string[] args)
         {
             CheckForUpdates();
 
-            ParseArgs(args);
+            var cmd = _rootCommands.Create();
+            cmd.Name = "SysTk";
+            cmd.Description = "A series of command-line tools to help ease the burden of your left-click button.";
+
+            AnsiConsole.Write(new FigletText("TSG Systems Toolkit").Color(Color.OrangeRed1));
+
+            return await cmd.InvokeAsync(args);
         }
 
         private static void CheckForUpdates()
@@ -56,103 +65,6 @@ namespace TSGSystemsToolkit.CmdLine
                 Console.WriteLine();
             }
         }
-
-        private static void ParseArgs(string[] args)
-        {
-            ParserResult<object> parsed = Parser.Default
-                .ParseSetArguments<FuelPosVerbSet>(args,
-                                                   OnVerbSetParsed,
-                                                   typeof(TankTableOptions),
-                                                   typeof(PseOptions),
-                                                   typeof(SurveyOptions));
-
-            parsed.MapResult(
-                (TankTableOptions opts) => RunTankTablesAndReturnExitCode(opts),
-                (PseOptions opts) => RunPseAndReturnExitCode(opts),
-                (SurveyOptions opts) => RunSurveyAndReturnExitCode(opts),
-                (CreateMutationOptions opts) => RunCreateMutationAndReturnExitCode(opts),
-                errs => HandleParserError(errs));
-        }
-
-        public static int RunTankTablesAndReturnExitCode(TankTableOptions opts)
-        {
-            var exitCode = 0;
-
-            if (string.IsNullOrWhiteSpace(opts.DirectoryPath))
-            {
-                TanktableCommands.ParseSingleGaugeFile(opts);
-            }
-            else
-            {
-                if (opts.FromTextFiles)
-                {
-                    TanktableCommands.ParseBasicFileInDir(opts);
-                }
-                else
-                {
-                    TanktableCommands.ParseGaugeFilesInDir(opts);
-                }
-            }
-
-            return exitCode;
-        }
-
-        public static int RunPseAndReturnExitCode(PseOptions opts)
-        {
-            var exitCode = 0;
-
-            if (!string.IsNullOrWhiteSpace(opts.TerminalsFilePath))
-            {
-                PseCommands.RunTerminalsCommands(opts);
-            }
-
-            return exitCode;
-        }
-
-        public static int RunSurveyAndReturnExitCode(SurveyOptions opts)
-        {
-            var exitCode = 0;
-
-            SurveyCommands.RunSurveyCommands(opts);
-
-            return exitCode;
-        }
-
-        public static int RunCreateMutationAndReturnExitCode(CreateMutationOptions opts)
-        {
-            FuelPosCommands.RunCreateMutationCommands(opts);
-
-            return 0;
-        }
-
-        public static int HandleParserError(IEnumerable<Error> errs)
-        {
-            var result = -2;
-
-            if (errs.Any(x => x is HelpRequestedError || x is VersionRequestedError || x is HelpVerbRequestedError))
-            {
-                result = -1;
-            }
-
-            if (result < -1)
-            {
-                Console.WriteLine($"Error - the program exited with code {result}.");
-                foreach (var e in errs)
-                {
-                    Console.WriteLine($"Error - {e}.");
-                }
-            }
-
-            return result;
-        }
-
-        private static ParserResult<object> OnVerbSetParsed(Parser parser, Parsed<object> parsed, IEnumerable<string> args, bool containedHelpOrVersion)
-        {
-            return parsed.MapResult(
-                    (FuelPosVerbSet _) => parser.ParseArguments<object, CreateMutationOptions>(args),
-                    (_) => parsed);
-        }
-
         private static bool IsUpdateAvailable(string currentVersion, string masterVersion)
         {
             for (int i = 0; i < currentVersion.Split('.').Length; i++)

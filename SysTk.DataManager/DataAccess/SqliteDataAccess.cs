@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SysTk.DataManager.DataAccess
 {
-    public class SqliteDataAccess
+    public class SqliteDataAccess : ISqliteDataAccess
     {
         public List<T> LoadData<T, U>(string sqlStatement, U parameters, string pathToDb)
         {

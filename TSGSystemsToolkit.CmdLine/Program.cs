@@ -1,10 +1,18 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using FuelPOS.StatDevParser;
+using FuelPOS.TankTableTools;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.SpectreConsole;
 using Serilog.Sinks.SystemConsole.Themes;
+using System.CommandLine.Invocation;
 using System.IO;
 using System.Threading.Tasks;
+using SysTk.DataManager.DataAccess;
+using TSGSystemsToolkit.CmdLine.Commands;
+using TSGSystemsToolkit.CmdLine.Handlers;
 
 namespace TSGSystemsToolkit.CmdLine
 {
@@ -25,13 +33,30 @@ namespace TSGSystemsToolkit.CmdLine
                 .ConfigureServices((context, services) =>
                 {
                     services.AddTransient<IAppService, AppService>();
+                    services.AddTransient<IRootCommands, RootCommands>();
+
+                    // Data Access
+                    services.AddTransient<ISqliteDataAccess, SqliteDataAccess>();
+                    services.AddTransient<ICardIdentificationData, CardIdentificationData>();
+
+                    // Handlers
+                    services.AddTransient<IVeederRootHandler, VeederRootHandler>();
+                    services.AddTransient<IProgaugeHandler, ProgaugeHandler>();
+                    services.AddTransient<ITerminalsHandler, TerminalsHandler>();
+                    services.AddTransient<IMutationHandler, MutationHandler>();
+                    services.AddTransient<ISurveyHandler, SurveyHandler>();
+
+                    // Business Services
+                    services.AddTransient<IVdrRootFileParser, VdrRootFileParser>();
+                    services.AddTransient<IProgaugeFileParser, ProgaugeFileParser>();
+                    services.AddTransient<IStatDevParser, StatDevParser>();
                 })
                 .UseSerilog()
                 .Build();
 
             var svc = ActivatorUtilities.CreateInstance<AppService>(host.Services);
 
-            svc.Run(args);
+            await svc.Run(args);
         }
 
         static void BuildConfig(IConfigurationBuilder builder)

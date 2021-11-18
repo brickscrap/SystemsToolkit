@@ -10,7 +10,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 {
     public static class PseCommands
     {
-        public static void RunTerminalsCommands(PseOptions opts)
+        internal static void RunTerminalsCommands(TerminalsOptions opts)
         {
             if (opts.CreateEmisFile)
             {
@@ -26,7 +26,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
                     outputPath = opts.OutputPath;
                 }
 
-                TerminalsToEmis.Run($"{opts.TerminalsFilePath}\\Terminals_044.csv", outputPath);
+                TerminalsToEmis.Run($"{opts.FilePath}\\Terminals_044.csv", outputPath);
             }
         }
     }

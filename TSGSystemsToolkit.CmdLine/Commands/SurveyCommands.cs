@@ -14,17 +14,17 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 {
     public class SurveyCommands
     {
-        public static void RunSurveyCommands(SurveyOptions opts)
+        internal static void RunSurveyCommands(SurveyOptions opts)
         {
-            FileAttributes attr = File.GetAttributes(opts.InputPath);
+            FileAttributes attr = File.GetAttributes(opts.FilePath);
 
-            if (opts.CreateSurveySpreadsheet)
+            if (opts.CreateSpreadsheet)
             {
                 List<StatdevModel> statdevs = new();
 
                 if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                 {
-                    var xmlFiles = Directory.EnumerateFiles(opts.InputPath, "*.xml");
+                    var xmlFiles = Directory.EnumerateFiles(opts.FilePath, "*.xml");
 
                     foreach (var item in xmlFiles)
                     {

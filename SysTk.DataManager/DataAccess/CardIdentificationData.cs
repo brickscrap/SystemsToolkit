@@ -7,21 +7,20 @@ using SysTk.DataManager.Models;
 
 namespace SysTk.DataManager.DataAccess
 {
-    public class CardIdentificationData
+    public class CardIdentificationData : ICardIdentificationData
     {
-        private readonly string _pathToDb;
-        private SqliteDataAccess _db = new();
+        private readonly ISqliteDataAccess _db;
 
-        public CardIdentificationData(string pathToDb)
+        public CardIdentificationData(ISqliteDataAccess db)
         {
-            _pathToDb = pathToDb;
+            _db = db;
         }
 
-        public List<CardIdentificationModel> GetAllCards()
+        public List<CardIdentificationModel> GetAllCards(string dbPath)
         {
             string sql = "select * from CardIdentifications";
 
-            return _db.LoadData<CardIdentificationModel, dynamic>(sql, new { }, _pathToDb);
+            return _db.LoadData<CardIdentificationModel, dynamic>(sql, new { }, dbPath);
         }
     }
 }

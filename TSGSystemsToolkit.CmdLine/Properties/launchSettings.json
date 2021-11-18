@@ -2,7 +2,7 @@
   "profiles": {
     "TSGSystemsToolkit.CmdLine": {
       "commandName": "Project",
-      "commandLineArgs": "tanktables -g \"T:\\Tech Support\\FuelPOS\\Tank Tables\\Shell\\Stanground\\stangr01.cap\" -f -p"
+      "commandLineArgs": "tanktables progauge \"T:\\Tech Support\\FuelPOS\\Tank Tables\\GREAT PONTON FUEL EXPRESS (7570\" -p"
     }
   }
 }
