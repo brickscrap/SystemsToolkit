@@ -62,16 +62,6 @@ namespace FuelPOS.TankTableTools
         }
 
         /// <summary>
-        /// Reads and converts a tank table file from a VeederRoot
-        /// </summary>
-        /// <param name="filePath">The full path to the table file</param>
-        public VdrRootFileParser(string filePath)
-        {
-            _filePath = filePath;
-            _siteName = Path.GetFileNameWithoutExtension(filePath);
-        }
-
-        /// <summary>
         /// Create a list of tank tables based on the file provided to the constructor
         /// </summary>
         /// <returns>A <see cref="List{T}"/> of <see cref="TankTableModel"/></returns>

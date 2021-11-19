@@ -56,43 +56,30 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 POSFileCreator.CreateFuelPosSetupCsv(_parser as VdrRootFileParser, outputDir);
         }
 
-        private static void ParseFilesInDir(VeederRootOptions opts)
+        private void ParseFilesInDir(VeederRootOptions opts)
         {
-            var parsers = CreateParsers(opts);
+            List<string> filesToConvert = GetFilesInDirectory(opts.FilePath);
 
-            foreach (var p in parsers)
+            foreach (var file in filesToConvert)
             {
-                var newDirectory = CreateNewDirectoryName(opts, p);
+                _parser.FilePath = file;
+                _parser.Parse();
 
-                if (p.TankTables is not null)
+                var newDirectory = CreateNewDirectoryName(opts, _parser);
+
+                // TODO: This is bad.
+                if (_parser.TankTables is not null)
                 {
                     if (opts.CreateFuelPosFile)
-                        POSFileCreator.CreateTmsAofFile(p.TankTables, newDirectory);
+                        POSFileCreator.CreateTmsAofFile(_parser.TankTables, newDirectory);
 
                     if (opts.CreateCsv)
-                        POSFileCreator.CreateFuelPosSetupCsv(p, newDirectory);
+                        POSFileCreator.CreateFuelPosSetupCsv(_parser as VdrRootFileParser, newDirectory);
                 }
             }
         }
 
-        private static List<VdrRootFileParser> CreateParsers(VeederRootOptions opts)
-        {
-            VdrRootFileParser parser;
-
-            List<string> filesToConvert = GetFilesInDirectory(opts.FilePath);
-            List<VdrRootFileParser> parsers = new();
-
-            foreach (var file in filesToConvert)
-            {
-                parser = new(file);
-                parser.Parse();
-                parsers.Add(parser);
-            }
-
-            return parsers;
-        }
-
-        private static string CreateNewDirectoryName(VeederRootOptions opts, VdrRootFileParser parser)
+        private static string CreateNewDirectoryName(VeederRootOptions opts, IVdrRootFileParser parser)
         {
             string newDirectory;
             if (string.IsNullOrWhiteSpace(parser.SiteName))
@@ -112,9 +99,14 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             return parser;
         }
 
-        private static List<string> GetFilesInDirectory(string directoryPath) =>
-            Directory.EnumerateFiles(directoryPath, "*.*", SearchOption.TopDirectoryOnly)
-                .Where(f => f.EndsWith("*.cal") || f.EndsWith("*.txt") || f.EndsWith("*.cap"))
+        private static List<string> GetFilesInDirectory(string directoryPath) 
+        {
+            var files = Directory.EnumerateFiles(directoryPath, "*.*", SearchOption.TopDirectoryOnly)
+                .Where(f => f.EndsWith(".cal") || f.EndsWith(".txt") || f.EndsWith(".cap"))
                 .ToList();
+
+            return files;
+        }
+            
     }
 }

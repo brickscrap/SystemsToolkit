@@ -1,18 +1,14 @@
 ﻿using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Spectre.Console;
 using System;
+using System.CommandLine;
+using System.CommandLine.Help;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Reflection;
-using System.CommandLine;
-using System.CommandLine.Invocation;
-using System.CommandLine.Rendering;
 using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Commands;
-using System.CommandLine.Builder;
-using Spectre.Console;
-using System.CommandLine.Help;
 
 namespace TSGSystemsToolkit.CmdLine
 {
@@ -29,7 +25,7 @@ namespace TSGSystemsToolkit.CmdLine
 
         public async Task<int> Run(string[] args)
         {
-            // TODO: Better update method
+            // TODO: Better update procedure
             // CheckForUpdates();
 
             var cmd = _rootCommands.Create();

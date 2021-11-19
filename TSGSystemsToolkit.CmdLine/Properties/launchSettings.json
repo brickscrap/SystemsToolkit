@@ -1,7 +1,8 @@
 {
   "profiles": {
     "TSGSystemsToolkit.CmdLine": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "tanktables vdr-root \"T:\\Tech Support\\Shell\\Deployment Tank Tables\\Arnos Castle\" -p -c"
     }
   }
 }
