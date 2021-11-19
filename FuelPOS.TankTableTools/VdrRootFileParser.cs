@@ -67,15 +67,19 @@ namespace FuelPOS.TankTableTools
         /// <returns>A <see cref="List{T}"/> of <see cref="TankTableModel"/></returns>
         public void Parse()
         {
+            _logger.LogInformation("Parsing {FilePath}", FilePath);
             _file = LoadFile();
+
             ParseSections();
+            _logger.LogDebug("Sections detected: {Sections}", _sections.Select(x => x.Key));
+
             var i21100Section = _sections.Where(x => x.Key == "I21100")
                 .ToList()
                 .FirstOrDefault()
                 .Value;
             _siteName = FindSiteName(i21100Section);
-
-            _logger.LogInformation("Parsing");
+            _logger.LogDebug("Site name detected as {SiteName}", _siteName);
+            
 
             foreach (var line in _sections)
                 Serialise(line);
@@ -166,8 +170,10 @@ namespace FuelPOS.TankTableTools
             switch (kvp.Key)
             {
                 case "I21100":
+                    _logger.LogInformation("Parsing calibration chart.");
                     CalChartHandler calChart = new();
                     TankTables = calChart.Parse(kvp.Value);
+                    _logger.LogInformation("{Tanks} tanks detected.", TankTables.Count);
                     break;
                 case "I62800":
                     MaxVolHandler maxVol = new();
