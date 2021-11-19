@@ -1,4 +1,5 @@
 ﻿using FuelPOS.TankTableTools.Helpers;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -15,7 +16,7 @@ namespace FuelPOS.TankTableTools
         private string _currentTank;
         private string _nextTank;
         private List<string> _serialisedCalChart = new();
-        private List<TankTableModel> _tankTables = new List<TankTableModel>();
+        private List<TankTableModel> _tankTables = new();
 
         public CalChartHandler()
         {
