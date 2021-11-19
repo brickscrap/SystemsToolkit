@@ -1,12 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Handlers;
 using TSGSystemsToolkit.CmdLine.Options;
 
@@ -96,7 +90,8 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             {
                 new Argument<string>("filepath", "Path to Terminals_044.csv"),
                 new Option<bool>(new[] { "--emisfile", "-e" }, "Create a Remote eMIS site-list file. If no output path is specified, will deploy the file " +
-                "directlty to it's location in your AppData folder.")
+                "directlty to it's location in your AppData folder."),
+                new Option<string>(new[] { "--output", "-o" }, "Output path for any created files.")
             };
 
             cmd.Handler = CommandHandler.Create((TerminalsOptions options) =>
@@ -116,7 +111,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
         {
             Command cmd = new("create-mutation", "Create mutations for FuelPOS")
             {
-                new Option<string?>(new[] { "--card-id", "-c" }, "Path to CardIdentifications.db3 - creates a CRDID_MUT based on the database provided."),
+                new Option<string?>(new[] { "--cardid", "-c" }, "Path to CardIdentifications.db3 - creates a CRDID_MUT based on the database provided."),
                 new Option<string?>(new[] { "--output", "-o" }, "Output directory - leave blank to create files in the same directory as the db3.")
             };
 

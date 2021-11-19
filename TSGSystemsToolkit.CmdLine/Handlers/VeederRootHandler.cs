@@ -27,12 +27,14 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             FileAttributes attr = File.GetAttributes(options.FilePath);
             if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
             {
+                _logger.LogInformation("Parsing files in directory: {Directory}.", options.FilePath);
                 ParseFilesInDir(options);
 
                 return 1;
             }
             else
             {
+                _logger.LogInformation("Parsing file: {FilePath}", options.FilePath);
                 ParseSingleFile(options);
 
                 return 1;
@@ -49,11 +51,22 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 outputDir = Path.GetDirectoryName(opts.FilePath);
             }
 
+            HandleBoolOptions(opts, outputDir);
+        }
+
+        private void HandleBoolOptions(VeederRootOptions opts, string outputDir)
+        {
             if (opts.CreateFuelPosFile)
+            {
+                _logger.LogInformation("Creating TMS_AOF.INP at {OutputDir}", outputDir);
                 POSFileCreator.CreateTmsAofFile(_parser.TankTables, outputDir);
+            }
 
             if (opts.CreateCsv)
+            {
+                _logger.LogInformation("Creating tank setup CSV at {OutputDir}", outputDir);
                 POSFileCreator.CreateFuelPosSetupCsv(_parser as VdrRootFileParser, outputDir);
+            }
         }
 
         private void ParseFilesInDir(VeederRootOptions opts)
@@ -65,17 +78,9 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 _parser.FilePath = file;
                 _parser.Parse();
 
-                var newDirectory = CreateNewDirectoryName(opts, _parser);
+                var outputDir = CreateNewDirectoryName(opts, _parser);
 
-                // TODO: This is bad.
-                if (_parser.TankTables is not null)
-                {
-                    if (opts.CreateFuelPosFile)
-                        POSFileCreator.CreateTmsAofFile(_parser.TankTables, newDirectory);
-
-                    if (opts.CreateCsv)
-                        POSFileCreator.CreateFuelPosSetupCsv(_parser as VdrRootFileParser, newDirectory);
-                }
+                HandleBoolOptions(opts, outputDir);
             }
         }
 

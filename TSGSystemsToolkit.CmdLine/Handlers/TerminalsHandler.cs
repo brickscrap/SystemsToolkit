@@ -1,10 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Pse.TerminalsToEmis;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers

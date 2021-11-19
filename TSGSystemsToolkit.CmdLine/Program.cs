@@ -4,13 +4,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Serilog.Events;
-using Serilog.Sinks.SpectreConsole;
 using Serilog.Sinks.SystemConsole.Themes;
-using System.CommandLine.Invocation;
 using System.IO;
 using System.Threading.Tasks;
 using SysTk.DataManager.DataAccess;
+using SysTk.Utils;
 using TSGSystemsToolkit.CmdLine.Commands;
 using TSGSystemsToolkit.CmdLine.Handlers;
 
@@ -36,6 +34,7 @@ namespace TSGSystemsToolkit.CmdLine
                     services.AddTransient<IRootCommands, RootCommands>();
 
                     // Data Access
+                    services.AddTransient<IFtpHandler, FtpHandler>();
                     services.AddTransient<ISqliteDataAccess, SqliteDataAccess>();
                     services.AddTransient<ICardIdentificationData, CardIdentificationData>();
 

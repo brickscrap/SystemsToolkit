@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TSGSystemsToolkit.CmdLine.Options
+﻿namespace TSGSystemsToolkit.CmdLine.Options
 {
-    public class VeederRootOptions : OptionsBase
+    public class VeederRootOptions
     {
         public VeederRootOptions(string filePath, string? output, bool fuelPosFile, bool csv)
         {
