@@ -14,13 +14,16 @@ namespace TSGSystemsToolkit.CmdLine.Commands
         private readonly ITerminalsHandler _terminalsHandler;
         private readonly IMutationHandler _mutationHandler;
         private readonly ISurveyHandler _surveyHandler;
+        private readonly IUpdateHandler _updateHandler;
 
+        // TODO: Is this becoming an anti-pattern?
         public RootCommands(ILogger<RootCommands> logger,
                             IVeederRootHandler veederRootHandler,
                             IProgaugeHandler progaugeHandler,
                             ITerminalsHandler terminalsHandler,
                             IMutationHandler mutationHandler,
-                            ISurveyHandler surveyHandler)
+                            ISurveyHandler surveyHandler,
+                            IUpdateHandler updateHandler)
         {
             _logger = logger;
             _veederRootHandler = veederRootHandler;
@@ -28,15 +31,28 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             _terminalsHandler = terminalsHandler;
             _mutationHandler = mutationHandler;
             _surveyHandler = surveyHandler;
+            _updateHandler = updateHandler;
         }
 
-        public RootCommand Create() => new()
+        public RootCommand Create()
         {
-            CreateTanktableCommand(),
-            CreatePseCommand(),
-            CreateFuelPosCommand(),
-            CreateSurveyCommand()
-        };
+            RootCommand cmd = new()
+            {
+                CreateTanktableCommand(),
+                CreatePseCommand(),
+                CreateFuelPosCommand(),
+                CreateSurveyCommand(),
+                new Option<bool>(new[] { "--update" }, "Update your version of Systems Toolkit")
+            };
+
+
+            cmd.Handler = CommandHandler.Create((UpdateOptions options) =>
+            {
+                _updateHandler.RunHandlerAndReturnExitCode(options);
+            });
+
+            return cmd;
+        }
 
         private Command CreateTanktableCommand() => new("tanktables", "Generate useful files from tank gauge output")
         {

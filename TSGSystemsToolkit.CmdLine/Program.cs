@@ -30,6 +30,7 @@ namespace TSGSystemsToolkit.CmdLine
             var host = Host.CreateDefaultBuilder()
                 .ConfigureServices((context, services) =>
                 {
+                    services.AddSingleton(context.Configuration);
                     services.AddTransient<IAppService, AppService>();
                     services.AddTransient<IRootCommands, RootCommands>();
 
@@ -44,11 +45,16 @@ namespace TSGSystemsToolkit.CmdLine
                     services.AddTransient<ITerminalsHandler, TerminalsHandler>();
                     services.AddTransient<IMutationHandler, MutationHandler>();
                     services.AddTransient<ISurveyHandler, SurveyHandler>();
+                    services.AddTransient<IUpdateHandler, UpdateHandler>();
 
                     // Business Services
                     services.AddTransient<IVdrRootFileParser, VdrRootFileParser>();
                     services.AddTransient<IProgaugeFileParser, ProgaugeFileParser>();
                     services.AddTransient<IStatDevParser, StatDevParser>();
+                })
+                .ConfigureAppConfiguration(app =>
+                {
+                    app.AddJsonFile("appsettings.json");
                 })
                 .UseSerilog()
                 .Build();
@@ -61,7 +67,6 @@ namespace TSGSystemsToolkit.CmdLine
         static void BuildConfig(IConfigurationBuilder builder)
         {
             builder.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("updater.json", optional: false, reloadOnChange: true)
                 .AddEnvironmentVariables();
         }
     }
