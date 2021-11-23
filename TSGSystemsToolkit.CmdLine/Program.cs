@@ -2,9 +2,11 @@
 using FuelPOS.TankTableTools;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
+using System;
 using System.IO;
 using System.Threading.Tasks;
 using SysTk.DataManager.DataAccess;
@@ -19,8 +21,11 @@ namespace TSGSystemsToolkit.CmdLine
         static async Task Main(string[] args)
         {
             var builder = new ConfigurationBuilder();
-            var config = builder.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
+            var absolutePath = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
+            var provider = new PhysicalFileProvider(absolutePath);
+            var config = builder
+                .SetBasePath(absolutePath)
+                .AddJsonFile(@$"{absolutePath}\appsettings.json", false, true)
                 .AddEnvironmentVariables()
                 .Build();
 
@@ -57,10 +62,7 @@ namespace TSGSystemsToolkit.CmdLine
                 })
                 .ConfigureAppConfiguration(app =>
                 {
-                    //var relativePath = @".";
-                    //var absolutePath = Path.GetFullPath(relativePath);
-                    //var provider = new PhysicalFileProvider(absolutePath);
-                    //app.AddJsonFile(provider, "appsettings.json", optional: false, reloadOnChange: true);
+                    app.AddConfiguration(config);
                 })
                 .UseSerilog()
                 .Build();
@@ -68,14 +70,6 @@ namespace TSGSystemsToolkit.CmdLine
             var svc = ActivatorUtilities.CreateInstance<AppService>(host.Services);
 
             await svc.Run(args);
-        }
-
-        static void BuildConfig(IConfigurationBuilder builder)
-        {
-            builder.SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables()
-                .Build();
         }
     }
 }

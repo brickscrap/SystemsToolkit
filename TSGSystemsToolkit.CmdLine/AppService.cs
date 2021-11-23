@@ -25,23 +25,22 @@ namespace TSGSystemsToolkit.CmdLine
 
         public async Task<int> Run(string[] args)
         {
+            var cmd = _rootCommands.Create();
+            cmd.Name = "SysTk";
+            cmd.Description = "A series of command-line tools to help ease the burden of your left-click button.";
+
+            AnsiConsole.Write(new FigletText("TSG Systems Toolkit").Color(Color.OrangeRed1));
+
             try
             {
                 CheckForUpdates();
             }
             catch (Exception ex)
             {
-                _logger.LogWarning("Error: {Exception}", ex.Message);
+                _logger.LogWarning("Error checking for updates: {Exception}", ex.Message);
                 _logger.LogDebug("Inner exception: {Inner}", ex.InnerException);
                 _logger.LogDebug("Trace: {Trace}", ex.StackTrace);
             }
-
-
-            var cmd = _rootCommands.Create();
-            cmd.Name = "SysTk";
-            cmd.Description = "A series of command-line tools to help ease the burden of your left-click button.";
-
-            AnsiConsole.Write(new FigletText("TSG Systems Toolkit").Color(Color.OrangeRed1));
 
             if (args.Length == 0)
             {
