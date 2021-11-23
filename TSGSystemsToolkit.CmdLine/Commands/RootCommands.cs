@@ -100,7 +100,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             CreateTerminalsCommand()
         };
 
-        private Command CreateTerminalsCommand() 
+        private Command CreateTerminalsCommand()
         {
             Command cmd = new("terminals", "Commands for use with Terminals_044.csv")
             {
@@ -123,7 +123,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             CreateMutationCommand()
         };
 
-        private Command CreateMutationCommand() 
+        private Command CreateMutationCommand()
         {
             Command cmd = new("create-mutation", "Create mutations for FuelPOS")
             {
@@ -140,7 +140,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
         }
 
 
-        private Command CreateSurveyCommand() 
+        private Command CreateSurveyCommand()
         {
             Command cmd = new("surveyor", "Tools for generating survey outputs based on one or more StatDev.xml files")
             {
@@ -155,6 +155,6 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             });
 
             return cmd;
-        } 
+        }
     }
 }

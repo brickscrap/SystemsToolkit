@@ -1,11 +1,6 @@
 ﻿using Newtonsoft.Json;
 using POSFileParser;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TSGSystemsToolkit.CmdLine.TestFuncs
 {

@@ -1,15 +1,10 @@
-﻿
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using Spectre.Console;
 using System;
 using System.CommandLine;
 using System.CommandLine.Help;
 using System.CommandLine.Rendering;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Commands;
 
@@ -40,7 +35,7 @@ namespace TSGSystemsToolkit.CmdLine
                 _logger.LogDebug("Inner exception: {Inner}", ex.InnerException);
                 _logger.LogDebug("Trace: {Trace}", ex.StackTrace);
             }
-            
+
 
             var cmd = _rootCommands.Create();
             cmd.Name = "SysTk";

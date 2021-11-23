@@ -2,11 +2,9 @@
 using FuelPOS.TankTableTools;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
-using Serilog.Settings.Configuration;
 using System.IO;
 using System.Threading.Tasks;
 using SysTk.DataManager.DataAccess;
