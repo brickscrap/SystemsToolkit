@@ -38,5 +38,15 @@ namespace TSGSystemsToolkit.CmdLine
 
             return ver;
         }
+
+        internal static bool IsUpdateAvailable(string installerLocation)
+        {
+            var fileVersion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>().Version.Split('.');
+            Version currentVersion = new(fileVersion[0], fileVersion[1], fileVersion[2]);
+
+            Version available = GetAvailableVersion(installerLocation);
+
+            return available > currentVersion;
+        }
     }
 }

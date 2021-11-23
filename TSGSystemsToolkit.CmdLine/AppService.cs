@@ -1,9 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
+﻿
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Spectre.Console;
 using System;
 using System.CommandLine;
 using System.CommandLine.Help;
+using System.CommandLine.Rendering;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
@@ -14,19 +17,30 @@ namespace TSGSystemsToolkit.CmdLine
 {
     internal class AppService : IAppService
     {
-        private readonly ILogger<AppService> _log;
+        private readonly ILogger<AppService> _logger;
         private readonly IRootCommands _rootCommands;
+        private readonly IConfiguration _config;
 
-        public AppService(ILogger<AppService> log, IRootCommands rootCommands)
+        public AppService(ILogger<AppService> logger, IRootCommands rootCommands, IConfiguration config)
         {
-            _log = log;
+            _logger = logger;
             _rootCommands = rootCommands;
+            _config = config;
         }
 
         public async Task<int> Run(string[] args)
         {
-            // TODO: Better update procedure
-            // CheckForUpdates();
+            try
+            {
+                CheckForUpdates();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Error: {Exception}", ex.Message);
+                _logger.LogDebug("Inner exception: {Inner}", ex.InnerException);
+                _logger.LogDebug("Trace: {Trace}", ex.StackTrace);
+            }
+            
 
             var cmd = _rootCommands.Create();
             cmd.Name = "SysTk";
@@ -44,46 +58,16 @@ namespace TSGSystemsToolkit.CmdLine
             return await cmd.InvokeAsync(args);
         }
 
-        private static void CheckForUpdates()
+        private void CheckForUpdates()
         {
-            var updater = new { MasterLocation = "" };
-            string baseDir = AppDomain.CurrentDomain.BaseDirectory;
-            using (StreamReader r = File.OpenText(Path.Combine(baseDir, "updater.json")))
-            {
-                string json = r.ReadToEnd();
-                updater = JsonConvert.DeserializeAnonymousType(json, updater);
-            };
-
-            var currentVersion = Assembly.GetEntryAssembly().GetName().Version.ToString();
-            var masterVersion = FileVersionInfo.GetVersionInfo(Path.Combine(updater.MasterLocation, "SysTk.exe")).FileVersion;
-
-            if (IsUpdateAvailable(currentVersion, masterVersion))
+            if (Extensions.IsUpdateAvailable(_config.GetValue<string>("MasterLocation")))
             {
                 Console.BackgroundColor = ConsoleColor.DarkGreen;
                 Console.WriteLine($"A new version of SystemsToolkit is available!");
+                Console.WriteLine($"Use command: {ForegroundColorSpan.Yellow()}systk --update{ForegroundColorSpan.Reset()} to update automatically.");
 
                 Console.BackgroundColor = ConsoleColor.Black;
-                Console.WriteLine($"Current Version: {currentVersion}");
-                Console.WriteLine($"Version Available: {masterVersion}");
-                Console.WriteLine($"To update, copy all files from \"{updater.MasterLocation}\" to \"{baseDir}\"");
-
-                Console.WriteLine();
             }
-        }
-        private static bool IsUpdateAvailable(string currentVersion, string masterVersion)
-        {
-            for (int i = 0; i < currentVersion.Split('.').Length; i++)
-            {
-                var master = masterVersion.Split('.');
-                var current = currentVersion.Split('.');
-
-                if (int.Parse(master[i]) > int.Parse(current[i]) || current.Length > master.Length)
-                {
-                    return true;
-                }
-            }
-
-            return false;
         }
     }
 }

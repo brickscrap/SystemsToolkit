@@ -2,9 +2,11 @@
 using FuelPOS.TankTableTools;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
+using Serilog.Settings.Configuration;
 using System.IO;
 using System.Threading.Tasks;
 using SysTk.DataManager.DataAccess;
@@ -19,10 +21,13 @@ namespace TSGSystemsToolkit.CmdLine
         static async Task Main(string[] args)
         {
             var builder = new ConfigurationBuilder();
-            BuildConfig(builder);
+            var config = builder.SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
 
             Log.Logger = new LoggerConfiguration()
-                .MinimumLevel.Information()
+                .ReadFrom.Configuration(config)
                 .Enrich.FromLogContext()
                 .WriteTo.Console(theme: AnsiConsoleTheme.Code)
                 .CreateLogger();
@@ -54,7 +59,10 @@ namespace TSGSystemsToolkit.CmdLine
                 })
                 .ConfigureAppConfiguration(app =>
                 {
-                    app.AddJsonFile("appsettings.json");
+                    //var relativePath = @".";
+                    //var absolutePath = Path.GetFullPath(relativePath);
+                    //var provider = new PhysicalFileProvider(absolutePath);
+                    //app.AddJsonFile(provider, "appsettings.json", optional: false, reloadOnChange: true);
                 })
                 .UseSerilog()
                 .Build();
@@ -67,7 +75,9 @@ namespace TSGSystemsToolkit.CmdLine
         static void BuildConfig(IConfigurationBuilder builder)
         {
             builder.SetBasePath(Directory.GetCurrentDirectory())
-                .AddEnvironmentVariables();
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
+                .Build();
         }
     }
 }

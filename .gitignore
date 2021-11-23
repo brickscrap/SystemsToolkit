@@ -354,3 +354,4 @@ healthchecksdb
 *.csv
 /FuelPOS.TankTableTools/Example/zcorrupt/dirlist.txt
 /FuelPOS.TankTableTools/Example
+/Systk.Installer
