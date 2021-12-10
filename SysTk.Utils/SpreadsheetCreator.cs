@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Spreadsheet;
+using System.IO;
 
 namespace SysTk.Utils
 {
@@ -114,6 +115,7 @@ namespace SysTk.Utils
 
             r++;
 
+            Directory.CreateDirectory(outputPath);
             sheet.SaveAs($"{outputPath}/FuelPOS Survey.xlsx");
         }
     }

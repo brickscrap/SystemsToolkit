@@ -2,11 +2,11 @@
 {
     public class SurveyOptions
     {
-        public SurveyOptions(string filepath, string output, bool spreadsheet)
+        public SurveyOptions(string filepath, string output, bool sheet)
         {
             FilePath = filepath;
             OutputPath = output;
-            CreateSpreadsheet = spreadsheet;
+            CreateSpreadsheet = sheet;
         }
         public string FilePath { get; set; }
         public string OutputPath { get; set; }
