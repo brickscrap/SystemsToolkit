@@ -85,7 +85,6 @@ namespace SysTk.Utils
                         sheet.SetCellValue(r, c + 3, pos.CustomerDisplay);
                         sheet.SetCellValue(r, c + 4, pos.BarcodeScanner);
                         sheet.SetCellValue(r, c + 5, pos.UPS);
-                        sheet.SetCellValue(r, c + 6, pos.SerialPortsUsed);
 
                         c += 7;
                     }
@@ -94,13 +93,12 @@ namespace SysTk.Utils
                         sheet.SetCellValue(r, c + 2, pos.CustomerDisplay);
                         sheet.SetCellValue(r, c + 3, pos.BarcodeScanner);
                         sheet.SetCellValue(r, c + 4, pos.UPS);
-                        sheet.SetCellValue(r, c + 5, pos.SerialPortsUsed);
 
                         c += 6;
                     }
                 }
 
-                var comms = value.Dispensers
+                var comms = value.Dispensing
                     .Select(x => x.Protocol).Distinct();
 
                 c = 22;

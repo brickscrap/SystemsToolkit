@@ -109,7 +109,7 @@ namespace ToolkitLibrary.Spreadsheets
                         }
                     }
 
-                    var comms = value.Dispensers
+                    var comms = value.Dispensing
                         .Select(x => x.Protocol).Distinct();
 
                     col = 22;

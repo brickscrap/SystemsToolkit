@@ -142,11 +142,10 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
         private Command CreateSurveyCommand()
         {
-            Command cmd = new("surveyor", "Tools for generating survey outputs based on one or more StatDev.xml files")
+            Command cmd = new("surveyor", "Generates a FuelPOS survey from one or multiple StatDev.xml files.")
             {
                 new Argument<string>("filepath", "Path to either an individual file, or directory containing multile StatDev XMLs."),
                 new Option<string>(new[] { "--output", "-o" }, "Path to store any created files.") { IsRequired = true },
-                new Option<bool>(new[] { "--sheet", "-s" }, "Create a survey spreadsheet.")
             };
 
             cmd.Handler = CommandHandler.Create((SurveyOptions options) =>

@@ -16,9 +16,7 @@ namespace FuelPOS.StatDevParser.Helpers
                 .FirstOrDefault();
 
             if (output != null)
-            {
                 return output.Value;
-            }
 
             return "None/unknown";
         }
@@ -64,6 +62,24 @@ namespace FuelPOS.StatDevParser.Helpers
             }
 
             return 0;
+        }
+
+        internal static string GetPropType34(this XElement xml)
+        {
+            return xml.GetValue("Property", "Type", "34");
+        }
+
+        internal static string GetValue(this XElement xml, string elementName, string attributeName, string attributeValue)
+        {
+            var element = xml.Elements(elementName);
+
+            if (element.Count() > 0)
+                return xml.Elements(elementName)
+                    .Where(x => x.Attribute(attributeName).Value == attributeValue)
+                    .FirstOrDefault()
+                    .Value;
+            else
+                return "Not found";
         }
     }
 }

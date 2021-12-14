@@ -23,33 +23,31 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
         public int RunHandlerAndReturnExitCode(SurveyOptions options)
         {
-            int exitCode = 1;
+            int exitCode = 0;
 
             FileAttributes attr = File.GetAttributes(options.FilePath);
 
-            if (options.CreateSpreadsheet)
+            List<StatdevModel> statdevs = new();
+
+            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
             {
-                List<StatdevModel> statdevs = new();
+                var xmlFiles = Directory.EnumerateFiles(options.FilePath, "*.xml");
 
-                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                foreach (var item in xmlFiles)
                 {
-                    var xmlFiles = Directory.EnumerateFiles(options.FilePath, "*.xml");
+                    var xdoc = XDocument.Load(item);
 
-                    foreach (var item in xmlFiles)
-                    {
-                        var xdoc = XDocument.Load(item);
-
-                        statdevs.Add(_statDevParser.Parse(xdoc));
-                    }
-                }
-                else
-                {
-                    var xdoc = XDocument.Load(options.FilePath);
                     statdevs.Add(_statDevParser.Parse(xdoc));
                 }
-
-                SpreadsheetCreator.CreateFuelPosSurvey(statdevs, options.OutputPath);
             }
+            else
+            {
+                var xdoc = XDocument.Load(options.FilePath);
+                statdevs.Add(_statDevParser.Parse(xdoc));
+            }
+
+            SpreadsheetCreator.CreateFuelPosSurvey(statdevs, options.OutputPath);
+
 
             return exitCode;
         }
