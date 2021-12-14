@@ -46,8 +46,9 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 statdevs.Add(_statDevParser.Parse(xdoc));
             }
 
-            SpreadsheetCreator.CreateFuelPosSurvey(statdevs, options.OutputPath);
-
+            // TODO: Should this be using dependency injection? Not convinced.
+            SpreadsheetCreator creator = new();
+            creator.CreateFuelPosSurvey(statdevs, options.OutputPath);
 
             return exitCode;
         }

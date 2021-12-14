@@ -7,114 +7,234 @@ using System.Text;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Spreadsheet;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace SysTk.Utils
 {
     public class SpreadsheetCreator
     {
-        // TODO: Formatting
-        // TODO: Split into separate methods
-        public static void CreateFuelPosSurvey(List<StatdevModel> data, string outputPath)
+        private SLStyle ColumnHeaderStyle
         {
-            SLDocument sheet = new();
-
-            // Set up header style
-            var headerStyle = sheet.CreateStyle();
-            var headerAlign = new SLAlignment();
-            headerAlign.Horizontal = HorizontalAlignmentValues.Center;
-            headerStyle.Alignment = headerAlign;
-            headerStyle.Font.Bold = true;
-
-            // Set up headers, first row
-            sheet.MergeWorksheetCells("A1", "B1");
-            sheet.MergeWorksheetCells("C1", "I1");
-            sheet.SetCellValue("C1", "POS 1");
-            sheet.MergeWorksheetCells("J1", "O1");
-            sheet.SetCellValue("J1", "POS 2");
-            sheet.MergeWorksheetCells("P1", "U1");
-            sheet.SetCellValue("P1", "POS 3");
-
-            // Headers, second row
-            sheet.SetCellValue("A2", "Petrol Server");
-            sheet.SetCellValue("B2", "Site Name");
-            sheet.SetCellValue("C2", "Hardware");
-            sheet.SetCellValue("D2", "BD");
-            sheet.SetCellValue("E2", "SW Ver");
-            sheet.SetCellValue("F2", "CDU");
-            sheet.SetCellValue("G2", "Scanner");
-            sheet.SetCellValue("H2", "UPS");
-            sheet.SetCellValue("I2", "Ser Ports Used");
-            sheet.SetCellValue("J2", "Hardware 2");
-            sheet.SetCellValue("K2", "BD 2");
-            sheet.SetCellValue("L2", "CDU 2");
-            sheet.SetCellValue("M2", "Scanner 2");
-            sheet.SetCellValue("N2", "UPS 2");
-            sheet.SetCellValue("O2", "Ser Ports Used 2");
-            sheet.SetCellValue("P2", "Hardware 3");
-            sheet.SetCellValue("Q2", "BD 3");
-            sheet.SetCellValue("R2", "CDU 3");
-            sheet.SetCellValue("S2", "Scanner 3");
-            sheet.SetCellValue("T2", "UPS 3");
-            sheet.SetCellValue("U2", "Ser Ports Used 3");
-            sheet.SetCellValue("V2", "Protocol 1");
-            sheet.SetCellValue("W2", "Protocol 2");
-            sheet.SetCellValue("X2", "Protocol 3");
-
-            // Apply header style
-            sheet.SetRowStyle(1, headerStyle);
-            sheet.SetRowStyle(2, headerStyle);
-
-            // Add data
-            int r = 3;
-
-            foreach (var value in data)
+            get
             {
-                sheet.SetCellValue(r, 1, value.StationInfo.StationNumber);
-                sheet.SetCellValue(r, 2, value.StationInfo.StationName);
+                var style = new SLStyle();
+                style.Font.Bold = true;
+                style.Alignment = new SLAlignment { Horizontal = HorizontalAlignmentValues.Left };
+                System.Drawing.Color lightSteelBlue = System.Drawing.Color.LightSteelBlue;
+                style.SetPatternFill(PatternValues.Solid, lightSteelBlue, lightSteelBlue);
 
-                int c = 3;
+                return style;
+            }
+        }
 
-                foreach (var pos in value.POS)
+        private SLStyle TitleStyle
+        {
+            get
+            {
+                var style = new SLStyle();
+                style.Font.Bold = true;
+                style.Font.FontSize = 14;
+
+                return style;
+            }
+        }
+
+        private SLStyle SubTitleStyle
+        {
+            get
+            {
+                var style = new SLStyle();
+                style.Font.Bold = true;
+                style.Font.FontSize = 14;
+                style.Alignment = new SLAlignment { Horizontal = HorizontalAlignmentValues.Center };
+
+                return style;
+            }
+        }
+
+        // TODO: Make this monstrosity maintainable
+        public void CreateFuelPosSurvey(List<StatdevModel> data, string outputPath)
+        {
+            SLDocument doc = new();
+
+            foreach (var station in data)
+            {
+                if (doc.AddWorksheet(SanitiseStationName(station.StationInfo.StationName)))
                 {
-                    sheet.SetCellValue(r, c, pos.HardwareType);
-                    sheet.SetCellValue(r, c + 1, pos.OperatingSystem);
+                    doc = SetupTemplate(doc);
 
-                    if (pos.Number == 1)
-                    {
-                        sheet.SetCellValue(r, c + 2, pos.SoftwareVersion);
-                        sheet.SetCellValue(r, c + 3, pos.CustomerDisplay);
-                        sheet.SetCellValue(r, c + 4, pos.BarcodeScanner);
-                        sheet.SetCellValue(r, c + 5, pos.UPS);
+                    doc.MergeWorksheetCells("A1", "C1");
+                    doc.SetCellValue("A1", station.StationInfo.StationName);
+                    doc.SetCellStyle("A1", TitleStyle);
 
-                        c += 7;
-                    }
-                    else
-                    {
-                        sheet.SetCellValue(r, c + 2, pos.CustomerDisplay);
-                        sheet.SetCellValue(r, c + 3, pos.BarcodeScanner);
-                        sheet.SetCellValue(r, c + 4, pos.UPS);
-
-                        c += 6;
-                    }
-                }
-
-                var comms = value.Dispensing
-                    .Select(x => x.Protocol).Distinct();
-
-                c = 22;
-                foreach (var proto in comms)
-                {
-                    sheet.SetCellValue(r, c, proto);
-                    c++;
-                }
-
-                r++;
+                    doc = AddPos(doc, station);
+                    doc = AddTankManagement(doc, station);
+                    doc = AddDispensers(doc, station);
+                };
             }
 
-            r++;
+            doc.DeleteWorksheet("Sheet1");
 
-            Directory.CreateDirectory(outputPath);
-            sheet.SaveAs($"{outputPath}/FuelPOS Survey.xlsx");
+            doc.SaveAs(@$"{outputPath}\FuelPOS Survey.xlsx");
+        }
+
+        private SLDocument SetupTemplate(SLDocument doc)
+        {
+            // POS Template
+            doc.SetCellValue("A3", "POS Details");
+            doc.MergeWorksheetCells("A3", "C3");
+
+            doc.SetCellValue("A5", "Hardware");
+            doc.SetCellValue("A6", "Build Disk");
+            doc.SetCellValue("A7", "OS");
+            doc.SetCellValue("A8", "Touchscreen");
+            doc.SetCellValue("A9", "UPS");
+            doc.SetCellValue("A10", "Scanner");
+            doc.SetCellValue("A11", "Printer");
+            doc.SetCellValue("A12", "CDU");
+            doc.SetCellValue("A13", "MSR");
+            doc.SetCellValue("A14", "OASE IPT");
+            doc.SetCellValue("A15", "Ext IPT");
+            doc.SetCellValue("A16", "Ext Loyalty");
+            doc.SetCellValue("A17", "Nr Ser Dev");
+            doc.SetCellValue("A18", "Nr Multiport Dev");
+            doc.SetCellValue("A19", "LON Interface");
+            doc.SetCellValue("A20", "A4 Printer");
+
+            // Tank Management Template
+            doc.SetCellValue("A21", "Tank Management");
+            doc.MergeWorksheetCells("A21", "C21");
+
+            doc.SetCellValue("A26", "Fuel");
+            doc.SetCellValue("A27", "Fuel Number");
+
+            // Dispenser Template
+            doc.SetCellValue("A29", "Dispensers");
+            doc.MergeWorksheetCells("A29", "C29");
+
+            doc.SetCellValue("A31", "Comms Types");
+
+            // Styles
+            for (int i = 5; i < 21; i++)
+            {
+                doc.SetCellStyle(i, 1, ColumnHeaderStyle);
+            }
+            doc.SetCellStyle("A3", SubTitleStyle);
+            doc.SetCellStyle("A21", SubTitleStyle);
+            doc.SetCellStyle("A29", SubTitleStyle);
+            doc.SetCellStyle("A31", ColumnHeaderStyle);
+
+            // Layout
+            doc.AutoFitColumn("A");
+
+            return doc;
+        } 
+
+        private SLDocument AddPos(SLDocument doc, StatdevModel data)
+        {
+            for (int i = 0; i < data.POS.Count; i++)
+            {
+                int j = i + 2;
+                doc = SetPOSHeaders(doc, data, i, j, 4);
+
+                doc.SetCellValue(5, j, data.POS[i].HardwareType);
+                doc.SetCellValue(6, j, data.POS[i].BuildDisk);
+                doc.SetCellValue(7, j, data.POS[i].OperatingSystem);
+                doc.SetCellValue(8, j, data.POS[i].TouchScreenType);
+                doc.SetCellValue(9, j, data.POS[i].UPS);
+                doc.SetCellValue(10, j, data.POS[i].BarcodeScanner);
+                doc.SetCellValue(11, j, data.POS[i].ReceiptPrinter);
+                doc.SetCellValue(12, j, data.POS[i].CustomerDisplay);
+                doc.SetCellValue(13, j, data.POS[i].MagCardReader);
+                doc.SetCellValue(14, j, data.POS[i].PinPad);
+                doc.SetCellValue(15, j, data.POS[i].PaymentTerminal);
+                doc.SetCellValue(16, j, data.POS[i].LoyaltyTerminal);
+                doc.SetCellValue(17, j, data.POS[i].ComDevices.NumberSerialPortsInUse);
+                doc.SetCellValue(18, j, data.POS[i].ComDevices.NumberPciMultiPortsInUse);
+                doc.SetCellValue(19, j, data.POS[i].ComDevices.LonInterface);
+
+                doc.AutoFitColumn(j);
+            }
+
+            var table = doc.CreateTable(4, 2, 18, data.POS.Count + 1);
+            table.SetTableStyle(SLTableStyleTypeValues.Medium2);
+            doc.InsertTable(table);
+            doc.SetCellValue("B20", data.POS[0].A4Printer);
+
+
+            return doc;
+        }
+        private SLDocument AddTankManagement(SLDocument doc, StatdevModel data)
+        {
+            doc.SetCellValue("A23", "Level Gauge");
+            doc.SetCellValue("B23", data.TankManagement.TankGauge);
+
+            for (int i = 0; i < data.TankManagement.TankGroups.Count; i++)
+            {
+                int j = i + 2;
+
+                doc.SetCellValue(25, j, $"Tank Group {data.TankManagement.TankGroups[i].Number}");
+
+                doc.SetCellValue(26, j, data.TankManagement.TankGroups[i].ProductName);
+                doc.SetCellValue(27, j, data.TankManagement.TankGroups[i].ProductNumber);
+
+                doc.AutoFitColumn(j);
+            }
+
+            doc.SetCellStyle("A23", ColumnHeaderStyle);
+
+            for (int i = 26; i < 28; i++)
+            {
+                doc.SetCellStyle(i, 1, ColumnHeaderStyle);
+            }
+
+            var table = doc.CreateTable(25, 2, 27, data.TankManagement.TankGroups.Count + 1);
+            table.SetTableStyle(SLTableStyleTypeValues.Medium2);
+            doc.InsertTable(table);
+
+            return doc;
+        }
+
+        private SLDocument AddDispensers(SLDocument doc, StatdevModel data)
+        {
+            for (int i = 0; i < data.POS.Count; i++)
+            {
+                int j = i + 2;
+
+                doc = SetPOSHeaders(doc, data, i, j, 30);
+
+                string comms = "";
+                foreach (var item in data.POS[i].DispenserCommTypes)
+                {
+                    comms += $"{item}, ";
+                }
+
+                comms = comms.Trim().Trim(',');
+                
+                doc.SetCellValue(31, j, comms);
+            }
+
+            var table = doc.CreateTable(30, 2, 31, data.POS.Count + 1);
+            table.SetTableStyle(SLTableStyleTypeValues.Medium2);
+            doc.InsertTable(table);
+
+            return doc;
+        }
+
+        private static string SanitiseStationName(string stationName)
+        {
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            return rgx.Replace(stationName, "");
+        }
+
+        private static SLDocument SetPOSHeaders(SLDocument doc, StatdevModel data, int i, int j, int row)
+        {
+            if (data.POS[i].Number == 9)
+                doc.SetCellValue(row, j, $"CIS");
+            else
+                doc.SetCellValue(row, j, $"POS {data.POS[i].Number}");
+
+            return doc;
         }
     }
 }

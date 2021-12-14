@@ -148,7 +148,7 @@ namespace FuelPOS.StatDevParser
                     switch (dev.Attribute("Type").Value)
                     {
                         case "8":
-                            statDev.Dispensing = GetDispensing(dev);
+                            posDetail.Dispensing = GetDispensing(dev);
                             break;
                         case "11":
                             statDev.TankManagement = GetTankManagement(dev);

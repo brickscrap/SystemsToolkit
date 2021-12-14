@@ -1,4 +1,5 @@
-﻿using System.CommandLine;
+﻿using System;
+using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.IO;
 using System.Linq;
@@ -44,9 +45,17 @@ namespace TSGSystemsToolkit.CmdLine
             var fileVersion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>().Version.Split('.');
             Version currentVersion = new(fileVersion[0], fileVersion[1], fileVersion[2]);
 
-            Version available = GetAvailableVersion(installerLocation);
+            try
+            {
+                Version available = GetAvailableVersion(installerLocation);
+                return available > currentVersion;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error checking for updates: {ex.Message}");
+            }
 
-            return available > currentVersion;
+            return false;
         }
     }
 }

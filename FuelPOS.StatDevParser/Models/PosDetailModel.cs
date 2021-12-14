@@ -24,7 +24,18 @@ namespace FuelPOS.StatDevParser.Models
         public string CustomerDisplay { get; set; } = NODEVICE;
         public string BarcodeScanner { get; set; } = NODEVICE;
         public ComDeviceModel ComDevices { get; set; }
+        public List<DispensingModel> Dispensing { get; set; } = new();
         public string UPS { get; set; } = NODEVICE;
         public string TouchScreenType { get; set; } = NODEVICE;
+
+        public List<string> DispenserCommTypes 
+        { 
+            get 
+            {
+                return Dispensing.Select(x => x.Protocol)
+                    .Distinct()
+                    .ToList();
+            } 
+        }
     }
 }
