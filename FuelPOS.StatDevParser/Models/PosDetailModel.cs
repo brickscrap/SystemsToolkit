@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace FuelPOS.StatDevParser.Models
@@ -28,14 +27,14 @@ namespace FuelPOS.StatDevParser.Models
         public string UPS { get; set; } = NODEVICE;
         public string TouchScreenType { get; set; } = NODEVICE;
 
-        public List<string> DispenserCommTypes 
-        { 
-            get 
+        public List<string> DispenserCommTypes
+        {
+            get
             {
                 return Dispensing.Select(x => x.Protocol)
                     .Distinct()
                     .ToList();
-            } 
+            }
         }
     }
 }

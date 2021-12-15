@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace POSFileParser.Models.TRX
 {
     public class MerchantReceiptModel : MappableBase<MerchantReceiptModel>
     {
-        private protected override IDictionary<string, Func<MerchantReceiptModel, string, MerchantReceiptModel>> Mappings 
+        private protected override IDictionary<string, Func<MerchantReceiptModel, string, MerchantReceiptModel>> Mappings
         {
-            get { return _mappings; } 
+            get { return _mappings; }
         }
         public string Identifier { get; set; }
         public string Name { get; set; }

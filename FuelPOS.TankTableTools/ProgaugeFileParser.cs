@@ -33,7 +33,7 @@ namespace FuelPOS.TankTableTools
         {
             var files = Directory.EnumerateFiles(FolderPath, "*.csv").ToList();
             files.AddRange(Directory.EnumerateFiles(FolderPath, ".txt").ToList());
-            
+
             foreach (var file in files)
             {
                 var fileName = Path.GetFileNameWithoutExtension(file);

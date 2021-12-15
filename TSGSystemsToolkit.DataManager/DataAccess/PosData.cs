@@ -1,5 +1,4 @@
-﻿using FuelPOS.StatDevParser.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TsgSystemsToolkit.DataManager.Constants;
@@ -52,7 +51,7 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
             return output;
         }
 
-        public async Task AddPOSData(string stationId, List<PCInfoModel> posModels)
+        public async Task AddPOSData(string stationId, List<POSModel> posModels)
         {
             // TODO: Check if POS already exists, update/don't if required
             // TODO: Make this more DRY/SRP
@@ -90,7 +89,7 @@ namespace TsgSystemsToolkit.DataManager.DataAccess
                         {
                             POSHardwareId = posID,
                             Device = serialDevice.Device,
-                            PortNumber = serialDevice.PortNumber
+                            PortNumber = serialDevice.PortName
                         });
                 }
             }

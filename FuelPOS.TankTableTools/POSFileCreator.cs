@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
+using System.Text.RegularExpressions;
 using TankTableToolkit.Models;
 
 namespace FuelPOS.TankTableTools
@@ -44,7 +43,10 @@ namespace FuelPOS.TankTableTools
 
                 Directory.CreateDirectory(outputDirectory);
 
-                File.WriteAllLines($@"{outputDirectory}\{parsedGaugeFile.SiteName}.csv", lines);
+                var filePath = $@"{outputDirectory}\{SanitiseFileName(parsedGaugeFile.SiteName)}.csv";
+
+
+                File.WriteAllLines(filePath, lines);
             }
         }
 
@@ -64,6 +66,12 @@ namespace FuelPOS.TankTableTools
             }
 
             return output;
+        }
+
+        private static string SanitiseFileName(string siteName)
+        {
+            Regex rgx = new Regex("[^a-zA-Z0-9 -]");
+            return rgx.Replace(siteName, "");
         }
     }
 }

@@ -1,9 +1,6 @@
 ﻿using FuelPOS.TankTableTools.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TankTableToolkit.Models;
 
 namespace FuelPOS.TankTableTools.Helpers

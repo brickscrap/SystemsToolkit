@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using POSFileParser.Attributes;
+using System;
 using System.Linq;
-using System.Text;
-using POSFileParser.Attributes;
-using System.Reflection;
-using System.Runtime.Serialization;
-using System.Globalization;
 
 namespace POSFileParser
 {

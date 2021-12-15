@@ -40,10 +40,8 @@ namespace TsgSystems.Api.Controllers
         [Consumes("application/xml")]
         public async Task Post(string stationId, [FromBody] XElement statDevXML)
         {
-            var xdoc = new XDocument(statDevXML);
-
             StatdevModel posInfo = new StatdevModel();
-            posInfo = _statdevParser.Parse(xdoc);
+            posInfo = _statdevParser.Parse(statDevXML);
 
             await _posData.AddPOSData(stationId, posInfo.POS);
         }

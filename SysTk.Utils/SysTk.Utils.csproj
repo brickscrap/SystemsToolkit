@@ -5,7 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Spreadsheets\" />
+    <Compile Remove="Spreadsheets\**" />
+    <EmbeddedResource Remove="Spreadsheets\**" />
+    <None Remove="Spreadsheets\**" />
   </ItemGroup>
 
   <ItemGroup>

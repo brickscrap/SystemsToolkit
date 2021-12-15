@@ -1,5 +1,6 @@
 ﻿using FuelPOS.TankTableTools;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -21,20 +22,31 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
         public int RunHandlerAndReturnExitCode(VeederRootOptions options)
         {
             // TODO: Validate file path, handle exceptions
-            FileAttributes attr = File.GetAttributes(options.FilePath);
-            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+            try
             {
-                _logger.LogInformation("Parsing files in directory: {Directory}.", options.FilePath);
-                ParseFilesInDir(options);
+                FileAttributes attr = File.GetAttributes(options.FilePath);
 
-                return 1;
+                if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
+                {
+                    _logger.LogInformation("Parsing files in directory: {Directory}.", options.FilePath);
+                    ParseFilesInDir(options);
+
+                    return 0;
+                }
+                else
+                {
+                    ParseSingleFile(options);
+
+                    return 0;
+                }
             }
-            else
+            catch (FileNotFoundException ex)
             {
-                _logger.LogInformation("Parsing file: {FilePath}", options.FilePath);
-                ParseSingleFile(options);
+                _logger.LogError("Error: {Message}", ex.Message);
+                _logger.LogDebug("Inner Exception: {Inner}", ex.InnerException);
+                _logger.LogDebug("Trace: {Trace}", ex.StackTrace);
 
-                return 1;
+                return -1;
             }
         }
 
@@ -62,7 +74,15 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             if (opts.CreateCsv)
             {
                 _logger.LogInformation("Creating tank setup CSV at {OutputDir}", outputDir);
-                POSFileCreator.CreateFuelPosSetupCsv(_parser as VdrRootFileParser, outputDir);
+                try
+                {
+                    POSFileCreator.CreateFuelPosSetupCsv(_parser as VdrRootFileParser, outputDir);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Error creating file at {outputDir}\n" +
+                        "{Message}", outputDir, ex.Message);
+                }
             }
         }
 

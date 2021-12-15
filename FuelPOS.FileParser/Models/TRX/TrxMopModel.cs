@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace POSFileParser.Models.TRX
 {
     public class TrxMopModel : MappableBase<TrxMopModel>
     {
-        private protected override IDictionary<string, Func<TrxMopModel, string, TrxMopModel>> Mappings 
+        private protected override IDictionary<string, Func<TrxMopModel, string, TrxMopModel>> Mappings
         {
             get { return _mappings; }
         }

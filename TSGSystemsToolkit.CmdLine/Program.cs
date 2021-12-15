@@ -18,7 +18,7 @@ namespace TSGSystemsToolkit.CmdLine
 {
     class Program
     {
-        static async Task Main(string[] args)
+        static async Task<int> Main(string[] args)
         {
             var builder = new ConfigurationBuilder();
             var absolutePath = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
@@ -69,7 +69,7 @@ namespace TSGSystemsToolkit.CmdLine
 
             var svc = ActivatorUtilities.CreateInstance<AppService>(host.Services);
 
-            await svc.Run(args);
+            return await svc.Run(args);
         }
     }
 }

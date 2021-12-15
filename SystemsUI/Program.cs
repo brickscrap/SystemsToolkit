@@ -28,7 +28,7 @@ namespace SystemsUI
             builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             builder.Services.AddBlazoredLocalStorage();
-            
+
             builder.Services.AddTransient<IPosEndpoint, PosEndpoint>();
             builder.Services.AddTransient<IStationEndpoint, StationEndpoint>();
             builder.Services.AddTransient<IDebugEndpoint, DebugEndpoint>();

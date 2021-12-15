@@ -48,7 +48,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
             cmd.Handler = CommandHandler.Create((UpdateOptions options) =>
             {
-                _updateHandler.RunHandlerAndReturnExitCode(options);
+                return _updateHandler.RunHandlerAndReturnExitCode(options);
             });
 
             return cmd;
@@ -72,7 +72,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
             cmd.Handler = CommandHandler.Create((VeederRootOptions options) =>
             {
-                _veederRootHandler.RunHandlerAndReturnExitCode(options);
+                return _veederRootHandler.RunHandlerAndReturnExitCode(options);
             });
 
             return cmd;
@@ -89,7 +89,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
             cmd.Handler = CommandHandler.Create((ProgaugeOptions options) =>
             {
-                _progaugeHandler.RunHandlerAndReturnExitCode(options);
+                return _progaugeHandler.RunHandlerAndReturnExitCode(options);
             });
 
             return cmd;
@@ -112,7 +112,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
             cmd.Handler = CommandHandler.Create((TerminalsOptions options) =>
             {
-                _terminalsHandler.RunHandlerAndReturnExitCode(options);
+                return _terminalsHandler.RunHandlerAndReturnExitCode(options);
             });
 
             return cmd;
@@ -133,7 +133,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
             cmd.Handler = CommandHandler.Create((CreateMutationOptions options) =>
             {
-                _mutationHandler.RunHandlerAndReturnExitCode(options);
+                return _mutationHandler.RunHandlerAndReturnExitCode(options);
             });
 
             return cmd;
@@ -150,7 +150,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
             cmd.Handler = CommandHandler.Create((SurveyOptions options) =>
             {
-                _surveyHandler.RunHandlerAndReturnExitCode(options);
+                return _surveyHandler.RunHandlerAndReturnExitCode(options);
             });
 
             return cmd;

@@ -4,11 +4,6 @@ using SharpConfig;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.WebSockets;
-using System.Reflection.Emit;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using System.Text.Json.Serialization;
 
 namespace POSFileParser.Models
 {
@@ -16,7 +11,7 @@ namespace POSFileParser.Models
     {
         #region Public Properties
 
-        private protected override IDictionary<string, Func<TRXModel, string, TRXModel>> Mappings 
+        private protected override IDictionary<string, Func<TRXModel, string, TRXModel>> Mappings
         {
             get { return _mappings; }
         }
@@ -349,7 +344,7 @@ namespace POSFileParser.Models
         }
     }
 
-    
+
 
     /// <summary>
     /// Defines possible transaction types

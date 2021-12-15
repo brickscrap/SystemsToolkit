@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace POSFileParser.Models.TRX
 {
@@ -8,8 +7,8 @@ namespace POSFileParser.Models.TRX
     {
         #region Public Properties
         private protected override IDictionary<string, Func<TrxArticleModel, string, TrxArticleModel>> Mappings
-        { 
-            get { return _mappings; } 
+        {
+            get { return _mappings; }
         }
         public string IDKey { get; set; }
         public ArticleType Type { get; set; }
@@ -115,7 +114,7 @@ namespace POSFileParser.Models.TRX
             FuelAmount = 2,
             ShopGoods = 3
         }
-        
+
         #endregion
     }
 }

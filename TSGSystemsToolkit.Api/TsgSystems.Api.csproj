@@ -37,7 +37,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\FuelPOS.StatDevParser\FuelPOS.StatDevParser.csproj" />
-    <ProjectReference Include="..\ToolkitLibrary\ToolkitLibrary.csproj" />
     <ProjectReference Include="..\TsgSystems.Grpc.Core\TsgSystems.Grpc.Core.csproj" />
     <ProjectReference Include="..\TSGSystemsToolkit.DataManager\TsgSystemsToolkit.DataManager.csproj" />
   </ItemGroup>

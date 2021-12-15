@@ -1,12 +1,10 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Net.Http;
-using SystemsUI.Library.Models;
-using Microsoft.Extensions.Configuration;
 using System.Net.Http.Json;
+using System.Threading.Tasks;
+using SystemsUI.Library.Models;
 
 namespace SystemsUI.Library.API
 {

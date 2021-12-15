@@ -1,20 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FuelPOS.StatDevParser.Models
 {
     public class ComDeviceModel
     {
-        public int NumberSerialPortsInUse { 
-            get 
+        public int NumberSerialPortsInUse
+        {
+            get
             {
                 return SerialDevices
                     .Where(x => x.Device.Trim() != "Unknown")
                     .Count();
-            } 
+            }
         }
         public List<SerialDeviceModel> SerialDevices { get; set; } = new();
 

@@ -1,13 +1,9 @@
-﻿using POSFileParser.Enums;
-using POSFileParser.Models;
+﻿using POSFileParser.Models;
 using SharpConfig;
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace POSFileParser
 {
@@ -45,8 +41,8 @@ namespace POSFileParser
 
         public static List<TRXModel> ParseTRXFile(Configuration file)
         {
-           List<IFileSection> output = new List<IFileSection>();
-            
+            List<IFileSection> output = new List<IFileSection>();
+
             foreach (Section section in file)
             {
                 if (section.Name.Equals("TRX"))
@@ -112,7 +108,7 @@ namespace POSFileParser
                         newItem.AddToItem(headers, item.StringValue);
                     }
                 }
-                
+
             }
 
             items.Add(newItem);
