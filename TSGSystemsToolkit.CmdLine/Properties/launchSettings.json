@@ -2,7 +2,7 @@
   "profiles": {
     "TSGSystemsToolkit.CmdLine": {
       "commandName": "Project",
-      "commandLineArgs": "--help"
+      "commandLineArgs": "surveyor \"C:\\Users\\Gary.MacGregor\\Downloads\\l9987_statdev.xml\"  -o \"C:\\surveys\\RobinsonYoung\""
     }
   }
 }
