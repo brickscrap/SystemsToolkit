@@ -1,7 +1,4 @@
 ﻿using POSFileParser.Enums;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace POSFileParser.Models.TRX
 {

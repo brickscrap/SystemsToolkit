@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace TankTableToolkit.Models
 {
@@ -22,17 +20,17 @@ namespace TankTableToolkit.Models
 
         public List<(double, double)> Measurements
         {
-            get 
+            get
             {
                 _measurements = _measurements.OrderBy(x => x.Item1).ToList();
                 return _measurements;
             }
-            set 
-            { 
+            set
+            {
                 _measurements = value;
             }
         }
-            
+
 
         public TankTableModel()
         {

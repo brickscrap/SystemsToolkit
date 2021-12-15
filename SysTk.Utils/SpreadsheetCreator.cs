@@ -1,18 +1,17 @@
-﻿using FuelPOS.StatDevParser.Models;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using FuelPOS.StatDevParser.Models;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using SpreadsheetLight;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Spreadsheet;
-using System.IO;
 using System.Text.RegularExpressions;
 
 namespace SysTk.Utils
 {
     public class SpreadsheetCreator
     {
+        private readonly ILogger _logger;
+
         private SLStyle ColumnHeaderStyle
         {
             get
@@ -52,6 +51,11 @@ namespace SysTk.Utils
             }
         }
 
+        public SpreadsheetCreator(ILogger logger = null)
+        {
+            _logger = logger ?? NullLogger.Instance;
+        }
+
         // TODO: Make this monstrosity maintainable
         public void CreateFuelPosSurvey(List<StatdevModel> data, string outputPath)
         {
@@ -59,6 +63,7 @@ namespace SysTk.Utils
 
             foreach (var station in data)
             {
+                _logger.LogInformation("Creating worksheet for {Station}", station.StationInfo.StationName);
                 if (doc.AddWorksheet(SanitiseStationName(station.StationInfo.StationName)))
                 {
                     doc = SetupTemplate(doc);
@@ -75,7 +80,9 @@ namespace SysTk.Utils
 
             doc.DeleteWorksheet("Sheet1");
 
-            doc.SaveAs(@$"{outputPath}\FuelPOS Survey.xlsx");
+            string filePath = $@"{outputPath}\FuelPOS Survey.xlsx";
+            _logger.LogInformation("Saving to {OutputPath}", filePath);
+            doc.SaveAs(filePath);
         }
 
         private SLDocument SetupTemplate(SLDocument doc)
@@ -128,7 +135,7 @@ namespace SysTk.Utils
             doc.AutoFitColumn("A");
 
             return doc;
-        } 
+        }
 
         private SLDocument AddPos(SLDocument doc, StatdevModel data)
         {
@@ -210,7 +217,7 @@ namespace SysTk.Utils
                 }
 
                 comms = comms.Trim().Trim(',');
-                
+
                 doc.SetCellValue(31, j, comms);
             }
 

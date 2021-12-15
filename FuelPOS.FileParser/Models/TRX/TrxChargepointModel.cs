@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace POSFileParser.Models.TRX
+﻿namespace POSFileParser.Models.TRX
 {
     public class TrxChargepointModel
     {
@@ -14,6 +10,6 @@ namespace POSFileParser.Models.TRX
         public double Quantity { get; set; }
         public double Amount { get; set; }
         public double NonWMDiscountAmount { get; set; }
-        
+
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace POSFileParser.Models.TRX
 {
@@ -27,7 +25,7 @@ namespace POSFileParser.Models.TRX
         /// Name of the loyalty gift.
         /// </summary>
         public string Name { get; set; }
-        
+
 
         public void AddToItem(string[] headers, string value)
         {

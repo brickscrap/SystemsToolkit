@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TankTableToolkit.Models;
 
 namespace FuelPOS.TankTableTools.Helpers
 {
     public static class TableCreator
     {
-        public static  TankTableModel CreateValuePairs(this TankTableModel tankTable, List<string> line)
+        public static TankTableModel CreateValuePairs(this TankTableModel tankTable, List<string> line)
         {
             for (int i = 0; i < line.Count; i = i + 2)
             {

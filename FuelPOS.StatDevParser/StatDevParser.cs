@@ -1,6 +1,7 @@
 ﻿using FuelPOS.StatDevParser.Helpers;
 using FuelPOS.StatDevParser.Models;
-using System;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
@@ -9,42 +10,37 @@ namespace FuelPOS.StatDevParser
 {
     public class StatDevParser : IStatDevParser
     {
-        private IEnumerable<XElement> _statDev;
+        private readonly ILogger<StatDevParser> _logger;
 
-        public StatDevParser()
+        public StatDevParser(ILogger<StatDevParser> logger = null)
         {
-
+            _logger = logger ?? NullLogger<StatDevParser>.Instance;
         }
 
-        public StatDevParser(XDocument xmlDoc)
+        public StatdevModel Parse(string xmlPath)
         {
-            _statDev = xmlDoc.Elements("ROOT")
-                .Elements("TREE")
-                .Elements("Device");
-        }
+            var xDoc = XDocument.Load(xmlPath);
 
-        public StatdevModel Parse(XDocument xmlDoc)
-        {
-            _statDev = xmlDoc.Elements("ROOT")
+            var doc = xDoc.Elements("ROOT")
                 .Elements("TREE")
                 .Elements("Device");
 
             StatdevModel output = new()
             {
-                StationInfo = GetStationInfo(xmlDoc)
+                StationInfo = GetStationInfo(doc)
             };
 
-            output = GetPOSInfo(xmlDoc, output);
+            _logger.LogInformation("Found data for {StationNumber} {StationName}.", output.StationInfo.StationNumber, output.StationInfo.StationName);
+
+            output = GetPOSInfo(doc, output);
+
+            _logger.LogInformation("Found {NumberOfPos} POS.", output.POS.Count);
 
             return output;
         }
 
-        private StationInfoModel GetStationInfo(XDocument xmlDoc)
+        private StationInfoModel GetStationInfo(IEnumerable<XElement> doc)
         {
-            var doc = xmlDoc.Elements("ROOT")
-                .Elements("TREE")
-                .Elements("Device");
-
             // Get station info XML
             var stationInfo = doc.Elements().Where(x => x.Name == "Property");
 
@@ -56,11 +52,9 @@ namespace FuelPOS.StatDevParser
                 switch (item.Attribute("Type").Value)
                 {
                     case "1":
-                        Console.WriteLine($"Station number: {item.Value}");
                         output.StationNumber = item.Value;
                         break;
                     case "2":
-                        Console.WriteLine($"Station name: {item.Value}");
                         output.StationName = item.Value;
                         break;
                     case "3":
@@ -92,13 +86,9 @@ namespace FuelPOS.StatDevParser
             return output;
         }
 
-        private StatdevModel GetPOSInfo(XDocument xmlDoc, StatdevModel statDev)
+        private StatdevModel GetPOSInfo(IEnumerable<XElement> doc, StatdevModel statDev)
         {
             List<PosDetailModel> posList = new();
-
-            var doc = xmlDoc.Elements("ROOT")
-                .Elements("TREE")
-                .Elements("Device");
 
             // Get all POS devices
             var posInfo = doc.Elements("Device").Where(x => x.Attribute("Type").Value == "2");
@@ -283,7 +273,7 @@ namespace FuelPOS.StatDevParser
                 SerialDeviceModel serDev = new();
                 foreach (var prop in dev.Elements("Property"))
                 {
-                    
+
                     switch (prop.Attribute("Type").Value)
                     {
                         case "84":
@@ -294,7 +284,7 @@ namespace FuelPOS.StatDevParser
                             break;
                         default:
                             break;
-                    } 
+                    }
                 }
                 output.Add(serDev);
             }

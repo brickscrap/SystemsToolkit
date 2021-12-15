@@ -46,7 +46,7 @@ namespace TSGSystemsToolkit.CmdLine
             {
                 var helpBuilder = new HelpBuilder(LocalizationResources.Instance);
                 helpBuilder.Write(cmd, Console.Out);
-                return 1;
+                return 0;
             }
 
             return await cmd.InvokeAsync(args);

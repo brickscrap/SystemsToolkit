@@ -52,10 +52,6 @@ namespace FuelPOS.TankTableTools
             }
         }
 
-        public VdrRootFileParser()
-        {
-        }
-
         public VdrRootFileParser(ILogger<VdrRootFileParser> logger)
         {
             _logger = logger;
@@ -78,8 +74,8 @@ namespace FuelPOS.TankTableTools
                 .FirstOrDefault()
                 .Value;
             _siteName = FindSiteName(i21100Section);
-            _logger.LogDebug("Site name detected as {SiteName}", _siteName);
-            
+            _logger.LogInformation("Site name detected as {SiteName}", _siteName);
+
 
             foreach (var line in _sections)
                 Serialise(line);
