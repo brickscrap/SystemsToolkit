@@ -21,7 +21,6 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
         public int RunHandlerAndReturnExitCode(VeederRootOptions options)
         {
-            // TODO: Validate file path, handle exceptions
             try
             {
                 FileAttributes attr = File.GetAttributes(options.FilePath);
