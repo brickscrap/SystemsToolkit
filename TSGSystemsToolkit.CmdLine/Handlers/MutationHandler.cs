@@ -6,7 +6,7 @@ using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    public class MutationHandler : IMutationHandler
+    public class MutationHandler : IHandler<MutationOptions>
     {
         private readonly ILogger<MutationHandler> _logger;
         private readonly ICardIdentificationData _crdIdData;
@@ -17,7 +17,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             _crdIdData = crdIdData;
         }
 
-        public int RunHandlerAndReturnExitCode(CreateMutationOptions options)
+        public int RunHandlerAndReturnExitCode(MutationOptions options)
         {
             int result = 1;
             if (!string.IsNullOrWhiteSpace(options.CardIdMutPath))
@@ -26,7 +26,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             return result;
         }
 
-        private int RunCardIdMut(CreateMutationOptions options)
+        private int RunCardIdMut(MutationOptions options)
         {
             var data = _crdIdData.GetAllCards(options.CardIdMutPath);
 

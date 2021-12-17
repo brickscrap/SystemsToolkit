@@ -1,6 +1,6 @@
 ﻿namespace TSGSystemsToolkit.CmdLine.Options
 {
-    public class ProgaugeOptions
+    public class ProgaugeOptions : OptionsBase
     {
         public ProgaugeOptions(string filePath,
                                string output,

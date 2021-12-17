@@ -8,10 +8,15 @@ using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    public class VeederRootHandler : IVeederRootHandler
+    public class VeederRootHandler : AbstractHandler<VeederRootOptions>
     {
         private IVdrRootFileParser _parser;
         private readonly ILogger<VeederRootHandler> _logger;
+
+        public VeederRootHandler() : base()
+        {
+
+        }
 
         public VeederRootHandler(IVdrRootFileParser parser, ILogger<VeederRootHandler> logger)
         {
@@ -19,7 +24,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             _logger = logger;
         }
 
-        public int RunHandlerAndReturnExitCode(VeederRootOptions options)
+        public override int RunHandlerAndReturnExitCode(VeederRootOptions options)
         {
             try
             {
@@ -128,6 +133,5 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
             return files;
         }
-
     }
 }

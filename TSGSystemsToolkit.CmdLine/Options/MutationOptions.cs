@@ -1,8 +1,8 @@
 ﻿namespace TSGSystemsToolkit.CmdLine.Options
 {
-    public class CreateMutationOptions
+    public class MutationOptions : OptionsBase
     {
-        public CreateMutationOptions(string cardid, string output)
+        public MutationOptions(string cardid, string output)
         {
             CardIdMutPath = cardid;
             OutputPath = output;

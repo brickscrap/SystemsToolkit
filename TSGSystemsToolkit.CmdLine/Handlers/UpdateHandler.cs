@@ -6,7 +6,7 @@ using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    public class UpdateHandler : IUpdateHandler
+    public class UpdateHandler : IHandler<UpdateOptions>
     {
         private readonly IConfiguration _config;
         private readonly ILogger<UpdateHandler> _logger;
@@ -33,7 +33,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 Process.Start(available.InstallerPath, "/SILENT");
             }
 
-            return 1;
+            return 0;
         }
     }
 }

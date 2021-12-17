@@ -9,7 +9,7 @@ namespace FuelPOS.StatDevParser.Models
         public string Type { get; set; } = NODEVICE;
         public string OperatingSystem { get; set; } = NODEVICE;
         public string BuildDisk { get; set; } = NODEVICE;
-        public int Number { get; set; }
+        public int Number { get; set; } = 0;
         public string HardwareType { get; set; } = NODEVICE;
         public string SoftwareVersion { get; set; } = NODEVICE;
         public string PrimaryIP { get; set; } = NODEVICE;
@@ -22,7 +22,7 @@ namespace FuelPOS.StatDevParser.Models
         public string LoyaltyTerminal { get; set; } = NODEVICE;
         public string CustomerDisplay { get; set; } = NODEVICE;
         public string BarcodeScanner { get; set; } = NODEVICE;
-        public ComDeviceModel ComDevices { get; set; }
+        public ComDeviceModel ComDevices { get; set; } = new();
         public List<DispensingModel> Dispensing { get; set; } = new();
         public string UPS { get; set; } = NODEVICE;
         public string TouchScreenType { get; set; } = NODEVICE;

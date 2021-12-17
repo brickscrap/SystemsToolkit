@@ -5,7 +5,7 @@ using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    public class TerminalsHandler : ITerminalsHandler
+    public class TerminalsHandler : IHandler<TerminalsOptions>
     {
         private readonly ILogger<TerminalsHandler> _logger;
 

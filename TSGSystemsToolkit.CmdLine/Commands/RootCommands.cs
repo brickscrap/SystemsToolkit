@@ -8,30 +8,27 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 {
     internal class RootCommands : IRootCommands
     {
-        private readonly ILogger<RootCommands> _logger;
-        private readonly IVeederRootHandler _veederRootHandler;
-        private readonly IProgaugeHandler _progaugeHandler;
-        private readonly ITerminalsHandler _terminalsHandler;
-        private readonly IMutationHandler _mutationHandler;
-        private readonly ISurveyHandler _surveyHandler;
-        private readonly IUpdateHandler _updateHandler;
+        private readonly IHandler<ProgaugeOptions> _progaugeHandler;
+        private readonly IHandler<TerminalsOptions> _terminalsHandler;
+        private readonly IHandler<MutationOptions> _mutationHandler;
+        private readonly IHandler<SurveyOptions> _surveyHandler;
+        private readonly IHandler<UpdateOptions> _updateHandler;
+        private readonly IHandler<VeederRootOptions> _vrHandler;
 
-        // TODO: Is this becoming an anti-pattern?
         public RootCommands(ILogger<RootCommands> logger,
-                            IVeederRootHandler veederRootHandler,
-                            IProgaugeHandler progaugeHandler,
-                            ITerminalsHandler terminalsHandler,
-                            IMutationHandler mutationHandler,
-                            ISurveyHandler surveyHandler,
-                            IUpdateHandler updateHandler)
+                            IHandler<ProgaugeOptions> progaugeHandler,
+                            IHandler<TerminalsOptions> terminalsHandler,
+                            IHandler<MutationOptions> mutationHandler,
+                            IHandler<SurveyOptions> surveyHandler,
+                            IHandler<UpdateOptions> updateHandler,
+                            IHandler<VeederRootOptions> vrHandler)
         {
-            _logger = logger;
-            _veederRootHandler = veederRootHandler;
             _progaugeHandler = progaugeHandler;
             _terminalsHandler = terminalsHandler;
             _mutationHandler = mutationHandler;
             _surveyHandler = surveyHandler;
             _updateHandler = updateHandler;
+            _vrHandler = vrHandler;
         }
 
         public RootCommand Create()
@@ -72,7 +69,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
             cmd.Handler = CommandHandler.Create((VeederRootOptions options) =>
             {
-                return _veederRootHandler.RunHandlerAndReturnExitCode(options);
+                return _vrHandler.RunHandlerAndReturnExitCode(options);
             });
 
             return cmd;
@@ -131,7 +128,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
                 new Option<string?>(new[] { "--output", "-o" }, "Output directory - leave blank to create files in the same directory as the db3.")
             };
 
-            cmd.Handler = CommandHandler.Create((CreateMutationOptions options) =>
+            cmd.Handler = CommandHandler.Create((MutationOptions options) =>
             {
                 return _mutationHandler.RunHandlerAndReturnExitCode(options);
             });

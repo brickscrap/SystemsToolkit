@@ -1,6 +1,6 @@
 ﻿namespace TSGSystemsToolkit.CmdLine.Options
 {
-    public class VeederRootOptions
+    public class VeederRootOptions : OptionsBase
     {
         public VeederRootOptions(string filePath, string? output, bool fuelPosFile, bool csv)
         {
