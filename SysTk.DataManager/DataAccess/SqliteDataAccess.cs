@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace SysTk.DataManager.DataAccess
 {
-    public class SqliteDataAccess : ISqliteDataAccess
+    public class SqliteDataAccess : ISqliteDataAccess, IDataAccess
     {
         public List<T> LoadData<T, U>(string sqlStatement, U parameters, string pathToDb)
         {
