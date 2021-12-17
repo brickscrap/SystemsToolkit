@@ -1,6 +1,6 @@
 ﻿namespace TSGSystemsToolkit.CmdLine.Options
 {
-    public class TerminalsOptions
+    public class TerminalsOptions : OptionsBase
     {
         public TerminalsOptions(string filepath, bool emisfile, string output)
         {

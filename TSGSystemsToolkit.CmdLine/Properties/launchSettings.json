@@ -2,7 +2,7 @@
   "profiles": {
     "TSGSystemsToolkit.CmdLine": {
       "commandName": "Project",
-      "commandLineArgs": "surveyor \"C:\\Users\\GaryM\\OneDrive - TOKHEIM\\Projects\\Surveyor\" -o \"C:\\Users\\GaryM\\OneDrive - TOKHEIM\\Projects\\Surveyor\""
+      "commandLineArgs": "surveyor \"C:\\Users\\GaryM\\OneDrive - TOKHEIM\\Projects\\Surveyor\\20599_statdev.xml\" -o \"C:\\Users\\GaryM\\OneDrive - TOKHEIM\\Projects\\Surveyor\""
     }
   }
 }

@@ -13,6 +13,7 @@ using SysTk.DataManager.DataAccess;
 using SysTk.Utils;
 using TSGSystemsToolkit.CmdLine.Commands;
 using TSGSystemsToolkit.CmdLine.Handlers;
+using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine
 {
@@ -48,12 +49,12 @@ namespace TSGSystemsToolkit.CmdLine
                     services.AddTransient<ICardIdentificationData, CardIdentificationData>();
 
                     // Handlers
-                    services.AddTransient<IVeederRootHandler, VeederRootHandler>();
-                    services.AddTransient<IProgaugeHandler, ProgaugeHandler>();
-                    services.AddTransient<ITerminalsHandler, TerminalsHandler>();
-                    services.AddTransient<IMutationHandler, MutationHandler>();
-                    services.AddTransient<ISurveyHandler, SurveyHandler>();
-                    services.AddTransient<IUpdateHandler, UpdateHandler>();
+                    services.AddTransient<IHandler<VeederRootOptions>, VeederRootHandler>();
+                    services.AddTransient<IHandler<ProgaugeOptions>, ProgaugeHandler>();
+                    services.AddTransient<IHandler<TerminalsOptions>, TerminalsHandler>();
+                    services.AddTransient<IHandler<MutationOptions>, MutationHandler>();
+                    services.AddTransient<IHandler<SurveyOptions>, SurveyHandler>();
+                    services.AddTransient<IHandler<UpdateOptions>, UpdateHandler>();
 
                     // Business Services
                     services.AddTransient<IVdrRootFileParser, VdrRootFileParser>();

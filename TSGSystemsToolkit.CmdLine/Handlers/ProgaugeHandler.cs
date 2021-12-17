@@ -7,7 +7,7 @@ using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    public class ProgaugeHandler : IProgaugeHandler
+    public class ProgaugeHandler : IHandler<ProgaugeOptions>
     {
         // TODO: Add logging/output
         private readonly ILogger<ProgaugeHandler> _logger;

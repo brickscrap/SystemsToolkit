@@ -11,7 +11,7 @@ using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    public class SurveyHandler : ISurveyHandler
+    public class SurveyHandler : IHandler<SurveyOptions>
     {
         private readonly ILogger<SurveyHandler> _logger;
         private readonly IStatDevParser _statDevParser;
