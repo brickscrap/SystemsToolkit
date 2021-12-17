@@ -99,6 +99,9 @@ namespace FuelPOS.StatDevParser
                 // Get POS base properties
                 var baseProperties = pos.Elements("Property");
 
+                if (baseProperties.Count() == 0)
+                    continue;
+
                 // Assign base properties
                 foreach (var bP in baseProperties)
                 {
