@@ -143,6 +143,8 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             {
                 new Argument<string>("filepath", "Path to either an individual file, or directory containing multile StatDev XMLs."),
                 new Option<string>(new[] { "--output", "-o" }, "Path to store any created files.") { IsRequired = true },
+                new Option<bool>(new[] {"--fuelpos", "-f"}, "Create a FuelPOS survey spreadsheet."),
+                new Option<bool>(new[] {"--serialnumbers", "-s"}, "Create a PIN pad serial number survey.")
             };
 
             cmd.Handler = CommandHandler.Create((SurveyOptions options) =>

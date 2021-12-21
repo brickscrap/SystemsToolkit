@@ -3,6 +3,7 @@ using FuelPOS.StatDevParser.Models;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
@@ -77,8 +78,20 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 return -1;
             }
 
-            SpreadsheetCreator creator = new(_logger);
-            creator.CreateFuelPosSurvey(statdevs, options.OutputPath);
+            if (options.FuelPosSurvey)
+            {
+                SpreadsheetCreator creator = new(_logger);
+                creator.CreateFuelPosSurvey(statdevs, options.OutputPath);
+            }
+
+            if (options.SerialNumberSurvey)
+            {
+                SpreadsheetCreator creator = new(_logger);
+                creator.CreatePinPadSerialSurvey(statdevs, options.OutputPath);
+            }
+
+            if (options.FuelPosSurvey || options.SerialNumberSurvey)
+                Process.Start("explorer.exe", options.OutputPath);
 
             return exitCode;
         }
