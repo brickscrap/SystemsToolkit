@@ -5,27 +5,27 @@ namespace FuelPOS.StatDevParser.Models
 {
     public class PosDetailModel
     {
-        private const string NODEVICE = "Not found";
-        public string Type { get; set; } = NODEVICE;
-        public string OperatingSystem { get; set; } = NODEVICE;
-        public string BuildDisk { get; set; } = NODEVICE;
+        public string Type { get; set; } = Constants.NOT_FOUND;
+        public string OperatingSystem { get; set; } = Constants.NOT_FOUND;
+        public string BuildDisk { get; set; } = Constants.NOT_FOUND;
         public int Number { get; set; } = 0;
-        public string HardwareType { get; set; } = NODEVICE;
-        public string SoftwareVersion { get; set; } = NODEVICE;
-        public string PrimaryIP { get; set; } = NODEVICE;
-        public string GatewayIP { get; set; } = NODEVICE;
-        public string ReceiptPrinter { get; set; } = NODEVICE;
-        public string PinPad { get; set; } = NODEVICE;
-        public string A4Printer { get; set; } = NODEVICE;
-        public string MagCardReader { get; set; } = NODEVICE;
-        public string PaymentTerminal { get; set; } = NODEVICE;
-        public string LoyaltyTerminal { get; set; } = NODEVICE;
-        public string CustomerDisplay { get; set; } = NODEVICE;
-        public string BarcodeScanner { get; set; } = NODEVICE;
+        public string HardwareType { get; set; } = Constants.NOT_FOUND;
+        public string SoftwareVersion { get; set; } = Constants.NOT_FOUND;
+        public string PrimaryIP { get; set; } = Constants.NOT_FOUND;
+        public string GatewayIP { get; set; } = Constants.NOT_FOUND;
+        public string ReceiptPrinter { get; set; } = Constants.NOT_FOUND;
+        public PinPadModel PinPad { get; set; } = new();
+        public string A4Printer { get; set; } = Constants.NOT_FOUND;
+        public string MagCardReader { get; set; } = Constants.NOT_FOUND;
+        public string PaymentTerminal { get; set; } = Constants.NOT_FOUND;
+        public string LoyaltyTerminal { get; set; } = Constants.NOT_FOUND;
+        public string CustomerDisplay { get; set; } = Constants.NOT_FOUND;
+        public string BarcodeScanner { get; set; } = Constants.NOT_FOUND;
+        public List<OptModel> OutdoorTerminals { get; set; } = new();
         public ComDeviceModel ComDevices { get; set; } = new();
         public List<DispensingModel> Dispensing { get; set; } = new();
-        public string UPS { get; set; } = NODEVICE;
-        public string TouchScreenType { get; set; } = NODEVICE;
+        public string UPS { get; set; } = Constants.NOT_FOUND;
+        public string TouchScreenType { get; set; } = Constants.NOT_FOUND;
 
         public List<string> DispenserCommTypes
         {

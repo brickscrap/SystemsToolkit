@@ -140,6 +140,9 @@ namespace FuelPOS.StatDevParser
                 {
                     switch (dev.Attribute("Type").Value)
                     {
+                        case "3":
+                            posDetail.OutdoorTerminals = GetOutdoorTerminals(dev);
+                            break;
                         case "8":
                             posDetail.Dispensing = GetDispensing(dev);
                             break;
@@ -161,6 +164,9 @@ namespace FuelPOS.StatDevParser
                             break;
                         case "27":
                             posDetail.CustomerDisplay = dev.GetPropType34();
+                            break;
+                        case "29":
+                            posDetail.PinPad = GetPinPad(dev);
                             break;
                         case "30":
                             posDetail.ReceiptPrinter = dev.GetPropType34();
@@ -195,6 +201,109 @@ namespace FuelPOS.StatDevParser
             }
 
             return statDev;
+        }
+
+        private List<OptModel> GetOutdoorTerminals(XElement xml)
+        {
+            List<OptModel> opts = new();
+
+            foreach (var device in xml.Elements("Device"))
+            {
+                OptModel opt = new();
+                opt.Number = device.Attribute("Number").Value;
+
+                foreach (var prop in device.Elements("Property"))
+                {
+                    switch (prop.Attribute("Type").Value)
+                    {
+                        case "34":
+                            opt.Type = prop.Value;
+                            break;
+                        case "35":
+                            opt.SoftwareVersion = prop.Value;
+                            break;
+                        case "147":
+                            opt.HardwareType = prop.Value;
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                var pinPadXml = device.Elements("Device").Where(x => x.Attribute("Type").Value == "29");
+
+                OptPinPadModel pinPad = GetOptPinPad(pinPadXml.FirstOrDefault());
+
+                opt.PinPad = pinPad;
+
+                opts.Add(opt);
+            }
+
+            return opts;
+        }
+
+        private bool ConvertKeyToBool(string value)
+        {
+            if (value.ToUpper() == "NOT AVAILABLE")
+                return false;
+            else
+                return true;
+        }
+
+        private OptPinPadModel GetOptPinPad(XElement xml)
+        {
+            var output = new OptPinPadModel();
+
+            foreach (var prop in xml.Elements("Property"))
+            {
+                switch (prop.Attribute("Type").Value)
+                {
+                    case "34":
+                        output.Name = prop.Value;
+                        break;
+                    case "35":
+                        output.SoftwareVersion = prop.Value;
+                        break;
+                    case "71":
+                        output.SerialNumber = prop.Value;
+                        break;
+                    case "44":
+                        output.OaseKey = ConvertKeyToBool(prop.Value);
+                        break;
+                    case "45":
+                        output.CtacKey = ConvertKeyToBool(prop.Value);
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return output;
+        }
+
+        private PinPadModel GetPinPad(XElement xml)
+        {
+            PinPadModel output = new();
+
+            foreach (var item in xml.Elements("Property"))
+            {
+                switch (item.Attribute("Type").Value)
+                {
+                    case "34":
+                        output.Name = item.Value;
+                        break;
+                    case "35":
+                        output.SoftwareVersion = item.Value;
+                        break;
+                    case "71":
+                        output.SerialNumber = item.Value;
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            return output;
         }
 
         private string GetTouchScreen(XElement xml)

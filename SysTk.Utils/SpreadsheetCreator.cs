@@ -153,7 +153,7 @@ namespace SysTk.Utils
                 doc.SetCellValue(11, j, data.POS[i].ReceiptPrinter);
                 doc.SetCellValue(12, j, data.POS[i].CustomerDisplay);
                 doc.SetCellValue(13, j, data.POS[i].MagCardReader);
-                doc.SetCellValue(14, j, data.POS[i].PinPad);
+                doc.SetCellValue(14, j, data.POS[i].PinPad.Name);
                 doc.SetCellValue(15, j, data.POS[i].PaymentTerminal);
                 doc.SetCellValue(16, j, data.POS[i].LoyaltyTerminal);
                 doc.SetCellValue(17, j, data.POS[i].ComDevices.NumberSerialPortsInUse);
