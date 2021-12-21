@@ -53,6 +53,11 @@ namespace SysTk.Utils.Spreadsheets
                 }
             }
 
+            doc.AutoFitColumn(1);
+            doc.AutoFitColumn(2);
+            doc.AutoFitColumn(3);
+            doc.AutoFitColumn(4);
+
             var table = doc.CreateTable(1, 1, row, 4);
             doc.InsertTable(table);
 

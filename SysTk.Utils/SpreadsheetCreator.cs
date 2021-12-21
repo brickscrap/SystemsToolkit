@@ -18,6 +18,8 @@ namespace SysTk.Utils
             _logger = logger ?? NullLogger.Instance;
         }
 
+
+        // TODO: This can be made generic
         public void CreateFuelPosSurvey(List<StatdevModel> data, string outputPath)
         {
             FuelPosSurveySheet fpSheet = new(_logger);
