@@ -8,6 +8,6 @@ namespace FuelPOS.StatDevParser
 {
     internal static class Constants
     {
-        public static string NOT_FOUND { get; set; } = "Not found";
+        public static string NOT_FOUND { get; set; } = "";
     }
 }

@@ -26,6 +26,6 @@ namespace FuelPOS.StatDevParser.Models
             }
         }
         public List<SerialDeviceModel> MultiportSerialDevices { get; set; } = new();
-        public string LonInterface { get; set; } = "Not found";
+        public string LonInterface { get; set; } = Constants.NOT_FOUND;
     }
 }
