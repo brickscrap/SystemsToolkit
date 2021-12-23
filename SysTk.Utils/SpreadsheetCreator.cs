@@ -18,22 +18,26 @@ namespace SysTk.Utils
             _logger = logger ?? NullLogger.Instance;
         }
 
-
-        // TODO: This can be made generic
-        public void CreateFuelPosSurvey(List<StatdevModel> data, string outputPath)
+        public void CreateSpreadsheet(SpreadsheetType type, List<StatdevModel> data, string outputPath)
         {
-            FuelPosSurveySheet fpSheet = new(_logger);
-            SLDocument doc = fpSheet.Create(data);
-
-            SaveSpreadsheet(outputPath, "FuelPOS Survey", doc);
+            switch (type)
+            {
+                case SpreadsheetType.FuelPosSurvey:
+                    Create(new FuelPosSurveySheet(_logger), data, outputPath);
+                    break;
+                case SpreadsheetType.PinPadSerials:
+                    Create(new PinPadSerialsSheet(_logger), data, outputPath);
+                    break;
+                default:
+                    break;
+            }
         }
 
-        public void CreatePinPadSerialSurvey(List<StatdevModel> data, string outputPath)
+        private void Create<T>(T spreadsheet, IEnumerable<StatdevModel> data, string outputPath) where T : ISpreadsheet<StatdevModel>
         {
-            PinPadSerialsSheet serialSheet = new(_logger);
-            SLDocument doc = serialSheet.Create(data);
+            SLDocument doc = spreadsheet.Create(data);
 
-            SaveSpreadsheet(outputPath, "Serial Numbers", doc);
+            SaveSpreadsheet(outputPath, spreadsheet.Name, doc);
         }
 
         private void SaveSpreadsheet(string outputPath, string fileName, SLDocument doc)

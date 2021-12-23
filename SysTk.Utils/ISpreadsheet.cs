@@ -1,4 +1,5 @@
-﻿using SpreadsheetLight;
+﻿using FuelPOS.StatDevParser.Models;
+using SpreadsheetLight;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,9 @@ using System.Threading.Tasks;
 
 namespace SysTk.Utils
 {
-    internal interface ISpreadsheet<IEnumerable>
+    public interface ISpreadsheet<T>
     {
-        public SLDocument Create(IEnumerable data);
+        public string Name { get; }
+        public SLDocument Create(IEnumerable<T> data);
     }
 }

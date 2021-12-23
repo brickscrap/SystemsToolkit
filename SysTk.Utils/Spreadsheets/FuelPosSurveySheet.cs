@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 namespace SysTk.Utils.Spreadsheets
 {
-    internal class FuelPosSurveySheet : ISpreadsheet<List<StatdevModel>>
+    internal class FuelPosSurveySheet : ISpreadsheet<StatdevModel>
     {
         private readonly ILogger _logger;
 
@@ -51,13 +51,15 @@ namespace SysTk.Utils.Spreadsheets
             }
         }
 
+        public string Name { get { return "FuelPOS Survey"; } }
+
         public FuelPosSurveySheet(ILogger logger = null)
         {
             _logger = logger ?? NullLogger.Instance;
         }
 
-        // TODO: Make this monstrosity maintainable
-        public SLDocument Create(List<StatdevModel> data)
+         // TODO: Make this monstrosity maintainable
+        public SLDocument Create(IEnumerable<StatdevModel> data)
         {
             SLDocument doc = new();
 

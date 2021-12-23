@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace SysTk.Utils.Spreadsheets
 {
-    internal class PinPadSerialsSheet : ISpreadsheet<List<StatdevModel>>
+    internal class PinPadSerialsSheet : ISpreadsheet<StatdevModel>
     {
         private readonly ILogger _logger;
 
@@ -19,7 +19,9 @@ namespace SysTk.Utils.Spreadsheets
             _logger = logger ?? NullLogger.Instance;
         }
 
-        public SLDocument Create(List<StatdevModel> data) 
+        public string Name { get { return "Serial Numbers"; } }
+
+        public SLDocument Create(IEnumerable<StatdevModel> data) 
         {
             SLDocument doc = new();
 

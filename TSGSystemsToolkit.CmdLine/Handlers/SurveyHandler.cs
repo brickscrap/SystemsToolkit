@@ -81,13 +81,13 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             if (options.FuelPosSurvey)
             {
                 SpreadsheetCreator creator = new(_logger);
-                creator.CreateFuelPosSurvey(statdevs, options.OutputPath);
+                creator.CreateSpreadsheet(SpreadsheetType.FuelPosSurvey, statdevs, options.OutputPath);
             }
 
             if (options.SerialNumberSurvey)
             {
                 SpreadsheetCreator creator = new(_logger);
-                creator.CreatePinPadSerialSurvey(statdevs, options.OutputPath);
+                creator.CreateSpreadsheet(SpreadsheetType.PinPadSerials, statdevs, options.OutputPath);
             }
 
             if (options.FuelPosSurvey || options.SerialNumberSurvey)
