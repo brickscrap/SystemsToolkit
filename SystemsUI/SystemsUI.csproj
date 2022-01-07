@@ -44,7 +44,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SystemsUI.Library\SystemsUI.Library.csproj" />
-    <ProjectReference Include="..\TsgSystems.Grpc.Core\TsgSystems.Grpc.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
