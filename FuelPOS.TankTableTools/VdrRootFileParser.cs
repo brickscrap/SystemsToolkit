@@ -1,6 +1,7 @@
 ﻿using FuelPOS.TankTableTools.Helpers;
 using FuelPOS.TankTableTools.Models;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -52,9 +53,9 @@ namespace FuelPOS.TankTableTools
             }
         }
 
-        public VdrRootFileParser(ILogger<VdrRootFileParser> logger)
+        public VdrRootFileParser(ILogger<VdrRootFileParser> logger = null)
         {
-            _logger = logger;
+            _logger = logger ?? NullLogger<VdrRootFileParser>.Instance;
         }
 
         /// <summary>
