@@ -1,5 +1,7 @@
-﻿using SysTk.WebApi.Data.DataAccess;
+﻿using HotChocolate.AspNetCore.Authorization;
+using SysTk.WebApi.Data.DataAccess;
 using SysTk.WebApi.Data.Models;
+using SysTk.WebApi.Data.Models.Auth;
 
 namespace SysTk.WebAPI.GraphQL
 {
