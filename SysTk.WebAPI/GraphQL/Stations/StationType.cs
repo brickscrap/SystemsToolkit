@@ -9,6 +9,8 @@ namespace SysTk.WebAPI.GraphQL.Stations
         {
             descriptor.Description("Represents a FuelPOS station");
 
+            descriptor.Authorize(Policies.IsVerified);
+
             descriptor.Field(s => s.FtpCredentials)
                 .ResolveWith<Resolvers>(x => x.GetFtpCredentials(default!, default!))
                 .UseDbContext<AppDbContext>()
