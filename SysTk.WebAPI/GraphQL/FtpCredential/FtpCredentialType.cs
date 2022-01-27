@@ -9,6 +9,8 @@ namespace SysTk.WebAPI.GraphQL.FtpCredential
         {
             descriptor.Description("Represents a set of FTP credentials for a FuelPOS system.");
 
+            descriptor.Authorize(Policies.IsVerified);
+
             descriptor.Field(x => x.Station)
                 .ResolveWith<Resolvers>(x => x.GetStation(default!, default!))
                 .UseDbContext<AppDbContext>()
