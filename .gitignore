@@ -344,6 +344,8 @@ healthchecksdb
 /POSFileParser/Tests/trx.json
 /StadevParser/StadevParser.sln
 
+*.Development.json
+
 # FuelPOS Specifics
 *.cap
 *.INP
