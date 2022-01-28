@@ -9,6 +9,6 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 {
     internal interface IHandler<T> where T : OptionsBase
     {
-        int RunHandlerAndReturnExitCode(T options);
+        Task<int> RunHandlerAndReturnExitCode(T options);
     }
 }

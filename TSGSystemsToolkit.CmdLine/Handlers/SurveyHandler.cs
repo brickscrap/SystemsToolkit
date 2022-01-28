@@ -6,13 +6,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using SysTk.Utils;
 using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    public class SurveyHandler : IHandler<SurveyOptions>
+    public class SurveyHandler : AbstractHandler<SurveyOptions>
     {
         private readonly ILogger<SurveyHandler> _logger;
         private readonly IStatDevParser _statDevParser;
@@ -23,7 +24,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             _statDevParser = statDevParser;
         }
 
-        public int RunHandlerAndReturnExitCode(SurveyOptions options)
+        public override async Task<int> RunHandlerAndReturnExitCode(SurveyOptions options)
         {
             int exitCode = 0;
 

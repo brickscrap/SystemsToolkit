@@ -13,6 +13,6 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
         {
 
         }
-        public abstract int RunHandlerAndReturnExitCode(T options);
+        public abstract Task<int> RunHandlerAndReturnExitCode(T options);
     }
 }

@@ -2,11 +2,12 @@
 using Pse.TerminalsToEmis;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    public class TerminalsHandler : IHandler<TerminalsOptions>
+    public class TerminalsHandler : AbstractHandler<TerminalsOptions>
     {
         private readonly ILogger<TerminalsHandler> _logger;
 
@@ -15,7 +16,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             _logger = logger;
         }
 
-        public int RunHandlerAndReturnExitCode(TerminalsOptions options)
+        public override async Task<int> RunHandlerAndReturnExitCode(TerminalsOptions options)
         {
             if (options.CreateEmisFile)
             {

@@ -3,11 +3,12 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    public class ProgaugeHandler : IHandler<ProgaugeOptions>
+    public class ProgaugeHandler : AbstractHandler<ProgaugeOptions>
     {
         // TODO: Add logging/output
         private readonly ILogger<ProgaugeHandler> _logger;
@@ -19,7 +20,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             _parser = parser;
         }
 
-        public int RunHandlerAndReturnExitCode(ProgaugeOptions options)
+        public override async Task<int> RunHandlerAndReturnExitCode(ProgaugeOptions options)
         {
             // TODO: Validate file path, handle exceptions
             ParseBasicFileInDir(options);
