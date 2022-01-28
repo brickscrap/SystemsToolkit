@@ -1,0 +1,8 @@
+query GetStationsByCluster($cluster: String!) {
+	station(where: {cluster: {eq: $cluster}}) {
+		id
+		cluster
+		name
+		iP
+	}
+}
