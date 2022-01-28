@@ -176,4 +176,8 @@ async Task CreateRoles(IServiceProvider services)
         if (createPowerUser.Succeeded)
             await userManager.AddToRoleAsync(powerUser, "Admin");
     }
+    else
+    {
+        var createAdmin = await userManager.AddToRoleAsync(user, "Admin");
+    }
 }
