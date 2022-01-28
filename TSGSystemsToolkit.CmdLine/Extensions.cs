@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
 
 namespace TSGSystemsToolkit.CmdLine
 {
@@ -56,6 +59,30 @@ namespace TSGSystemsToolkit.CmdLine
             }
 
             return false;
+        }
+
+        internal static void UpdateAccessToken(string accessToken)
+        {
+            var asPath = GetAppsettingsPath();
+            var text = File.ReadAllText(asPath);
+
+            var json = JsonSerializer.Deserialize<ExpandoObject>(text) as IDictionary<string, object>;
+
+            json["AccessToken"] = accessToken;
+
+            var newJson = JsonSerializer.Serialize<dynamic>(json, 
+                new JsonSerializerOptions 
+                { 
+                    WriteIndented = true
+                });
+            File.WriteAllText(asPath, newJson);
+        }
+
+        internal static string GetAppsettingsPath()
+        {
+            var absolutePath = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
+
+            return @$"{absolutePath}\appsettings.json";
         }
     }
 }

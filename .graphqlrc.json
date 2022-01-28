@@ -1,0 +1,12 @@
+{
+  "projects": [
+    {
+      "schema": [
+        "TSGSystemsToolkit.CmdLine/schema.graphql"
+      ],
+      "documents": [
+        "TSGSystemsToolkit.CmdLine/**/*.graphql"
+      ]
+    }
+  ]
+}

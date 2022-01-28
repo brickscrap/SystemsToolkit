@@ -2,7 +2,7 @@
   "profiles": {
     "TSGSystemsToolkit.CmdLine": {
       "commandName": "Project",
-      "commandLineArgs": "surveyor \"C:\\Users\\GaryM\\OneDrive - TOKHEIM\\Projects\\Surveyor\" -o \"C:\\Users\\GaryM\\OneDrive - TOKHEIM\\Projects\\Surveyor\" -f -s"
+      "commandLineArgs": "fuelpos send-file \"C:\\Users\\GaryM\\Documents\\Work\\HTEC_GEMPAY_IPT.xml\" -t \"/\" -c \"ShellRBA\""
     }
   }
 }

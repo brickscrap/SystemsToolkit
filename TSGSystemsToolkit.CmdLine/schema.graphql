@@ -1,0 +1,237 @@
+﻿schema {
+  query: Query
+  mutation: Mutation
+}
+
+"Represents a FuelPOS station"
+type Station {
+  "This is the list of available FTP credentials for this station."
+  ftpCredentials: [FtpCredentials]
+  id: String!
+  cluster: String!
+  name: String!
+  iP: String!
+}
+
+"Represents a set of FTP credentials for a FuelPOS system."
+type FtpCredentials {
+  "This is the station on which the credentials are valid."
+  station: Station
+  id: Int!
+  stationId: String!
+  username: String!
+  password: String!
+  lastModified: DateTime!
+}
+
+enum ApplyPolicy {
+  BEFORE_RESOLVER
+  AFTER_RESOLVER
+}
+
+type Query {
+  station(where: StationFilterInput order: [StationSortInput!]): [Station]
+  ftpCredentials(where: FtpCredentialsFilterInput order: [FtpCredentialsSortInput!]): [FtpCredentials]
+}
+
+type Mutation {
+  addStation(input: AddStationInput): AddStationPayload
+  addFtpCredentials(input: AddFtpCredentialsInput): AddFtpCredentialsPayload
+  deleteStation(input: DeleteStationInput): DeleteStationPayload
+  deleteFtpCredentials(input: DeleteFtpCredentialsInput): DeleteFtpCredentialsPayload
+  addUser(input: AddUserInput): AddUserPayload
+  addUserToRole(input: AddUserToRoleInput): AddUserToRolePayload
+  login(input: LoginInput): LoginPayload
+}
+
+type AppUser {
+  firstName: String
+  lastName: String
+  roles: [String]
+  id: UUID!
+  userName: String
+  normalizedUserName: String
+  email: String
+  normalizedEmail: String
+  emailConfirmed: Boolean!
+  passwordHash: String
+  securityStamp: String
+  concurrencyStamp: String
+  phoneNumber: String
+  phoneNumberConfirmed: Boolean!
+  twoFactorEnabled: Boolean!
+  lockoutEnd: DateTime
+  lockoutEnabled: Boolean!
+  accessFailedCount: Int!
+}
+
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
+input StationFilterInput {
+  and: [StationFilterInput!]
+  or: [StationFilterInput!]
+  id: StringOperationFilterInput
+  cluster: StringOperationFilterInput
+  name: StringOperationFilterInput
+  iP: StringOperationFilterInput
+  ftpCredentials: ListFilterInputTypeOfFtpCredentialsFilterInput
+}
+
+input StationSortInput {
+  id: SortEnumType
+  cluster: SortEnumType
+  name: SortEnumType
+  iP: SortEnumType
+}
+
+input FtpCredentialsFilterInput {
+  and: [FtpCredentialsFilterInput!]
+  or: [FtpCredentialsFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  stationId: StringOperationFilterInput
+  username: StringOperationFilterInput
+  password: StringOperationFilterInput
+  lastModified: ComparableDateTimeOperationFilterInput
+  station: StationFilterInput
+}
+
+input FtpCredentialsSortInput {
+  id: SortEnumType
+  stationId: SortEnumType
+  username: SortEnumType
+  password: SortEnumType
+  lastModified: SortEnumType
+  station: StationSortInput
+}
+
+input StringOperationFilterInput {
+  and: [StringOperationFilterInput!]
+  or: [StringOperationFilterInput!]
+  eq: String
+  neq: String
+  contains: String
+  ncontains: String
+  in: [String]
+  nin: [String]
+  startsWith: String
+  nstartsWith: String
+  endsWith: String
+  nendsWith: String
+}
+
+input ListFilterInputTypeOfFtpCredentialsFilterInput {
+  all: FtpCredentialsFilterInput
+  none: FtpCredentialsFilterInput
+  some: FtpCredentialsFilterInput
+  any: Boolean
+}
+
+enum SortEnumType {
+  ASC
+  DESC
+}
+
+input ComparableInt32OperationFilterInput {
+  eq: Int
+  neq: Int
+  in: [Int!]
+  nin: [Int!]
+  gt: Int
+  ngt: Int
+  gte: Int
+  ngte: Int
+  lt: Int
+  nlt: Int
+  lte: Int
+  nlte: Int
+}
+
+input ComparableDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime!]
+  nin: [DateTime!]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
+input AddFtpCredentialsInput {
+  stationId: String
+  username: String
+  password: String
+}
+
+type AddFtpCredentialsPayload {
+  credentials: FtpCredentials
+}
+
+input AddStationInput {
+  id: String
+  cluster: String
+  name: String
+  iP: String
+}
+
+type AddStationPayload {
+  station: Station
+}
+
+type DeleteStationPayload {
+  station: Station
+}
+
+input DeleteStationInput {
+  stationId: String
+}
+
+type DeleteFtpCredentialsPayload {
+  ftpCredentials: FtpCredentials
+}
+
+input DeleteFtpCredentialsInput {
+  id: Int!
+}
+
+type AddUserPayload {
+  firstName: String
+  lastName: String
+  email: String
+}
+
+input AddUserInput {
+  email: String
+  firstName: String
+  lastName: String
+  password: String
+}
+
+type AddUserToRolePayload {
+  email: String
+  roleName: String
+}
+
+input AddUserToRoleInput {
+  email: String
+  roleName: String
+}
+
+type LoginPayload {
+  accessToken: String
+  username: String
+}
+
+input LoginInput {
+  username: String
+  password: String
+}
+
+scalar UUID
+
+directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION

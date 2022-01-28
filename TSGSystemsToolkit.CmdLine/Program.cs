@@ -4,16 +4,19 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Http;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
 using System.IO;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using SysTk.DataManager.DataAccess;
 using SysTk.Utils;
 using TSGSystemsToolkit.CmdLine.Commands;
 using TSGSystemsToolkit.CmdLine.Handlers;
 using TSGSystemsToolkit.CmdLine.Options;
+using TSGSystemsToolkit.CmdLine.Services;
 
 namespace TSGSystemsToolkit.CmdLine
 {
@@ -23,7 +26,6 @@ namespace TSGSystemsToolkit.CmdLine
         {
             var builder = new ConfigurationBuilder();
             var absolutePath = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
-            var provider = new PhysicalFileProvider(absolutePath);
             var config = builder
                 .SetBasePath(absolutePath)
                 .AddJsonFile(@$"{absolutePath}\appsettings.json", false, true)
@@ -47,6 +49,13 @@ namespace TSGSystemsToolkit.CmdLine
                     services.AddTransient<IFtpHandler, FtpHandler>();
                     services.AddTransient<ISqliteDataAccess, SqliteDataAccess>();
                     services.AddTransient<ICardIdentificationData, CardIdentificationData>();
+                    services.AddTransient<IAuthService, AuthService>();
+                    services.AddSysTkApiClient()
+                        .ConfigureHttpClient(client => {
+                            client.BaseAddress = new Uri(config["GraphQLAddress"]);
+                            client.DefaultRequestHeaders.Authorization =
+                                new AuthenticationHeaderValue("bearer", config["AccessToken"]);
+                            });
 
                     // Handlers
                     services.AddTransient<IHandler<VeederRootOptions>, VeederRootHandler>();
@@ -55,6 +64,7 @@ namespace TSGSystemsToolkit.CmdLine
                     services.AddTransient<IHandler<MutationOptions>, MutationHandler>();
                     services.AddTransient<IHandler<SurveyOptions>, SurveyHandler>();
                     services.AddTransient<IHandler<UpdateOptions>, UpdateHandler>();
+                    services.AddTransient<IHandler<SendFileOptions>, SendFileHandler>();
 
                     // Business Services
                     services.AddTransient<IVdrRootFileParser, VdrRootFileParser>();
