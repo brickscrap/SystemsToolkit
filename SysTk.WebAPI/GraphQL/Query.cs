@@ -10,11 +10,13 @@ namespace SysTk.WebAPI.GraphQL
         [UseDbContext(typeof(AppDbContext))]
         [UseFiltering]
         [UseSorting]
+        [Authorize(Policy = Policies.IsVerified)]
         public IQueryable<Station> GetStation([ScopedService] AppDbContext context) => context.Stations;
 
         [UseDbContext(typeof(AppDbContext))]
         [UseFiltering]
         [UseSorting]
+        [Authorize(Policy = Policies.IsVerified)]
         public IQueryable<FtpCredentials> GetFtpCredentials([ScopedService] AppDbContext context) => context.FtpCredentials;
     }
 }

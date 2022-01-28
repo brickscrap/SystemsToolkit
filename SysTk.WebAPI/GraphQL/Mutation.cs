@@ -12,6 +12,7 @@ using SysTk.WebApi.Data.Models.Auth;
 using SysTk.WebAPI.GraphQL.FtpCredential;
 using SysTk.WebAPI.GraphQL.Stations;
 using SysTk.WebAPI.GraphQL.Users;
+using SysTk.WebAPI.GraphQL.Errors;
 
 namespace SysTk.WebAPI.GraphQL
 {
@@ -112,7 +113,7 @@ namespace SysTk.WebAPI.GraphQL
                 return output;
             }
 
-            throw new Exception($"User could not be added: {userCreateResult.Errors}");
+            throw new QueryException($"User could not be added: {userCreateResult.Errors}");
         }
 
         [UseDbContext(typeof(AppDbContext))]
@@ -162,7 +163,7 @@ namespace SysTk.WebAPI.GraphQL
             }
             else
             {
-                throw new QueryException("The username or password provided is not valid.");
+                throw new QueryException(ErrorFactory.CreateLoginError());
             }
         }
 
