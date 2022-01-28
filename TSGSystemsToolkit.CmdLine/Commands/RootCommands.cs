@@ -14,6 +14,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
         private readonly IHandler<SurveyOptions> _surveyHandler;
         private readonly IHandler<UpdateOptions> _updateHandler;
         private readonly IHandler<VeederRootOptions> _vrHandler;
+        private readonly IHandler<SendFileOptions> _sendFileHandler;
 
         public RootCommands(ILogger<RootCommands> logger,
                             IHandler<ProgaugeOptions> progaugeHandler,
@@ -21,7 +22,8 @@ namespace TSGSystemsToolkit.CmdLine.Commands
                             IHandler<MutationOptions> mutationHandler,
                             IHandler<SurveyOptions> surveyHandler,
                             IHandler<UpdateOptions> updateHandler,
-                            IHandler<VeederRootOptions> vrHandler)
+                            IHandler<VeederRootOptions> vrHandler,
+                            IHandler<SendFileOptions> sendFileHandler)
         {
             _progaugeHandler = progaugeHandler;
             _terminalsHandler = terminalsHandler;
@@ -29,6 +31,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             _surveyHandler = surveyHandler;
             _updateHandler = updateHandler;
             _vrHandler = vrHandler;
+            _sendFileHandler = sendFileHandler;
         }
 
         public RootCommand Create()
@@ -117,7 +120,8 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
         private Command CreateFuelPosCommand() => new("fuelpos", "FuelPOS related commands, such as mutation handling and file transfers")
         {
-            CreateMutationCommand()
+            CreateMutationCommand(),
+            CreateSendFileCommand()
         };
 
         private Command CreateMutationCommand()
@@ -150,6 +154,24 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             cmd.Handler = CommandHandler.Create((SurveyOptions options) =>
             {
                 return _surveyHandler.RunHandlerAndReturnExitCode(options);
+            });
+
+            return cmd;
+        }
+
+        private Command CreateSendFileCommand()
+        {
+            Command cmd = new("send-file", "Send a file to one or many FuelPOS systems")
+            {
+                new Argument<string>("filepath", "Path to the file to be sent."),
+                new Option<string>(new[] {"--cluster", "-c"}, "Send file to every station in the specified Petrol Server cluster."),
+                new Option<string>(new[] {"--list", "-l"}, "Path to a CSV file containing a list of PSE station IDs of which to send file to."),
+                new Option<string>(new[] {"--target", "-t"}, "Target path on the FuelPOS system (excluding file name)") { IsRequired = true }
+            };
+
+            cmd.Handler = CommandHandler.Create((SendFileOptions options) =>
+            {
+                return _sendFileHandler.RunHandlerAndReturnExitCode(options);
             });
 
             return cmd;
