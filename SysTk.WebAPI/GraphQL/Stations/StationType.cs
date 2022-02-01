@@ -14,6 +14,7 @@ namespace SysTk.WebAPI.GraphQL.Stations
             descriptor.Field(s => s.FtpCredentials)
                 .ResolveWith<Resolvers>(x => x.GetFtpCredentials(default!, default!))
                 .UseDbContext<AppDbContext>()
+                .UseProjection()
                 .Description("This is the list of available FTP credentials for this station.");
         } 
 
