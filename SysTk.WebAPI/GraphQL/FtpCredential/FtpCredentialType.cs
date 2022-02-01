@@ -14,6 +14,7 @@ namespace SysTk.WebAPI.GraphQL.FtpCredential
             descriptor.Field(x => x.Station)
                 .ResolveWith<Resolvers>(x => x.GetStation(default!, default!))
                 .UseDbContext<AppDbContext>()
+                .UseProjection()
                 .Description("This is the station on which the credentials are valid.");
         }
 
