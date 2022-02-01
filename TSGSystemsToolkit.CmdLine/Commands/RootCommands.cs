@@ -166,7 +166,8 @@ namespace TSGSystemsToolkit.CmdLine.Commands
                 new Argument<string>("filepath", "Path to the file to be sent."),
                 new Option<string>(new[] {"--cluster", "-c"}, "Send file to every station in the specified Petrol Server cluster."),
                 new Option<string>(new[] {"--list", "-l"}, "Path to a CSV file containing a list of PSE station IDs of which to send file to."),
-                new Option<string>(new[] {"--target", "-t"}, "Target path on the FuelPOS system (excluding file name)") { IsRequired = true }
+                new Option<string>(new[] {"--target", "-t"}, "Target path on the FuelPOS system (excluding file name)") { IsRequired = true },
+                new Option<string>(new[] {"--site", "-s"}, "Site ID of a station to send the file to.")
             };
 
             cmd.Handler = CommandHandler.Create((SendFileOptions options) =>

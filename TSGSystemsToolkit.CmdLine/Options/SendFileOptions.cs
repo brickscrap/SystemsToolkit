@@ -12,13 +12,17 @@ namespace TSGSystemsToolkit.CmdLine.Options
         public string Output { get; set; }
         public string Cluster { get; set; }
         public string Target { get; set; }
+        public string List { get; set; }
+        public string Site { get; set; }
 
-        public SendFileOptions(string filepath, string output, string? cluster, string target)
+        public SendFileOptions(string filepath, string output, string? cluster, string target, string? list, string? site)
         {
             FilePath = filepath;
             Output = output;
             Cluster = cluster;
             Target = target;
+            List = list;
+            Site = site;
         }
     }
 }

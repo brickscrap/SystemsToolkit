@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.GraphQL;
+using TSGSystemsToolkit.CmdLine.Models;
 using TSGSystemsToolkit.CmdLine.Options;
 using TSGSystemsToolkit.CmdLine.Services;
 
@@ -33,10 +35,11 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             // Validate options.FilePath
             try
             {
-                FileAttributes attr = File.GetAttributes(options.FilePath);
-
-                if (attr == FileAttributes.Directory)
+                if (IsDirectory(options.FilePath))
                     throw new FileNotFoundException($"{options.FilePath} is a directory, please provide the path to a file.");
+
+                if (options.List is not null && IsDirectory(options.List))
+                    throw new FileNotFoundException($"{options.List} is a directory, please provide the path to a CSV file containing a list of station IDs.");
             }
             catch (Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException)
             {
@@ -48,38 +51,60 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             //      Update token in AppSettings
 
             // Determine cluster or site list CSV
-            if (options.Cluster is not null)
+
+            try
             {
-                string cluster = options.Cluster.Replace(" ", "");
-                var result = await _apiClient.GetStationsByCluster.ExecuteAsync(cluster);
-
-                if (result.Errors.Count > 0)
+                if (options.Cluster is not null)
                 {
-                    if (result.Errors.Where(x => x.Code == "AUTH_NOT_AUTHENTICATED").Any())
-                    {
-                        Console.WriteLine("Not authenticated. Current token invalid or expired. Proceed with login process.");
-                        var authResult = await _authService.Authenticate();
+                    string cluster = options.Cluster.Replace(" ", "");
+                    var result = await _apiClient.GetStationsByCluster.ExecuteAsync(cluster);
 
-                        if (authResult)
+                    if (result.Errors.Count > 0)
+                    {
+                        if (result.Errors.Where(x => x.Code == "AUTH_NOT_AUTHENTICATED").Any())
                         {
-                            _logger.LogInformation("Login success. Please re-run your command.");
-                            return 0;
-                        }    
+                            Console.WriteLine("Not authenticated. Current token invalid or expired. Proceed with login process.");
+                            var authResult = await _authService.Authenticate();
+
+                            if (authResult)
+                            {
+                                _logger.LogInformation("Login success. Please re-run your command.");
+                                return 0;
+                            }
+                        }
+                    }
+
+                    if (result.Data.Station.Count == 0)
+                    {
+                        _logger.LogError("Could not find any stations in cluster: {cluster}", options.Cluster);
+                        _logger.LogDebug("Input: {InputCluster}; Transform: {TransformCluster}", options.Cluster, cluster);
+                        return -1;
+                    }
+                    else
+                    {
+
+                        foreach (var item in result.Data.Station)
+                        {
+                            // Connect to station
+                            
+                            // Send file
+                        }
                     }
                 }
 
-                if (result.Data.Station.Count == 0)
+                if (options.List is not null)
                 {
-                    Console.WriteLine("0");
-                }
-                else
-                {
-                    foreach (var item in result.Data.Station)
-                    {
-                        Console.WriteLine(item.Name);
-                    }
+
                 }
             }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogCritical("Error connecting to API: {Message}", ex.Message);
+                _logger.LogDebug("Inner Exception: {Inner}", ex.InnerException);
+                _logger.LogDebug("Trace: {StackTrace}", ex.StackTrace);
+            }
+
+
             //      Validate cluster via API call
 
             //      Validate site list CSV
@@ -91,6 +116,16 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             //      Validate file has been delivered successfully
 
             return 0;
+        }
+
+        private bool IsDirectory(string path)
+        {
+            FileAttributes attr = File.GetAttributes(path);
+
+            if (attr == FileAttributes.Directory)
+                return true;
+
+            return false;
         }
     }
 }

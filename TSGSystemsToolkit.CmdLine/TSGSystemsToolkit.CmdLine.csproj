@@ -12,6 +12,7 @@
 
   <ItemGroup>
     <GraphQL Remove="GraphQL\GetAllStations.graphql" />
+    <GraphQL Remove="GraphQL\GetStationById.graphql" />
     <GraphQL Remove="GraphQL\GetStationsByCluster.graphql" />
     <GraphQL Remove="GraphQL\GetToken.graphql" />
   </ItemGroup>

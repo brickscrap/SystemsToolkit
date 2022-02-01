@@ -1,8 +1,11 @@
 query GetStationsByCluster($cluster: String!) {
-	station(where: {cluster: {eq: $cluster}}) {
-		id
-		cluster
+		station(cluster: $cluster) {
 		name
+		id
 		iP
+		ftpCredentials {
+			username
+			password
+		}
 	}
 }

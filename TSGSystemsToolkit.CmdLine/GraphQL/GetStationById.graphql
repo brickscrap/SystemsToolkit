@@ -1,0 +1,12 @@
+query GetStationById ($id: String!) {
+	station(id: $id) {
+		id
+		name
+		cluster
+		iP
+		ftpCredentials {
+			username
+			password
+		}
+	}
+}

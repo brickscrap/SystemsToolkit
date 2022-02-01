@@ -3,5 +3,6 @@ query GetAllStations {
 		id
 		iP
 		name
+		cluster
 	}
 }
