@@ -13,6 +13,7 @@ using SysTk.WebAPI.GraphQL.FtpCredential;
 using SysTk.WebAPI.GraphQL.Stations;
 using SysTk.WebAPI.GraphQL.Users;
 using SysTk.WebAPI.GraphQL.Errors;
+using SysTk.WebAPI.Services;
 
 namespace SysTk.WebAPI.GraphQL
 {
@@ -151,63 +152,18 @@ namespace SysTk.WebAPI.GraphQL
             throw new QueryException("Unknown error.");
         }
 
-        [UseDbContext(typeof(AppDbContext))]
         public async Task<LoginPayload> Login(LoginInput input,
-            [ScopedService] AppDbContext context,
-            [Service] UserManager<AppUser> userManager,
-            [Service] IConfiguration config)
+            [Service] ITokenService tokenService)
         {
-            if (await IsValidUsernameAndPassword(userManager, input.Username, input.Password))
+            if (await tokenService.IsValidUsernameAndPassword(input.Username, input.Password))
             {
-                return await GenerateToken(userManager, context, input.Username, config);
+                var output = await tokenService.GenerateToken(input.Username);
+                return new LoginPayload { AccessToken = output.AccessToken, Username = output.Username };
             }
             else
             {
                 throw new QueryException(ErrorFactory.CreateLoginError());
             }
-        }
-
-        // TODO: Put this somewhere else
-        private async Task<bool> IsValidUsernameAndPassword(UserManager<AppUser> userManager, string userName, string password)
-        {
-            var user = await userManager.FindByEmailAsync(userName);
-            return await userManager.CheckPasswordAsync(user, password);
-        }
-
-        // TODO: Spin this off into a token service
-        private async Task<LoginPayload> GenerateToken(UserManager<AppUser> userManager, AppDbContext context, string username, IConfiguration config)
-        {
-            var user = await userManager.FindByEmailAsync(username);
-            var roles = from ur in context.UserRoles
-                        join r in context.Roles on ur.RoleId equals r.Id
-                        where ur.UserId == user.Id
-                        select new { ur.UserId, ur.RoleId, r.Name };
-
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Nbf, new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds().ToString()),
-                new Claim(JwtRegisteredClaimNames.Exp, new DateTimeOffset(DateTime.Now.AddHours(8)).ToUnixTimeSeconds().ToString())
-            };
-
-            foreach (var role in roles)
-                claims.Add(new Claim(ClaimTypes.Role, role.Name));
-
-            //TODO: Replace secret key from config
-            var token = new JwtSecurityToken(
-                new JwtHeader(
-                    new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtKey"])),
-                    SecurityAlgorithms.HmacSha256)),
-                new JwtPayload(claims));
-
-            var output = new LoginPayload
-            {
-                AccessToken = new JwtSecurityTokenHandler().WriteToken(token),
-                Username = username
-            };
-
-            return output;
         }
     }
 }

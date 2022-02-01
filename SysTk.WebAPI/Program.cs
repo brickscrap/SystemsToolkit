@@ -1,3 +1,4 @@
+using Bogus;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using GraphQL.Server.Ui.Voyager;
@@ -7,12 +8,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SysTk.WebApi.Data.DataAccess;
+using SysTk.WebApi.Data.Models;
 using SysTk.WebApi.Data.Models.Auth;
 using SysTk.WebAPI;
 using SysTk.WebAPI.GraphQL;
 using SysTk.WebAPI.GraphQL.Errors;
 using SysTk.WebAPI.GraphQL.FtpCredential;
 using SysTk.WebAPI.GraphQL.Stations;
+using SysTk.WebAPI.Services;
 using SysTk.WebAPI.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -60,7 +63,6 @@ if (builder.Environment.IsProduction())
 else
     jwtKey = builder.Configuration["JwtKey"];
 
-
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = "JwtBearer";
@@ -102,19 +104,22 @@ builder.Services.AddAuthorization(options =>
     });
 });
 
+builder.Services.AddTransient<ITokenService, TokenService>();
+
 builder.Services.AddFluentValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<AddStationInputValidator>();
 
 builder.Services.AddGraphQLServer()
     .AddFairyBread()
-    .AddQueryType<Query>()
+    .AddQueryType<QueryType>()
     .AddMutationType<Mutation>()
     .AddType<StationType>()
     .AddType<FtpCredentialType>()
     .AddType<AppUser>()
+    .AddAuthorization()
+    .AddProjections()
     .AddFiltering()
     .AddSorting()
-    .AddAuthorization()
     .AddErrorFilter<ValidationFilter>();
 
 var app = builder.Build();
@@ -124,6 +129,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    await SeedTestData(app.Services);
 }
 
 app.UseRouting();
@@ -179,5 +186,34 @@ async Task CreateRoles(IServiceProvider services)
     else
     {
         var createAdmin = await userManager.AddToRoleAsync(user, "Admin");
+    }
+}
+
+async Task SeedTestData(IServiceProvider services)
+{
+    using var svc = services.CreateScope();
+    var db = svc.ServiceProvider.GetService<AppDbContext>();
+
+    if (db.Stations.Count() < 10)
+    {
+        Random rnd = new Random();
+        List<string> clusters = new List<string> { "ShellRBA", "ShellRFA", "Indep", "RontecUK", "Esso" };
+
+        var ftpCredentials = new Faker<FtpCredentials>()
+            .RuleFor(x => x.Password, x => x.Internet.Password())
+            .RuleFor(x => x.Username, x => x.Internet.UserName())
+            .RuleFor(x => x.LastModified, x => x.Date.Recent());
+
+        var stationFaker = new Faker<Station>()
+            .RuleFor(x => x.Name, x => x.Company.CompanyName())
+            .RuleFor(x => x.IP, x => x.Internet.Ip())
+            .RuleFor(x => x.FtpCredentials, x => ftpCredentials.Generate(rnd.Next(1, 2)))
+            .RuleFor(x => x.Id, x => x.Random.AlphaNumeric(5))
+            .RuleFor(x => x.Cluster, x => x.PickRandom(clusters));
+
+        var station = stationFaker.Generate(600);
+
+        db.AddRange(station);
+        db.SaveChanges();
     }
 }

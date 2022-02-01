@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Bogus" Version="34.0.1" />
     <PackageReference Include="FairyBread" Version="9.0.0-rc.1" />
     <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.6" />
     <PackageReference Include="GraphQL.Server.Ui.Voyager" Version="5.2.0" />
