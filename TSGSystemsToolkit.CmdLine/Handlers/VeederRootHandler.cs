@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Options;
 
@@ -25,7 +26,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             _logger = logger;
         }
 
-        public override async Task<int> RunHandlerAndReturnExitCode(VeederRootOptions options)
+        public override async Task<int> RunHandlerAndReturnExitCode(VeederRootOptions options, CancellationToken ct = default(CancellationToken))
         {
             try
             {

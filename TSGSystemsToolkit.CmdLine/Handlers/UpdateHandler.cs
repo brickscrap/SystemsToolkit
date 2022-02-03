@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Options;
 
@@ -18,7 +19,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             _logger = logger;
         }
 
-        public override async Task<int> RunHandlerAndReturnExitCode(UpdateOptions options)
+        public override async Task<int> RunHandlerAndReturnExitCode(UpdateOptions options, CancellationToken ct = default(CancellationToken))
         {
             var fileVersion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>().Version.Split('.');
             Version currentVersion = new(fileVersion[0], fileVersion[1], fileVersion[2]);

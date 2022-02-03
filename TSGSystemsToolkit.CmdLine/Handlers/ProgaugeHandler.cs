@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Options;
 
@@ -20,7 +21,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             _parser = parser;
         }
 
-        public override async Task<int> RunHandlerAndReturnExitCode(ProgaugeOptions options)
+        public override async Task<int> RunHandlerAndReturnExitCode(ProgaugeOptions options, CancellationToken ct = default(CancellationToken))
         {
             // TODO: Validate file path, handle exceptions
             ParseBasicFileInDir(options);

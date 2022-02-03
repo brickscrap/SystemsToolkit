@@ -12,6 +12,7 @@ using System.IO;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using SysTk.DataManager.DataAccess;
+using SysTk.DataManager.Ftp;
 using SysTk.Utils;
 using TSGSystemsToolkit.CmdLine.Commands;
 using TSGSystemsToolkit.CmdLine.Handlers;
@@ -46,7 +47,7 @@ namespace TSGSystemsToolkit.CmdLine
                     services.AddTransient<IRootCommands, RootCommands>();
 
                     // Data Access
-                    services.AddTransient<IFtpHandler, FtpHandler>();
+                    services.AddTransient<IFtpService, FtpService>();
                     services.AddTransient<ISqliteDataAccess, SqliteDataAccess>();
                     services.AddTransient<ICardIdentificationData, CardIdentificationData>();
                     services.AddTransient<IAuthService, AuthService>();

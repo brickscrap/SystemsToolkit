@@ -1,6 +1,7 @@
 ﻿using FuelPOS.MutationCreator;
 using Microsoft.Extensions.Logging;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using SysTk.DataManager.DataAccess;
 using TSGSystemsToolkit.CmdLine.Options;
@@ -18,7 +19,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             _crdIdData = crdIdData;
         }
 
-        public override async Task<int> RunHandlerAndReturnExitCode(MutationOptions options)
+        public override async Task<int> RunHandlerAndReturnExitCode(MutationOptions options, CancellationToken ct = default(CancellationToken))
         {
             int result = 1;
             if (!string.IsNullOrWhiteSpace(options.CardIdMutPath))

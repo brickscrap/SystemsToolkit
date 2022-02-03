@@ -2,6 +2,7 @@
 using Pse.TerminalsToEmis;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Options;
 
@@ -16,7 +17,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             _logger = logger;
         }
 
-        public override async Task<int> RunHandlerAndReturnExitCode(TerminalsOptions options)
+        public override async Task<int> RunHandlerAndReturnExitCode(TerminalsOptions options, CancellationToken ct = default(CancellationToken))
         {
             if (options.CreateEmisFile)
             {

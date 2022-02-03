@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using SysTk.Utils;
@@ -24,7 +25,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             _statDevParser = statDevParser;
         }
 
-        public override async Task<int> RunHandlerAndReturnExitCode(SurveyOptions options)
+        public override async Task<int> RunHandlerAndReturnExitCode(SurveyOptions options, CancellationToken ct = default(CancellationToken))
         {
             int exitCode = 0;
 

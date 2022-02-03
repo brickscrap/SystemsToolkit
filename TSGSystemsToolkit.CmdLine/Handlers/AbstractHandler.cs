@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Options;
 
@@ -13,6 +14,6 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
         {
 
         }
-        public abstract Task<int> RunHandlerAndReturnExitCode(T options);
+        public abstract Task<int> RunHandlerAndReturnExitCode(T options, CancellationToken ct = default(CancellationToken));
     }
 }
