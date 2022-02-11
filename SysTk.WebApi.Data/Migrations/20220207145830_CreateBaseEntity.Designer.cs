@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SysTk.WebApi.Data.DataAccess;
 
@@ -11,9 +12,10 @@ using SysTk.WebApi.Data.DataAccess;
 namespace SysTk.WebApi.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220207145830_CreateBaseEntity")]
+    partial class CreateBaseEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -225,69 +227,6 @@ namespace SysTk.WebApi.Data.Migrations
                     b.ToTable("AspNetRoles", (string)null);
                 });
 
-            modelBuilder.Entity("SysTk.WebApi.Data.Models.DebugParameter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("DebugProcessId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("nvarchar(10)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DebugProcessId");
-
-                    b.ToTable("DebugParameters");
-                });
-
-            modelBuilder.Entity("SysTk.WebApi.Data.Models.DebugProcess", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime?>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)");
-
-                    b.Property<DateTime?>("LastModified")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DebugProcesses");
-                });
-
             modelBuilder.Entity("SysTk.WebApi.Data.Models.FtpCredentials", b =>
                 {
                     b.Property<int>("Id")
@@ -407,17 +346,6 @@ namespace SysTk.WebApi.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("SysTk.WebApi.Data.Models.DebugParameter", b =>
-                {
-                    b.HasOne("SysTk.WebApi.Data.Models.DebugProcess", "Process")
-                        .WithMany("Parameters")
-                        .HasForeignKey("DebugProcessId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Process");
-                });
-
             modelBuilder.Entity("SysTk.WebApi.Data.Models.FtpCredentials", b =>
                 {
                     b.HasOne("SysTk.WebApi.Data.Models.Station", "Station")
@@ -427,11 +355,6 @@ namespace SysTk.WebApi.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Station");
-                });
-
-            modelBuilder.Entity("SysTk.WebApi.Data.Models.DebugProcess", b =>
-                {
-                    b.Navigation("Parameters");
                 });
 
             modelBuilder.Entity("SysTk.WebApi.Data.Models.Station", b =>

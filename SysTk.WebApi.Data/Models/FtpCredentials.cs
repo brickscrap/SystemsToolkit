@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SysTk.WebApi.Data.Models
 {
-    public class FtpCredentials
+    public class FtpCredentials : BaseEntity
     {
         [Key]
         public int Id { get; set; }
@@ -26,7 +26,6 @@ namespace SysTk.WebApi.Data.Models
         [MaxLength(100)]
         public string Password { get; set; }
 
-        public DateTime LastModified { get; set; }
         public Station Station { get; set; }
     }
 }

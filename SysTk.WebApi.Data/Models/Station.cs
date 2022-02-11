@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SysTk.WebApi.Data.Models
 {
-    public class Station
+    public class Station : BaseEntity
     {
         [Key]
         [Required]
