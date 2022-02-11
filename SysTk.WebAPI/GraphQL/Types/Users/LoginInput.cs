@@ -1,4 +1,4 @@
-﻿namespace SysTk.WebAPI.GraphQL.Users
+﻿namespace SysTk.WebAPI.GraphQL.Types.Users
 {
     public class LoginInput
     {

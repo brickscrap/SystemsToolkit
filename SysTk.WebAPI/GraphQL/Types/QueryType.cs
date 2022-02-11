@@ -1,9 +1,7 @@
-﻿using HotChocolate.Resolvers;
-using SysTk.WebApi.Data.DataAccess;
+﻿using SysTk.WebApi.Data.DataAccess;
 using SysTk.WebApi.Data.Models;
-using SysTk.WebAPI.GraphQL.Stations;
 
-namespace SysTk.WebAPI.GraphQL
+namespace SysTk.WebAPI.GraphQL.Types
 {
     public class QueryType : ObjectType<Query>
     {
@@ -18,6 +16,16 @@ namespace SysTk.WebAPI.GraphQL
                 .UseProjection()
                 .UseFiltering()
                 .UseSorting();
+
+            descriptor.Field(x => x.GetDebugProcesses(default!))
+                .Authorize(Policies.IsVerified)
+                .Argument("id", x => x.Type<IntType>())
+                .Argument("name", x => x.Type<StringType>())
+                .ResolveWith<Resolvers>(x => x.GetDebugProcess(default!, default!, default!))
+                .UseDbContext<AppDbContext>()
+                .UseProjection()
+                .UseFiltering()
+                .UseSorting();
         }
 
         private class Resolvers
@@ -28,6 +36,14 @@ namespace SysTk.WebAPI.GraphQL
                     return context.Stations;
 
                 return context.Stations.Where(x => x.Cluster == cluster || x.Id == id);
+            }
+
+            public IQueryable<DebugProcess> GetDebugProcess([ScopedService] AppDbContext context, int id, string name)
+            {
+                if (id == 0 && name is null)
+                    return context.DebugProcesses;
+
+                return context.DebugProcesses.Where(x => x.Name == name || x.Id == id);
             }
         }
     }

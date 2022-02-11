@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using SysTk.WebApi.Data.DataAccess;
-using SysTk.WebAPI.GraphQL.Stations;
+using SysTk.WebAPI.GraphQL.Types.Stations;
 
 namespace SysTk.WebAPI.Validators
 {
@@ -14,11 +14,11 @@ namespace SysTk.WebAPI.Validators
         {
             _contextFactory = contextFactory;
 
-                RuleFor(x => x.Cluster).NotEmpty();
-                RuleFor(x => x.Name).NotEmpty();
-                RuleFor(x => x.Id).Length(5).WithMessage("Site ID must be exactly 5 characters.");
-                RuleFor(x => x.IP).Must(BeIPAddress).WithMessage("Invalid IP address provided.")
-                    .Must(IPNotExist).WithMessage("IP address already exists.");
+            RuleFor(x => x.Cluster).NotEmpty();
+            RuleFor(x => x.Name).NotEmpty();
+            RuleFor(x => x.Id).Length(5).WithMessage("Site ID must be exactly 5 characters.");
+            RuleFor(x => x.Ip).Must(BeIPAddress).WithMessage("Invalid IP address provided.")
+                .Must(IPNotExist).WithMessage("IP address already exists.");
         }
 
         private bool BeIPAddress(string ip) => IPAddress.TryParse(ip, out _);

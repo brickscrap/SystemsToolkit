@@ -1,8 +1,8 @@
-﻿namespace SysTk.WebAPI.GraphQL.Users
+﻿namespace SysTk.WebAPI.GraphQL.Types.Users
 {
     public class AddUserToRoleInput
     {
         public string Email { get; set; }
-        public string RoleName { get; set; }
+        public UserRole Role { get; set; }
     }
 }

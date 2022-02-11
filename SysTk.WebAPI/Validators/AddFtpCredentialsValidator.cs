@@ -1,11 +1,9 @@
 ﻿using FluentValidation;
-using Microsoft.EntityFrameworkCore;
-using SysTk.WebApi.Data.DataAccess;
-using SysTk.WebAPI.GraphQL.FtpCredential;
+using SysTk.WebApi.Data.Models;
 
 namespace SysTk.WebAPI.Validators
 {
-    public class AddFtpCredentialsValidator : AbstractValidator<AddFtpCredentialsInput>
+    public class AddFtpCredentialsValidator : AbstractValidator<FtpCredentials>
     {
 
         public AddFtpCredentialsValidator()

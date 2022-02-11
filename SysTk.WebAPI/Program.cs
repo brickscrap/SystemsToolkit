@@ -2,23 +2,47 @@ using Bogus;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using GraphQL.Server.Ui.Voyager;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Hosting.WindowsServices;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using System.Text;
 using SysTk.WebApi.Data.DataAccess;
 using SysTk.WebApi.Data.Models;
 using SysTk.WebApi.Data.Models.Auth;
 using SysTk.WebAPI;
-using SysTk.WebAPI.GraphQL;
 using SysTk.WebAPI.GraphQL.Errors;
-using SysTk.WebAPI.GraphQL.FtpCredential;
-using SysTk.WebAPI.GraphQL.Stations;
+using SysTk.WebAPI.GraphQL.Types;
 using SysTk.WebAPI.Services;
 using SysTk.WebAPI.Validators;
 
-var builder = WebApplication.CreateBuilder(args);
+var options = new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = WindowsServiceHelpers.IsWindowsService() ? AppContext.BaseDirectory : default,
+    ApplicationName = System.Diagnostics.Process.GetCurrentProcess().ProcessName
+};
+
+var builder = WebApplication.CreateBuilder(options);
+
+if (builder.Environment.IsProduction())
+{
+    builder.Host.UseSerilog((ctx, lc) =>
+    lc.WriteTo.File("C:\\logs\\log.txt"));
+}
+
+if (WindowsServiceHelpers.IsWindowsService())
+{
+    builder.Services.AddSingleton<IHostLifetime, WindowsServiceLifetime>();
+    builder.Logging.AddEventLog(settings =>
+    {
+        if (string.IsNullOrEmpty(settings.SourceName))
+        {
+            settings.SourceName = builder.Environment.ApplicationName;
+        }
+    });
+}
 
 // Add services to the container.
 
@@ -27,11 +51,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Configuration.AddEnvironmentVariables();
+
+builder.WebHost.UseIISIntegration().UseKestrel();
+builder.Host.UseWindowsService();
+
 builder.Services.AddPooledDbContextFactory<AppDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("Default"),
         sqlServerOptionsAction: options =>
         {
+            options.MigrationsAssembly("SysTk.WebApi.Data");
             options.EnableRetryOnFailure();
         });
 });
@@ -83,24 +113,34 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("CanDelete", policy =>
+    options.AddPolicy(Policies.CanDelete, policy =>
     {
-        policy.RequireRole(new[] { "Admin", "Supervisor" });
+        policy.RequireRole(new[] { Roles.Admin, Roles.Supervisor });
     });
 
-    options.AddPolicy("CanAdd", policy =>
-    {
-        policy.RequireRole(new[] { "Admin", "Supervisor", "Member" });
-    });
-
-    options.AddPolicy("CanModifyUsers", policy =>
-    {
-        policy.RequireRole("Admin");
-    });
-
-    options.AddPolicy("IsVerified", policy =>
+    options.AddPolicy(Policies.CanAdd, policy =>
     {
         policy.RequireRole(new[] { Roles.Admin, Roles.Supervisor, Roles.Member });
+    });
+
+    options.AddPolicy(Policies.CanModify, policy =>
+    {
+        policy.RequireRole(new[] { Roles.Admin, Roles.Supervisor });
+    });
+
+    options.AddPolicy(Policies.CanModifyUsers, policy =>
+    {
+        policy.RequireRole(Roles.Admin);
+    });
+
+    options.AddPolicy(Policies.IsVerified, policy =>
+    {
+        policy.RequireRole(new[] { Roles.Admin, Roles.Supervisor, Roles.Member });
+    });
+
+    options.AddPolicy(Policies.IsAdmin, policy =>
+    {
+        policy.RequireRole(Roles.Admin);
     });
 });
 
@@ -111,11 +151,14 @@ builder.Services.AddValidatorsFromAssemblyContaining<AddStationInputValidator>()
 
 builder.Services.AddGraphQLServer()
     .AddFairyBread()
+    .AddMutationConventions(false)
     .AddQueryType<QueryType>()
-    .AddMutationType<Mutation>()
+    .AddMutationType<MutationType>()
     .AddType<StationType>()
+    .AddType<UserType>()
     .AddType<FtpCredentialType>()
-    .AddType<AppUser>()
+    .AddType<DebugProcessType>()
+    .AddType<DebugParameterType>()
     .AddAuthorization()
     .AddProjections()
     .AddFiltering()
@@ -196,13 +239,12 @@ async Task SeedTestData(IServiceProvider services)
 
     if (db.Stations.Count() < 10)
     {
-        Random rnd = new Random();
+        Random rnd = new();
         List<string> clusters = new List<string> { "ShellRBA", "ShellRFA", "Indep", "RontecUK", "Esso" };
 
         var ftpCredentials = new Faker<FtpCredentials>()
             .RuleFor(x => x.Password, x => x.Internet.Password())
-            .RuleFor(x => x.Username, x => x.Internet.UserName())
-            .RuleFor(x => x.LastModified, x => x.Date.Recent());
+            .RuleFor(x => x.Username, x => x.Internet.UserName());
 
         var stationFaker = new Faker<Station>()
             .RuleFor(x => x.Name, x => x.Company.CompanyName())
@@ -214,6 +256,6 @@ async Task SeedTestData(IServiceProvider services)
         var station = stationFaker.Generate(600);
 
         db.AddRange(station);
-        db.SaveChanges();
+        await db.SaveChangesAsync();
     }
 }

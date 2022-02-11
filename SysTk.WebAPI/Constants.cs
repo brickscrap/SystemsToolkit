@@ -4,8 +4,10 @@
     {
         public const string CanAdd = "CanAdd";
         public const string CanDelete = "CanDelete";
+        public const string CanModify = "CanModify";
         public const string CanModifyUsers = "CanModifyUsers";
         public const string IsVerified = "IsVerified";
+        public const string IsAdmin = "IsAdmin";
     }
 
     public static class Roles

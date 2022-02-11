@@ -1,6 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-
-namespace SysTk.WebAPI.GraphQL.Users
+﻿namespace SysTk.WebAPI.GraphQL.Types.Users
 {
     public class LoginPayload
     {

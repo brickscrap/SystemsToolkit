@@ -2,14 +2,14 @@
 using SysTk.WebApi.Data.DataAccess;
 using SysTk.WebApi.Data.Models.Auth;
 
-namespace SysTk.WebAPI.GraphQL.Users
+namespace SysTk.WebAPI.GraphQL.Types
 {
     public class UserType : ObjectType<AppUser>
     {
         protected override void Configure(IObjectTypeDescriptor<AppUser> descriptor)
         {
-            descriptor.Description("Represents an API user, only visible to admin users.");
-            descriptor.Authorize(new[] { Roles.Admin });
+            descriptor.Description("Represents an API user, only accessible by admin users.");
+            descriptor.Authorize(Policies.IsAdmin);
 
             descriptor.BindFieldsExplicitly();
 
@@ -20,7 +20,8 @@ namespace SysTk.WebAPI.GraphQL.Users
 
             descriptor.Field(x => x.FirstName);
             descriptor.Field(x => x.LastName);
-            descriptor.Field(x => x.Email);
+            descriptor.Field(x => x.Email)
+                .Type<NonNullType<StringType>>();
         }
 
         private class Resolvers
