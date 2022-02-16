@@ -10,15 +10,21 @@ namespace SysTk.WebApi.Data.Models
 {
     public class Station : BaseEntity
     {
+        private string _id;
+
         [Key]
         [Required]
         [MinLength(5)]
         [MaxLength(5)]
-        public string Id { get; set; }
+        public string Id
+        {
+            get { return _id.ToUpper(); }
+            set { _id = value.ToUpper(); }
+        }
+
 
         [Required]
-        [MaxLength(50)]
-        public string Cluster { get; set; }
+        public Cluster Cluster { get; set; }
 
         [Required]
         [MaxLength(200)]
@@ -30,5 +36,18 @@ namespace SysTk.WebApi.Data.Models
         public string IP { get; set; }
 
         public List<FtpCredentials> FtpCredentials { get; set; }
+    }
+
+    public enum Cluster
+    {
+        ShellRBA,
+        ShellRFA,
+        Shell,
+        Esso,
+        Independents,
+        Rontec,
+        BP,
+        Certas,
+        Texaco
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SysTk.WebApi.Data.DataAccess;
 
@@ -11,9 +12,10 @@ using SysTk.WebApi.Data.DataAccess;
 namespace SysTk.WebApi.Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220211170809_ClusterToEnum")]
+    partial class ClusterToEnum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -256,7 +258,7 @@ namespace SysTk.WebApi.Data.Migrations
 
                     b.HasIndex("DebugProcessId");
 
-                    b.ToTable("DebugParameters", (string)null);
+                    b.ToTable("DebugParameters");
                 });
 
             modelBuilder.Entity("SysTk.WebApi.Data.Models.DebugProcess", b =>
@@ -285,7 +287,7 @@ namespace SysTk.WebApi.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DebugProcesses", (string)null);
+                    b.ToTable("DebugProcesses");
                 });
 
             modelBuilder.Entity("SysTk.WebApi.Data.Models.FtpCredentials", b =>
@@ -321,7 +323,7 @@ namespace SysTk.WebApi.Data.Migrations
 
                     b.HasIndex("StationId");
 
-                    b.ToTable("FtpCredentials", (string)null);
+                    b.ToTable("FtpCredentials");
                 });
 
             modelBuilder.Entity("SysTk.WebApi.Data.Models.Station", b =>
@@ -351,7 +353,7 @@ namespace SysTk.WebApi.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Stations", (string)null);
+                    b.ToTable("Stations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
