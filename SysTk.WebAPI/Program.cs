@@ -1,4 +1,5 @@
 using Bogus;
+using FairyBread;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using GraphQL.Server.Ui.Voyager;
@@ -148,6 +149,7 @@ builder.Services.AddTransient<ITokenService, TokenService>();
 
 builder.Services.AddFluentValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<AddStationInputValidator>();
+builder.Services.AddSingleton<IValidationErrorsHandler, CustomValidationErrorsHandler>();
 
 builder.Services.AddGraphQLServer()
     .AddFairyBread()
@@ -240,7 +242,6 @@ async Task SeedTestData(IServiceProvider services)
     if (db.Stations.Count() < 10)
     {
         Random rnd = new();
-        List<string> clusters = new List<string> { "ShellRBA", "ShellRFA", "Indep", "RontecUK", "Esso" };
 
         var ftpCredentials = new Faker<FtpCredentials>()
             .RuleFor(x => x.Password, x => x.Internet.Password())
@@ -251,7 +252,7 @@ async Task SeedTestData(IServiceProvider services)
             .RuleFor(x => x.IP, x => x.Internet.Ip())
             .RuleFor(x => x.FtpCredentials, x => ftpCredentials.Generate(rnd.Next(1, 2)))
             .RuleFor(x => x.Id, x => x.Random.AlphaNumeric(5))
-            .RuleFor(x => x.Cluster, x => x.PickRandom(clusters));
+            .RuleFor(x => x.Cluster, x => x.PickRandom<Cluster>());
 
         var station = stationFaker.Generate(600);
 
