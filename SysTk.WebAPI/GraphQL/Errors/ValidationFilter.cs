@@ -4,11 +4,6 @@
     {
         public IError OnError(IError error)
         {
-            if (error.Code == "FairyBread_ValidationError")
-            {
-                error = error.RemoveExtensions().RemoveCode();
-            }
-
             return error;
         }
     }
