@@ -10,7 +10,7 @@ namespace SysTk.WebAPI.GraphQL.Types
             descriptor.Field(x => x.GetStation(default!))
                 .Authorize(Policies.IsVerified)
                 .Argument("id", x => x.Type<StringType>())
-                .Argument("cluster", x => x.Type<StringType>())
+                .Argument("cluster", x => x.Type<ClusterType>())
                 .ResolveWith<Resolvers>(x => x.GetStation(default!, default!, default!))
                 .UseDbContext<AppDbContext>()
                 .UseProjection()
@@ -30,10 +30,11 @@ namespace SysTk.WebAPI.GraphQL.Types
 
         private class Resolvers
         {
-            public IQueryable<Station> GetStation([ScopedService] AppDbContext context, string id, string cluster)
+            public IQueryable<Station> GetStation([ScopedService] AppDbContext context, string id, Cluster? cluster)
             {
                 if (cluster is null && id is null)
                     return context.Stations;
+
 
                 return context.Stations.Where(x => x.Cluster == cluster || x.Id == id);
             }

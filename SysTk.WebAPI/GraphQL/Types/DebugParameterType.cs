@@ -11,6 +11,7 @@ namespace SysTk.WebAPI.GraphQL.Types
             descriptor.Authorize(Policies.IsVerified);
 
             descriptor.Field(x => x.Id)
+                .Type<NonNullType<IdType>>()
                 .IsProjected(true);
 
             descriptor.Field(x => x.Description)
