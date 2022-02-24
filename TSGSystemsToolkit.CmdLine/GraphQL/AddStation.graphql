@@ -1,0 +1,10 @@
+mutation AddStation($input: AddStationInput!) {
+	addStation(input: $input) {
+		station {
+			id
+			name
+			cluster
+			ip
+		}
+	}
+}

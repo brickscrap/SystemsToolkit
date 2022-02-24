@@ -28,21 +28,11 @@ namespace TSGSystemsToolkit.CmdLine
 
         public async Task<int> Run(string[] args)
         {
-            //Console.WriteLine("Connecting to client.");
-            
-            //var result = await _client.GetToken.ExecuteAsync("pow@use.r", "3A2o7z%$iE$6FxoRj6NBL8ZwVJ");
-            //if (result.Errors.Count == 0)
-            //    Extensions.UpdateAccessToken(result.Data.Login.AccessToken);
-            //else
-            //    Console.WriteLine("Error collecting token");
-            
-            //return 0;
-
             var cmd = _rootCommands.Create();
             cmd.Name = "SysTk";
             cmd.Description = "A series of command-line tools to help ease the burden of your left-click button.";
 
-            AnsiConsole.Write(new FigletText("TSG Systems Toolkit").Color(Color.OrangeRed1));
+            AnsiConsole.Write(new FigletText("TSG SysTk").Color(Color.OrangeRed1));
 
             try
             {

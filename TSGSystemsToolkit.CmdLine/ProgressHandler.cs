@@ -1,10 +1,6 @@
 ﻿using FluentFTP;
 using Spectre.Console;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TSGSystemsToolkit.CmdLine
 {
@@ -22,7 +18,7 @@ namespace TSGSystemsToolkit.CmdLine
             ProgressTask.Increment(value);
         }
 
-        public void Report(FtpProgress value) 
+        public void Report(FtpProgress value)
         {
             ProgressTask.Increment(value.Progress / 100);
         }

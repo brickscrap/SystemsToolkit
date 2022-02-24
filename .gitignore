@@ -345,6 +345,7 @@ healthchecksdb
 /StadevParser/StadevParser.sln
 
 *.Development.json
+*.Production.json
 
 # FuelPOS Specifics
 *.cap

@@ -1,8 +1,8 @@
-query GetStationsByCluster($cluster: String!) {
+query GetStationsByCluster($cluster: Cluster!) {
 		station(cluster: $cluster) {
 		name
 		id
-		iP
+		ip
 		ftpCredentials {
 			username
 			password

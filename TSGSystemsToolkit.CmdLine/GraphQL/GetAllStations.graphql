@@ -1,7 +1,7 @@
 query GetAllStations {
 	station {
 		id
-		iP
+		ip
 		name
 		cluster
 	}

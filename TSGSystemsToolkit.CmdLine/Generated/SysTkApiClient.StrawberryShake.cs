@@ -15,6 +15,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 return new ClientServiceProvider(global::Microsoft.Extensions.DependencyInjection.ServiceCollectionContainerBuilderExtensions.BuildServiceProvider(serviceCollection));
             });
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton(services, sp => new global::TSGSystemsToolkit.CmdLine.GraphQL.State.SysTkApiClientStoreAccessor(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.IOperationStore>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)), global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.IEntityStore>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)), global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.IEntityIdSerializer>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)), global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::System.Collections.Generic.IEnumerable<global::StrawberryShake.IOperationRequestFactory>>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)), global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::System.Collections.Generic.IEnumerable<global::StrawberryShake.IOperationResultDataFactory>>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp))));
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.AddStationMutation>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)));
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.GetAllStationsQuery>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)));
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.GetCredentialsByStationIdQuery>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)));
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.GetStationsByClusterQuery>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)));
@@ -33,11 +34,13 @@ namespace Microsoft.Extensions.DependencyInjection
                 var clientFactory = global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::System.Net.Http.IHttpClientFactory>(parentServices);
                 return new global::StrawberryShake.Transport.Http.HttpConnection(() => clientFactory.CreateClient("SysTkApiClient"));
             });
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.AddStation_AddStation_Station_Station>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddStation_AddStation_Station_StationFromStationEntityMapper>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.GetAllStations_Station_Station>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetAllStations_Station_StationFromStationEntityMapper>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.GetCredentialsByStationId_Station_Station>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetCredentialsByStationId_Station_StationFromStationEntityMapper>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.GetCredentialsByStationId_Station_FtpCredentials_FtpCredentials>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetCredentialsByStationId_Station_FtpCredentials_FtpCredentialsFromFtpCredentialsEntityMapper>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.GetStationsByCluster_Station_Station>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetStationsByCluster_Station_StationFromStationEntityMapper>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.GetStationsByCluster_Station_FtpCredentials_FtpCredentials>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetStationsByCluster_Station_FtpCredentials_FtpCredentialsFromFtpCredentialsEntityMapper>(services);
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.Serialization.ISerializer, global::TSGSystemsToolkit.CmdLine.GraphQL.ClusterSerializer>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.Serialization.ISerializer, global::StrawberryShake.Serialization.StringSerializer>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.Serialization.ISerializer, global::StrawberryShake.Serialization.BooleanSerializer>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.Serialization.ISerializer, global::StrawberryShake.Serialization.ByteSerializer>(services);
@@ -54,7 +57,15 @@ namespace Microsoft.Extensions.DependencyInjection
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.Serialization.ISerializer, global::StrawberryShake.Serialization.ByteArraySerializer>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.Serialization.ISerializer, global::StrawberryShake.Serialization.TimeSpanSerializer>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.Serialization.ISerializer, global::StrawberryShake.Serialization.JsonSerializer>(services);
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.Serialization.ISerializer, global::TSGSystemsToolkit.CmdLine.GraphQL.AddStationInputInputValueFormatter>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.Serialization.ISerializerResolver>(services, sp => new global::StrawberryShake.Serialization.SerializerResolver(global::System.Linq.Enumerable.Concat(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::System.Collections.Generic.IEnumerable<global::StrawberryShake.Serialization.ISerializer>>(parentServices), global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::System.Collections.Generic.IEnumerable<global::StrawberryShake.Serialization.ISerializer>>(sp))));
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationResult>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddStationResultFactory>(services);
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationResultDataFactory>(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationResult>>(sp));
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationRequestFactory>(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationMutation>(sp));
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationResultBuilder<global::System.Text.Json.JsonDocument, global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationResult>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddStationBuilder>(services);
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationExecutor<global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationResult>>(services, sp => new global::StrawberryShake.OperationExecutor<global::System.Text.Json.JsonDocument, global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationResult>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.Transport.Http.IHttpConnection>(sp), () => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.IOperationResultBuilder<global::System.Text.Json.JsonDocument, global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationResult>>(sp), global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.IOperationStore>(sp), strategy));
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::TSGSystemsToolkit.CmdLine.GraphQL.AddStationMutation>(services);
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationMutation>(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.AddStationMutation>(sp));
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsResult>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetAllStationsResultFactory>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationResultDataFactory>(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsResult>>(sp));
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationRequestFactory>(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsQuery>(sp));
@@ -115,6 +126,272 @@ namespace Microsoft.Extensions.DependencyInjection
 
 namespace TSGSystemsToolkit.CmdLine.GraphQL
 {
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddStationResult : global::System.IEquatable<AddStationResult>, IAddStationResult
+    {
+        public AddStationResult(global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation addStation)
+        {
+            AddStation = addStation;
+        }
+
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation AddStation { get; }
+
+        public virtual global::System.Boolean Equals(AddStationResult? other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            if (other.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return (AddStation.Equals(other.AddStation));
+        }
+
+        public override global::System.Boolean Equals(global::System.Object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return Equals((AddStationResult)obj);
+        }
+
+        public override global::System.Int32 GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 5;
+                hash ^= 397 * AddStation.GetHashCode();
+                return hash;
+            }
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddStation_AddStation_AddStationPayload : global::System.IEquatable<AddStation_AddStation_AddStationPayload>, IAddStation_AddStation_AddStationPayload
+    {
+        public AddStation_AddStation_AddStationPayload(global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Station? station)
+        {
+            Station = station;
+        }
+
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Station? Station { get; }
+
+        public virtual global::System.Boolean Equals(AddStation_AddStation_AddStationPayload? other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            if (other.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return (((Station is null && other.Station is null) || Station != null && Station.Equals(other.Station)));
+        }
+
+        public override global::System.Boolean Equals(global::System.Object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return Equals((AddStation_AddStation_AddStationPayload)obj);
+        }
+
+        public override global::System.Int32 GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 5;
+                if (Station != null)
+                {
+                    hash ^= 397 * Station.GetHashCode();
+                }
+
+                return hash;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Represents a FuelPOS station
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddStation_AddStation_Station_Station : global::System.IEquatable<AddStation_AddStation_Station_Station>, IAddStation_AddStation_Station_Station
+    {
+        public AddStation_AddStation_Station_Station(global::System.String id, global::System.String name, global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster cluster, global::System.String ip)
+        {
+            Id = id;
+            Name = name;
+            Cluster = cluster;
+            Ip = ip;
+        }
+
+        /// <summary>
+        /// The station ID, equal to the Petrol Server ID
+        /// </summary>
+        public global::System.String Id { get; }
+
+        /// <summary>
+        /// The name of the station
+        /// </summary>
+        public global::System.String Name { get; }
+
+        /// <summary>
+        /// The Petrol Server cluster the station belongs to
+        /// </summary>
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster Cluster { get; }
+
+        /// <summary>
+        /// The IP address of the FuelPOS CIS/INT of the station
+        /// </summary>
+        public global::System.String Ip { get; }
+
+        public virtual global::System.Boolean Equals(AddStation_AddStation_Station_Station? other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            if (other.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return (Id.Equals(other.Id)) && Name.Equals(other.Name) && Cluster.Equals(other.Cluster) && Ip.Equals(other.Ip);
+        }
+
+        public override global::System.Boolean Equals(global::System.Object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return Equals((AddStation_AddStation_Station_Station)obj);
+        }
+
+        public override global::System.Int32 GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 5;
+                hash ^= 397 * Id.GetHashCode();
+                hash ^= 397 * Name.GetHashCode();
+                hash ^= 397 * Cluster.GetHashCode();
+                hash ^= 397 * Ip.GetHashCode();
+                return hash;
+            }
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IAddStationResult
+    {
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation AddStation { get; }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IAddStation_AddStation
+    {
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Station? Station { get; }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IAddStation_AddStation_AddStationPayload : IAddStation_AddStation
+    {
+    }
+
+    /// <summary>
+    /// Represents a FuelPOS station
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IAddStation_AddStation_Station
+    {
+        /// <summary>
+        /// The station ID, equal to the Petrol Server ID
+        /// </summary>
+        public global::System.String Id { get; }
+
+        /// <summary>
+        /// The name of the station
+        /// </summary>
+        public global::System.String Name { get; }
+
+        /// <summary>
+        /// The Petrol Server cluster the station belongs to
+        /// </summary>
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster Cluster { get; }
+
+        /// <summary>
+        /// The IP address of the FuelPOS CIS/INT of the station
+        /// </summary>
+        public global::System.String Ip { get; }
+    }
+
+    /// <summary>
+    /// Represents a FuelPOS station
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IAddStation_AddStation_Station_Station : IAddStation_AddStation_Station
+    {
+    }
+
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial class GetAllStationsResult : global::System.IEquatable<GetAllStationsResult>, IGetAllStationsResult
     {
@@ -192,21 +469,33 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial class GetAllStations_Station_Station : global::System.IEquatable<GetAllStations_Station_Station>, IGetAllStations_Station_Station
     {
-        public GetAllStations_Station_Station(global::System.String id, global::System.String iP, global::System.String name, global::System.String cluster)
+        public GetAllStations_Station_Station(global::System.String id, global::System.String ip, global::System.String name, global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster cluster)
         {
             Id = id;
-            IP = iP;
+            Ip = ip;
             Name = name;
             Cluster = cluster;
         }
 
+        /// <summary>
+        /// The station ID, equal to the Petrol Server ID
+        /// </summary>
         public global::System.String Id { get; }
 
-        public global::System.String IP { get; }
+        /// <summary>
+        /// The IP address of the FuelPOS CIS/INT of the station
+        /// </summary>
+        public global::System.String Ip { get; }
 
+        /// <summary>
+        /// The name of the station
+        /// </summary>
         public global::System.String Name { get; }
 
-        public global::System.String Cluster { get; }
+        /// <summary>
+        /// The Petrol Server cluster the station belongs to
+        /// </summary>
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster Cluster { get; }
 
         public virtual global::System.Boolean Equals(GetAllStations_Station_Station? other)
         {
@@ -225,7 +514,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
                 return false;
             }
 
-            return (Id.Equals(other.Id)) && IP.Equals(other.IP) && Name.Equals(other.Name) && Cluster.Equals(other.Cluster);
+            return (Id.Equals(other.Id)) && Ip.Equals(other.Ip) && Name.Equals(other.Name) && Cluster.Equals(other.Cluster);
         }
 
         public override global::System.Boolean Equals(global::System.Object? obj)
@@ -254,7 +543,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
             {
                 int hash = 5;
                 hash ^= 397 * Id.GetHashCode();
-                hash ^= 397 * IP.GetHashCode();
+                hash ^= 397 * Ip.GetHashCode();
                 hash ^= 397 * Name.GetHashCode();
                 hash ^= 397 * Cluster.GetHashCode();
                 return hash;
@@ -274,13 +563,25 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial interface IGetAllStations_Station
     {
+        /// <summary>
+        /// The station ID, equal to the Petrol Server ID
+        /// </summary>
         public global::System.String Id { get; }
 
-        public global::System.String IP { get; }
+        /// <summary>
+        /// The IP address of the FuelPOS CIS/INT of the station
+        /// </summary>
+        public global::System.String Ip { get; }
 
+        /// <summary>
+        /// The name of the station
+        /// </summary>
         public global::System.String Name { get; }
 
-        public global::System.String Cluster { get; }
+        /// <summary>
+        /// The Petrol Server cluster the station belongs to
+        /// </summary>
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster Cluster { get; }
     }
 
     /// <summary>
@@ -368,21 +669,27 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial class GetCredentialsByStationId_Station_Station : global::System.IEquatable<GetCredentialsByStationId_Station_Station>, IGetCredentialsByStationId_Station_Station
     {
-        public GetCredentialsByStationId_Station_Station(global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationId_Station_FtpCredentials?>? ftpCredentials, global::System.String name, global::System.String iP)
+        public GetCredentialsByStationId_Station_Station(global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationId_Station_FtpCredentials?>? ftpCredentials, global::System.String name, global::System.String ip)
         {
             FtpCredentials = ftpCredentials;
             Name = name;
-            IP = iP;
+            Ip = ip;
         }
 
         /// <summary>
-        /// This is the list of available FTP credentials for this station.
+        /// Any stored FTP credentials for the FuelPOS system at this station
         /// </summary>
         public global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationId_Station_FtpCredentials?>? FtpCredentials { get; }
 
+        /// <summary>
+        /// The name of the station
+        /// </summary>
         public global::System.String Name { get; }
 
-        public global::System.String IP { get; }
+        /// <summary>
+        /// The IP address of the FuelPOS CIS/INT of the station
+        /// </summary>
+        public global::System.String Ip { get; }
 
         public virtual global::System.Boolean Equals(GetCredentialsByStationId_Station_Station? other)
         {
@@ -401,7 +708,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
                 return false;
             }
 
-            return (global::StrawberryShake.Helper.ComparisonHelper.SequenceEqual(FtpCredentials, other.FtpCredentials)) && Name.Equals(other.Name) && IP.Equals(other.IP);
+            return (global::StrawberryShake.Helper.ComparisonHelper.SequenceEqual(FtpCredentials, other.FtpCredentials)) && Name.Equals(other.Name) && Ip.Equals(other.Ip);
         }
 
         public override global::System.Boolean Equals(global::System.Object? obj)
@@ -441,14 +748,14 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
                 }
 
                 hash ^= 397 * Name.GetHashCode();
-                hash ^= 397 * IP.GetHashCode();
+                hash ^= 397 * Ip.GetHashCode();
                 return hash;
             }
         }
     }
 
     /// <summary>
-    /// Represents a set of FTP credentials for a FuelPOS system.
+    /// Represents a set of FTP credentials (username and password) for a FuelPOS station
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial class GetCredentialsByStationId_Station_FtpCredentials_FtpCredentials : global::System.IEquatable<GetCredentialsByStationId_Station_FtpCredentials_FtpCredentials>, IGetCredentialsByStationId_Station_FtpCredentials_FtpCredentials
@@ -528,13 +835,19 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     public partial interface IGetCredentialsByStationId_Station
     {
         /// <summary>
-        /// This is the list of available FTP credentials for this station.
+        /// Any stored FTP credentials for the FuelPOS system at this station
         /// </summary>
         public global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationId_Station_FtpCredentials?>? FtpCredentials { get; }
 
+        /// <summary>
+        /// The name of the station
+        /// </summary>
         public global::System.String Name { get; }
 
-        public global::System.String IP { get; }
+        /// <summary>
+        /// The IP address of the FuelPOS CIS/INT of the station
+        /// </summary>
+        public global::System.String Ip { get; }
     }
 
     /// <summary>
@@ -546,7 +859,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     }
 
     /// <summary>
-    /// Represents a set of FTP credentials for a FuelPOS system.
+    /// Represents a set of FTP credentials (username and password) for a FuelPOS station
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial interface IGetCredentialsByStationId_Station_FtpCredentials
@@ -557,7 +870,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     }
 
     /// <summary>
-    /// Represents a set of FTP credentials for a FuelPOS system.
+    /// Represents a set of FTP credentials (username and password) for a FuelPOS station
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial interface IGetCredentialsByStationId_Station_FtpCredentials_FtpCredentials : IGetCredentialsByStationId_Station_FtpCredentials
@@ -641,22 +954,31 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial class GetStationsByCluster_Station_Station : global::System.IEquatable<GetStationsByCluster_Station_Station>, IGetStationsByCluster_Station_Station
     {
-        public GetStationsByCluster_Station_Station(global::System.String name, global::System.String id, global::System.String iP, global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByCluster_Station_FtpCredentials?>? ftpCredentials)
+        public GetStationsByCluster_Station_Station(global::System.String name, global::System.String id, global::System.String ip, global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByCluster_Station_FtpCredentials?>? ftpCredentials)
         {
             Name = name;
             Id = id;
-            IP = iP;
+            Ip = ip;
             FtpCredentials = ftpCredentials;
         }
 
+        /// <summary>
+        /// The name of the station
+        /// </summary>
         public global::System.String Name { get; }
 
+        /// <summary>
+        /// The station ID, equal to the Petrol Server ID
+        /// </summary>
         public global::System.String Id { get; }
 
-        public global::System.String IP { get; }
+        /// <summary>
+        /// The IP address of the FuelPOS CIS/INT of the station
+        /// </summary>
+        public global::System.String Ip { get; }
 
         /// <summary>
-        /// This is the list of available FTP credentials for this station.
+        /// Any stored FTP credentials for the FuelPOS system at this station
         /// </summary>
         public global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByCluster_Station_FtpCredentials?>? FtpCredentials { get; }
 
@@ -677,7 +999,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
                 return false;
             }
 
-            return (Name.Equals(other.Name)) && Id.Equals(other.Id) && IP.Equals(other.IP) && global::StrawberryShake.Helper.ComparisonHelper.SequenceEqual(FtpCredentials, other.FtpCredentials);
+            return (Name.Equals(other.Name)) && Id.Equals(other.Id) && Ip.Equals(other.Ip) && global::StrawberryShake.Helper.ComparisonHelper.SequenceEqual(FtpCredentials, other.FtpCredentials);
         }
 
         public override global::System.Boolean Equals(global::System.Object? obj)
@@ -707,7 +1029,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
                 int hash = 5;
                 hash ^= 397 * Name.GetHashCode();
                 hash ^= 397 * Id.GetHashCode();
-                hash ^= 397 * IP.GetHashCode();
+                hash ^= 397 * Ip.GetHashCode();
                 if (FtpCredentials != null)
                 {
                     foreach (var FtpCredentials_elm in FtpCredentials)
@@ -725,7 +1047,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     }
 
     /// <summary>
-    /// Represents a set of FTP credentials for a FuelPOS system.
+    /// Represents a set of FTP credentials (username and password) for a FuelPOS station
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial class GetStationsByCluster_Station_FtpCredentials_FtpCredentials : global::System.IEquatable<GetStationsByCluster_Station_FtpCredentials_FtpCredentials>, IGetStationsByCluster_Station_FtpCredentials_FtpCredentials
@@ -804,14 +1126,23 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial interface IGetStationsByCluster_Station
     {
+        /// <summary>
+        /// The name of the station
+        /// </summary>
         public global::System.String Name { get; }
 
+        /// <summary>
+        /// The station ID, equal to the Petrol Server ID
+        /// </summary>
         public global::System.String Id { get; }
 
-        public global::System.String IP { get; }
+        /// <summary>
+        /// The IP address of the FuelPOS CIS/INT of the station
+        /// </summary>
+        public global::System.String Ip { get; }
 
         /// <summary>
-        /// This is the list of available FTP credentials for this station.
+        /// Any stored FTP credentials for the FuelPOS system at this station
         /// </summary>
         public global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByCluster_Station_FtpCredentials?>? FtpCredentials { get; }
     }
@@ -825,7 +1156,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     }
 
     /// <summary>
-    /// Represents a set of FTP credentials for a FuelPOS system.
+    /// Represents a set of FTP credentials (username and password) for a FuelPOS station
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial interface IGetStationsByCluster_Station_FtpCredentials
@@ -836,7 +1167,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     }
 
     /// <summary>
-    /// Represents a set of FTP credentials for a FuelPOS system.
+    /// Represents a set of FTP credentials (username and password) for a FuelPOS station
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial interface IGetStationsByCluster_Station_FtpCredentials_FtpCredentials : IGetStationsByCluster_Station_FtpCredentials
@@ -1000,6 +1331,395 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     {
     }
 
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddStationInputInputValueFormatter : global::StrawberryShake.Serialization.IInputObjectFormatter
+    {
+        private global::StrawberryShake.Serialization.IInputValueFormatter _iDFormatter = default !;
+        private global::StrawberryShake.Serialization.IInputValueFormatter _stringFormatter = default !;
+        private global::StrawberryShake.Serialization.IInputValueFormatter _clusterFormatter = default !;
+        public global::System.String TypeName => "AddStationInput";
+        public void Initialize(global::StrawberryShake.Serialization.ISerializerResolver serializerResolver)
+        {
+            _iDFormatter = serializerResolver.GetInputValueFormatter("ID");
+            _stringFormatter = serializerResolver.GetInputValueFormatter("String");
+            _clusterFormatter = serializerResolver.GetInputValueFormatter("Cluster");
+        }
+
+        public global::System.Object? Format(global::System.Object? runtimeValue)
+        {
+            if (runtimeValue is null)
+            {
+                return null;
+            }
+
+            var input = runtimeValue as global::TSGSystemsToolkit.CmdLine.GraphQL.AddStationInput;
+            var inputInfo = runtimeValue as global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationInputInfo;
+            if (input is null || inputInfo is null)
+            {
+                throw new global::System.ArgumentException(nameof(runtimeValue));
+            }
+
+            var fields = new global::System.Collections.Generic.List<global::System.Collections.Generic.KeyValuePair<global::System.String, global::System.Object?>>();
+            if (inputInfo.IsIdSet)
+            {
+                fields.Add(new global::System.Collections.Generic.KeyValuePair<global::System.String, global::System.Object?>("id", FormatId(input.Id)));
+            }
+
+            if (inputInfo.IsNameSet)
+            {
+                fields.Add(new global::System.Collections.Generic.KeyValuePair<global::System.String, global::System.Object?>("name", FormatName(input.Name)));
+            }
+
+            if (inputInfo.IsIpSet)
+            {
+                fields.Add(new global::System.Collections.Generic.KeyValuePair<global::System.String, global::System.Object?>("ip", FormatIp(input.Ip)));
+            }
+
+            if (inputInfo.IsClusterSet)
+            {
+                fields.Add(new global::System.Collections.Generic.KeyValuePair<global::System.String, global::System.Object?>("cluster", FormatCluster(input.Cluster)));
+            }
+
+            return fields;
+        }
+
+        private global::System.Object? FormatId(global::System.String input)
+        {
+            if (input is null)
+            {
+                throw new global::System.ArgumentNullException(nameof(input));
+            }
+
+            return _iDFormatter.Format(input);
+        }
+
+        private global::System.Object? FormatName(global::System.String input)
+        {
+            if (input is null)
+            {
+                throw new global::System.ArgumentNullException(nameof(input));
+            }
+
+            return _stringFormatter.Format(input);
+        }
+
+        private global::System.Object? FormatIp(global::System.String input)
+        {
+            if (input is null)
+            {
+                throw new global::System.ArgumentNullException(nameof(input));
+            }
+
+            return _stringFormatter.Format(input);
+        }
+
+        private global::System.Object? FormatCluster(global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster input)
+        {
+            return _clusterFormatter.Format(input);
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddStationInput : global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationInputInfo, global::System.IEquatable<AddStationInput>
+    {
+        public override global::System.Boolean Equals(global::System.Object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return Equals((AddStationInput)obj);
+        }
+
+        public virtual global::System.Boolean Equals(AddStationInput? other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            if (other.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return (Id.Equals(other.Id)) && Name.Equals(other.Name) && Ip.Equals(other.Ip) && Cluster.Equals(other.Cluster);
+        }
+
+        public override global::System.Int32 GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 5;
+                hash ^= 397 * Id.GetHashCode();
+                hash ^= 397 * Name.GetHashCode();
+                hash ^= 397 * Ip.GetHashCode();
+                hash ^= 397 * Cluster.GetHashCode();
+                return hash;
+            }
+        }
+
+        private global::System.String _value_id = default !;
+        private global::System.Boolean _set_id;
+        private global::System.String _value_name = default !;
+        private global::System.Boolean _set_name;
+        private global::System.String _value_ip = default !;
+        private global::System.Boolean _set_ip;
+        private global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster _value_cluster;
+        private global::System.Boolean _set_cluster;
+        public global::System.String Id
+        {
+            get => _value_id;
+            set
+            {
+                _set_id = true;
+                _value_id = value;
+            }
+        }
+
+        global::System.Boolean global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationInputInfo.IsIdSet => _set_id;
+        public global::System.String Name
+        {
+            get => _value_name;
+            set
+            {
+                _set_name = true;
+                _value_name = value;
+            }
+        }
+
+        global::System.Boolean global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationInputInfo.IsNameSet => _set_name;
+        public global::System.String Ip
+        {
+            get => _value_ip;
+            set
+            {
+                _set_ip = true;
+                _value_ip = value;
+            }
+        }
+
+        global::System.Boolean global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationInputInfo.IsIpSet => _set_ip;
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster Cluster
+        {
+            get => _value_cluster;
+            set
+            {
+                _set_cluster = true;
+                _value_cluster = value;
+            }
+        }
+
+        global::System.Boolean global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationInputInfo.IsClusterSet => _set_cluster;
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public enum Cluster
+    {
+        ShellRba,
+        ShellRfa,
+        Shell,
+        Esso,
+        Independents,
+        Rontec,
+        Bp,
+        Certas,
+        Texaco
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class ClusterSerializer : global::StrawberryShake.Serialization.IInputValueFormatter, global::StrawberryShake.Serialization.ILeafValueParser<global::System.String, Cluster>
+    {
+        public global::System.String TypeName => "Cluster";
+        public Cluster Parse(global::System.String serializedValue)
+        {
+            return serializedValue switch
+            {
+                "SHELL_RBA" => Cluster.ShellRba,
+                "SHELL_RFA" => Cluster.ShellRfa,
+                "SHELL" => Cluster.Shell,
+                "ESSO" => Cluster.Esso,
+                "INDEPENDENTS" => Cluster.Independents,
+                "RONTEC" => Cluster.Rontec,
+                "BP" => Cluster.Bp,
+                "CERTAS" => Cluster.Certas,
+                "TEXACO" => Cluster.Texaco,
+                _ => throw new global::StrawberryShake.GraphQLClientException()};
+        }
+
+        public global::System.Object Format(global::System.Object? runtimeValue)
+        {
+            return runtimeValue switch
+            {
+                Cluster.ShellRba => "SHELL_RBA",
+                Cluster.ShellRfa => "SHELL_RFA",
+                Cluster.Shell => "SHELL",
+                Cluster.Esso => "ESSO",
+                Cluster.Independents => "INDEPENDENTS",
+                Cluster.Rontec => "RONTEC",
+                Cluster.Bp => "BP",
+                Cluster.Certas => "CERTAS",
+                Cluster.Texaco => "TEXACO",
+                _ => throw new global::StrawberryShake.GraphQLClientException()};
+        }
+    }
+
+    /// <summary>
+    /// Represents the operation service of the AddStation GraphQL operation
+    /// <code>
+    /// mutation AddStation($input: AddStationInput!) {
+    ///   addStation(input: $input) {
+    ///     __typename
+    ///     station {
+    ///       __typename
+    ///       id
+    ///       name
+    ///       cluster
+    ///       ip
+    ///       ... on Station {
+    ///         id
+    ///       }
+    ///     }
+    ///   }
+    /// }
+    /// </code>
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddStationMutationDocument : global::StrawberryShake.IDocument
+    {
+        private AddStationMutationDocument()
+        {
+        }
+
+        public static AddStationMutationDocument Instance { get; } = new AddStationMutationDocument();
+        public global::StrawberryShake.OperationKind Kind => global::StrawberryShake.OperationKind.Mutation;
+        public global::System.ReadOnlySpan<global::System.Byte> Body => new global::System.Byte[]{0x6d, 0x75, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x41, 0x64, 0x64, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x28, 0x24, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x3a, 0x20, 0x41, 0x64, 0x64, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x21, 0x29, 0x20, 0x7b, 0x20, 0x61, 0x64, 0x64, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x28, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x3a, 0x20, 0x24, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x29, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x69, 0x64, 0x20, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x20, 0x69, 0x70, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d};
+        public global::StrawberryShake.DocumentHash Hash { get; } = new global::StrawberryShake.DocumentHash("md5Hash", "de73397267487d4ca1252ea434936310");
+        public override global::System.String ToString()
+        {
+#if NETSTANDARD2_0
+        return global::System.Text.Encoding.UTF8.GetString(Body.ToArray());
+#else
+            return global::System.Text.Encoding.UTF8.GetString(Body);
+#endif
+        }
+    }
+
+    /// <summary>
+    /// Represents the operation service of the AddStation GraphQL operation
+    /// <code>
+    /// mutation AddStation($input: AddStationInput!) {
+    ///   addStation(input: $input) {
+    ///     __typename
+    ///     station {
+    ///       __typename
+    ///       id
+    ///       name
+    ///       cluster
+    ///       ip
+    ///       ... on Station {
+    ///         id
+    ///       }
+    ///     }
+    ///   }
+    /// }
+    /// </code>
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddStationMutation : global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationMutation
+    {
+        private readonly global::StrawberryShake.IOperationExecutor<IAddStationResult> _operationExecutor;
+        private readonly global::StrawberryShake.Serialization.IInputValueFormatter _addStationInputFormatter;
+        public AddStationMutation(global::StrawberryShake.IOperationExecutor<IAddStationResult> operationExecutor, global::StrawberryShake.Serialization.ISerializerResolver serializerResolver)
+        {
+            _operationExecutor = operationExecutor ?? throw new global::System.ArgumentNullException(nameof(operationExecutor));
+            _addStationInputFormatter = serializerResolver.GetInputValueFormatter("AddStationInput");
+        }
+
+        global::System.Type global::StrawberryShake.IOperationRequestFactory.ResultType => typeof(IAddStationResult);
+        public async global::System.Threading.Tasks.Task<global::StrawberryShake.IOperationResult<IAddStationResult>> ExecuteAsync(global::TSGSystemsToolkit.CmdLine.GraphQL.AddStationInput input, global::System.Threading.CancellationToken cancellationToken = default)
+        {
+            var request = CreateRequest(input);
+            return await _operationExecutor.ExecuteAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+
+        public global::System.IObservable<global::StrawberryShake.IOperationResult<IAddStationResult>> Watch(global::TSGSystemsToolkit.CmdLine.GraphQL.AddStationInput input, global::StrawberryShake.ExecutionStrategy? strategy = null)
+        {
+            var request = CreateRequest(input);
+            return _operationExecutor.Watch(request, strategy);
+        }
+
+        private global::StrawberryShake.OperationRequest CreateRequest(global::TSGSystemsToolkit.CmdLine.GraphQL.AddStationInput input)
+        {
+            var variables = new global::System.Collections.Generic.Dictionary<global::System.String, global::System.Object?>();
+            variables.Add("input", FormatInput(input));
+            return CreateRequest(variables);
+        }
+
+        private global::StrawberryShake.OperationRequest CreateRequest(global::System.Collections.Generic.IReadOnlyDictionary<global::System.String, global::System.Object?>? variables)
+        {
+            return new global::StrawberryShake.OperationRequest(id: AddStationMutationDocument.Instance.Hash.Value, name: "AddStation", document: AddStationMutationDocument.Instance, strategy: global::StrawberryShake.RequestStrategy.Default, variables: variables);
+        }
+
+        private global::System.Object? FormatInput(global::TSGSystemsToolkit.CmdLine.GraphQL.AddStationInput value)
+        {
+            if (value is null)
+            {
+                throw new global::System.ArgumentNullException(nameof(value));
+            }
+
+            return _addStationInputFormatter.Format(value);
+        }
+
+        global::StrawberryShake.OperationRequest global::StrawberryShake.IOperationRequestFactory.Create(global::System.Collections.Generic.IReadOnlyDictionary<global::System.String, global::System.Object?>? variables)
+        {
+            return CreateRequest(variables!);
+        }
+    }
+
+    /// <summary>
+    /// Represents the operation service of the AddStation GraphQL operation
+    /// <code>
+    /// mutation AddStation($input: AddStationInput!) {
+    ///   addStation(input: $input) {
+    ///     __typename
+    ///     station {
+    ///       __typename
+    ///       id
+    ///       name
+    ///       cluster
+    ///       ip
+    ///       ... on Station {
+    ///         id
+    ///       }
+    ///     }
+    ///   }
+    /// }
+    /// </code>
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IAddStationMutation : global::StrawberryShake.IOperationRequestFactory
+    {
+        global::System.Threading.Tasks.Task<global::StrawberryShake.IOperationResult<IAddStationResult>> ExecuteAsync(global::TSGSystemsToolkit.CmdLine.GraphQL.AddStationInput input, global::System.Threading.CancellationToken cancellationToken = default);
+        global::System.IObservable<global::StrawberryShake.IOperationResult<IAddStationResult>> Watch(global::TSGSystemsToolkit.CmdLine.GraphQL.AddStationInput input, global::StrawberryShake.ExecutionStrategy? strategy = null);
+    }
+
     /// <summary>
     /// Represents the operation service of the GetAllStations GraphQL operation
     /// <code>
@@ -1007,7 +1727,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     ///   station {
     ///     __typename
     ///     id
-    ///     iP
+    ///     ip
     ///     name
     ///     cluster
     ///     ... on Station {
@@ -1026,8 +1746,8 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
 
         public static GetAllStationsQueryDocument Instance { get; } = new GetAllStationsQueryDocument();
         public global::StrawberryShake.OperationKind Kind => global::StrawberryShake.OperationKind.Query;
-        public global::System.ReadOnlySpan<global::System.Byte> Body => new global::System.Byte[]{0x71, 0x75, 0x65, 0x72, 0x79, 0x20, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x20, 0x7b, 0x20, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x69, 0x64, 0x20, 0x69, 0x50, 0x20, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d};
-        public global::StrawberryShake.DocumentHash Hash { get; } = new global::StrawberryShake.DocumentHash("md5Hash", "28b4f3ff76b969bab02fd8ad15abac0a");
+        public global::System.ReadOnlySpan<global::System.Byte> Body => new global::System.Byte[]{0x71, 0x75, 0x65, 0x72, 0x79, 0x20, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x20, 0x7b, 0x20, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x69, 0x64, 0x20, 0x69, 0x70, 0x20, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d};
+        public global::StrawberryShake.DocumentHash Hash { get; } = new global::StrawberryShake.DocumentHash("md5Hash", "0b7c1effdac1f4023095017b135cf0f7");
         public override global::System.String ToString()
         {
 #if NETSTANDARD2_0
@@ -1045,7 +1765,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     ///   station {
     ///     __typename
     ///     id
-    ///     iP
+    ///     ip
     ///     name
     ///     cluster
     ///     ... on Station {
@@ -1100,7 +1820,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     ///   station {
     ///     __typename
     ///     id
-    ///     iP
+    ///     ip
     ///     name
     ///     cluster
     ///     ... on Station {
@@ -1132,7 +1852,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     ///       }
     ///     }
     ///     name
-    ///     iP
+    ///     ip
     ///     ... on Station {
     ///       id
     ///     }
@@ -1149,8 +1869,8 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
 
         public static GetCredentialsByStationIdQueryDocument Instance { get; } = new GetCredentialsByStationIdQueryDocument();
         public global::StrawberryShake.OperationKind Kind => global::StrawberryShake.OperationKind.Query;
-        public global::System.ReadOnlySpan<global::System.Byte> Body => new global::System.Byte[]{0x71, 0x75, 0x65, 0x72, 0x79, 0x20, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x42, 0x79, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x28, 0x24, 0x69, 0x64, 0x3a, 0x20, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x21, 0x29, 0x20, 0x7b, 0x20, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x28, 0x69, 0x64, 0x3a, 0x20, 0x24, 0x69, 0x64, 0x29, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x66, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x46, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x69, 0x50, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d};
-        public global::StrawberryShake.DocumentHash Hash { get; } = new global::StrawberryShake.DocumentHash("md5Hash", "bd4a9502a47023b3edece53e4090cb59");
+        public global::System.ReadOnlySpan<global::System.Byte> Body => new global::System.Byte[]{0x71, 0x75, 0x65, 0x72, 0x79, 0x20, 0x47, 0x65, 0x74, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x42, 0x79, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x28, 0x24, 0x69, 0x64, 0x3a, 0x20, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x21, 0x29, 0x20, 0x7b, 0x20, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x28, 0x69, 0x64, 0x3a, 0x20, 0x24, 0x69, 0x64, 0x29, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x66, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x46, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x69, 0x70, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d};
+        public global::StrawberryShake.DocumentHash Hash { get; } = new global::StrawberryShake.DocumentHash("md5Hash", "9cc6f9a296ae79565a4964bb4d12d402");
         public override global::System.String ToString()
         {
 #if NETSTANDARD2_0
@@ -1176,7 +1896,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     ///       }
     ///     }
     ///     name
-    ///     iP
+    ///     ip
     ///     ... on Station {
     ///       id
     ///     }
@@ -1251,7 +1971,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     ///       }
     ///     }
     ///     name
-    ///     iP
+    ///     ip
     ///     ... on Station {
     ///       id
     ///     }
@@ -1269,12 +1989,12 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     /// <summary>
     /// Represents the operation service of the GetStationsByCluster GraphQL operation
     /// <code>
-    /// query GetStationsByCluster($cluster: String!) {
+    /// query GetStationsByCluster($cluster: Cluster!) {
     ///   station(cluster: $cluster) {
     ///     __typename
     ///     name
     ///     id
-    ///     iP
+    ///     ip
     ///     ftpCredentials {
     ///       __typename
     ///       username
@@ -1299,8 +2019,8 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
 
         public static GetStationsByClusterQueryDocument Instance { get; } = new GetStationsByClusterQueryDocument();
         public global::StrawberryShake.OperationKind Kind => global::StrawberryShake.OperationKind.Query;
-        public global::System.ReadOnlySpan<global::System.Byte> Body => new global::System.Byte[]{0x71, 0x75, 0x65, 0x72, 0x79, 0x20, 0x47, 0x65, 0x74, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x79, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x28, 0x24, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x3a, 0x20, 0x53, 0x74, 0x72, 0x69, 0x6e, 0x67, 0x21, 0x29, 0x20, 0x7b, 0x20, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x28, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x3a, 0x20, 0x24, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x29, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x69, 0x64, 0x20, 0x69, 0x50, 0x20, 0x66, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x46, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d};
-        public global::StrawberryShake.DocumentHash Hash { get; } = new global::StrawberryShake.DocumentHash("md5Hash", "6057ab7db1ad1aa9a7a30993ab4b7215");
+        public global::System.ReadOnlySpan<global::System.Byte> Body => new global::System.Byte[]{0x71, 0x75, 0x65, 0x72, 0x79, 0x20, 0x47, 0x65, 0x74, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x42, 0x79, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x28, 0x24, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x3a, 0x20, 0x43, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x21, 0x29, 0x20, 0x7b, 0x20, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x28, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x3a, 0x20, 0x24, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x29, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x69, 0x64, 0x20, 0x69, 0x70, 0x20, 0x66, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x46, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d};
+        public global::StrawberryShake.DocumentHash Hash { get; } = new global::StrawberryShake.DocumentHash("md5Hash", "989b7d89b938d8b353665e440c7a4a09");
         public override global::System.String ToString()
         {
 #if NETSTANDARD2_0
@@ -1314,12 +2034,12 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     /// <summary>
     /// Represents the operation service of the GetStationsByCluster GraphQL operation
     /// <code>
-    /// query GetStationsByCluster($cluster: String!) {
+    /// query GetStationsByCluster($cluster: Cluster!) {
     ///   station(cluster: $cluster) {
     ///     __typename
     ///     name
     ///     id
-    ///     iP
+    ///     ip
     ///     ftpCredentials {
     ///       __typename
     ///       username
@@ -1339,27 +2059,27 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     public partial class GetStationsByClusterQuery : global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByClusterQuery
     {
         private readonly global::StrawberryShake.IOperationExecutor<IGetStationsByClusterResult> _operationExecutor;
-        private readonly global::StrawberryShake.Serialization.IInputValueFormatter _stringFormatter;
+        private readonly global::StrawberryShake.Serialization.IInputValueFormatter _clusterFormatter;
         public GetStationsByClusterQuery(global::StrawberryShake.IOperationExecutor<IGetStationsByClusterResult> operationExecutor, global::StrawberryShake.Serialization.ISerializerResolver serializerResolver)
         {
             _operationExecutor = operationExecutor ?? throw new global::System.ArgumentNullException(nameof(operationExecutor));
-            _stringFormatter = serializerResolver.GetInputValueFormatter("String");
+            _clusterFormatter = serializerResolver.GetInputValueFormatter("Cluster");
         }
 
         global::System.Type global::StrawberryShake.IOperationRequestFactory.ResultType => typeof(IGetStationsByClusterResult);
-        public async global::System.Threading.Tasks.Task<global::StrawberryShake.IOperationResult<IGetStationsByClusterResult>> ExecuteAsync(global::System.String cluster, global::System.Threading.CancellationToken cancellationToken = default)
+        public async global::System.Threading.Tasks.Task<global::StrawberryShake.IOperationResult<IGetStationsByClusterResult>> ExecuteAsync(global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster cluster, global::System.Threading.CancellationToken cancellationToken = default)
         {
             var request = CreateRequest(cluster);
             return await _operationExecutor.ExecuteAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
-        public global::System.IObservable<global::StrawberryShake.IOperationResult<IGetStationsByClusterResult>> Watch(global::System.String cluster, global::StrawberryShake.ExecutionStrategy? strategy = null)
+        public global::System.IObservable<global::StrawberryShake.IOperationResult<IGetStationsByClusterResult>> Watch(global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster cluster, global::StrawberryShake.ExecutionStrategy? strategy = null)
         {
             var request = CreateRequest(cluster);
             return _operationExecutor.Watch(request, strategy);
         }
 
-        private global::StrawberryShake.OperationRequest CreateRequest(global::System.String cluster)
+        private global::StrawberryShake.OperationRequest CreateRequest(global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster cluster)
         {
             var variables = new global::System.Collections.Generic.Dictionary<global::System.String, global::System.Object?>();
             variables.Add("cluster", FormatCluster(cluster));
@@ -1371,14 +2091,9 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
             return new global::StrawberryShake.OperationRequest(id: GetStationsByClusterQueryDocument.Instance.Hash.Value, name: "GetStationsByCluster", document: GetStationsByClusterQueryDocument.Instance, strategy: global::StrawberryShake.RequestStrategy.Default, variables: variables);
         }
 
-        private global::System.Object? FormatCluster(global::System.String value)
+        private global::System.Object? FormatCluster(global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster value)
         {
-            if (value is null)
-            {
-                throw new global::System.ArgumentNullException(nameof(value));
-            }
-
-            return _stringFormatter.Format(value);
+            return _clusterFormatter.Format(value);
         }
 
         global::StrawberryShake.OperationRequest global::StrawberryShake.IOperationRequestFactory.Create(global::System.Collections.Generic.IReadOnlyDictionary<global::System.String, global::System.Object?>? variables)
@@ -1390,12 +2105,12 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     /// <summary>
     /// Represents the operation service of the GetStationsByCluster GraphQL operation
     /// <code>
-    /// query GetStationsByCluster($cluster: String!) {
+    /// query GetStationsByCluster($cluster: Cluster!) {
     ///   station(cluster: $cluster) {
     ///     __typename
     ///     name
     ///     id
-    ///     iP
+    ///     ip
     ///     ftpCredentials {
     ///       __typename
     ///       username
@@ -1414,8 +2129,8 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial interface IGetStationsByClusterQuery : global::StrawberryShake.IOperationRequestFactory
     {
-        global::System.Threading.Tasks.Task<global::StrawberryShake.IOperationResult<IGetStationsByClusterResult>> ExecuteAsync(global::System.String cluster, global::System.Threading.CancellationToken cancellationToken = default);
-        global::System.IObservable<global::StrawberryShake.IOperationResult<IGetStationsByClusterResult>> Watch(global::System.String cluster, global::StrawberryShake.ExecutionStrategy? strategy = null);
+        global::System.Threading.Tasks.Task<global::StrawberryShake.IOperationResult<IGetStationsByClusterResult>> ExecuteAsync(global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster cluster, global::System.Threading.CancellationToken cancellationToken = default);
+        global::System.IObservable<global::StrawberryShake.IOperationResult<IGetStationsByClusterResult>> Watch(global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster cluster, global::StrawberryShake.ExecutionStrategy? strategy = null);
     }
 
     /// <summary>
@@ -1551,12 +2266,14 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial class SysTkApiClient : global::TSGSystemsToolkit.CmdLine.GraphQL.ISysTkApiClient
     {
+        private readonly global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationMutation _addStation;
         private readonly global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsQuery _getAllStations;
         private readonly global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationIdQuery _getCredentialsByStationId;
         private readonly global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByClusterQuery _getStationsByCluster;
         private readonly global::TSGSystemsToolkit.CmdLine.GraphQL.IGetTokenMutation _getToken;
-        public SysTkApiClient(global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsQuery getAllStations, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationIdQuery getCredentialsByStationId, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByClusterQuery getStationsByCluster, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetTokenMutation getToken)
+        public SysTkApiClient(global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationMutation addStation, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsQuery getAllStations, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationIdQuery getCredentialsByStationId, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByClusterQuery getStationsByCluster, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetTokenMutation getToken)
         {
+            _addStation = addStation ?? throw new global::System.ArgumentNullException(nameof(addStation));
             _getAllStations = getAllStations ?? throw new global::System.ArgumentNullException(nameof(getAllStations));
             _getCredentialsByStationId = getCredentialsByStationId ?? throw new global::System.ArgumentNullException(nameof(getCredentialsByStationId));
             _getStationsByCluster = getStationsByCluster ?? throw new global::System.ArgumentNullException(nameof(getStationsByCluster));
@@ -1564,6 +2281,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
         }
 
         public static global::System.String ClientName => "SysTkApiClient";
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationMutation AddStation => _addStation;
         public global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsQuery GetAllStations => _getAllStations;
         public global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationIdQuery GetCredentialsByStationId => _getCredentialsByStationId;
         public global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByClusterQuery GetStationsByCluster => _getStationsByCluster;
@@ -1576,6 +2294,8 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial interface ISysTkApiClient
     {
+        global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationMutation AddStation { get; }
+
         global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsQuery GetAllStations { get; }
 
         global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationIdQuery GetCredentialsByStationId { get; }
@@ -1592,28 +2312,32 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial class StationEntity
     {
-        public StationEntity(global::System.String id = default !, global::System.String iP = default !, global::System.String name = default !, global::System.String cluster = default !, global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.EntityId?>? ftpCredentials = default !)
+        public StationEntity(global::System.String id = default !, global::System.String name = default !, global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster cluster = default !, global::System.String ip = default !, global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.EntityId?>? ftpCredentials = default !)
         {
             Id = id;
-            IP = iP;
             Name = name;
             Cluster = cluster;
+            Ip = ip;
             FtpCredentials = ftpCredentials;
         }
 
+        ///<summary>The station ID, equal to the Petrol Server ID</summary>
         public global::System.String Id { get; }
 
-        public global::System.String IP { get; }
-
+        ///<summary>The name of the station</summary>
         public global::System.String Name { get; }
 
-        public global::System.String Cluster { get; }
+        ///<summary>The Petrol Server cluster the station belongs to</summary>
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster Cluster { get; }
 
-        ///<summary>This is the list of available FTP credentials for this station.</summary>
+        ///<summary>The IP address of the FuelPOS CIS/INT of the station</summary>
+        public global::System.String Ip { get; }
+
+        ///<summary>Any stored FTP credentials for the FuelPOS system at this station</summary>
         public global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.EntityId?>? FtpCredentials { get; }
     }
 
-    ///<summary>Represents a set of FTP credentials for a FuelPOS system.</summary>
+    ///<summary>Represents a set of FTP credentials (username and password) for a FuelPOS station</summary>
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial class FtpCredentialsEntity
     {
@@ -1626,6 +2350,111 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
         public global::System.String Username { get; }
 
         public global::System.String Password { get; }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddStationResultFactory : global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.AddStationResult>
+    {
+        private readonly global::StrawberryShake.IEntityStore _entityStore;
+        private readonly global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, AddStation_AddStation_Station_Station> _addStation_AddStation_Station_StationFromStationEntityMapper;
+        public AddStationResultFactory(global::StrawberryShake.IEntityStore entityStore, global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, AddStation_AddStation_Station_Station> addStation_AddStation_Station_StationFromStationEntityMapper)
+        {
+            _entityStore = entityStore ?? throw new global::System.ArgumentNullException(nameof(entityStore));
+            _addStation_AddStation_Station_StationFromStationEntityMapper = addStation_AddStation_Station_StationFromStationEntityMapper ?? throw new global::System.ArgumentNullException(nameof(addStation_AddStation_Station_StationFromStationEntityMapper));
+        }
+
+        global::System.Type global::StrawberryShake.IOperationResultDataFactory.ResultType => typeof(global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationResult);
+        public AddStationResult Create(global::StrawberryShake.IOperationResultDataInfo dataInfo, global::StrawberryShake.IEntityStoreSnapshot? snapshot = null)
+        {
+            if (snapshot is null)
+            {
+                snapshot = _entityStore.CurrentSnapshot;
+            }
+
+            if (dataInfo is AddStationResultInfo info)
+            {
+                return new AddStationResult(MapNonNullableIAddStation_AddStation(info.AddStation, snapshot));
+            }
+
+            throw new global::System.ArgumentException("AddStationResultInfo expected.");
+        }
+
+        private global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation MapNonNullableIAddStation_AddStation(global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddStationPayloadData data, global::StrawberryShake.IEntityStoreSnapshot snapshot)
+        {
+            IAddStation_AddStation returnValue = default !;
+            if (data.__typename.Equals("AddStationPayload", global::System.StringComparison.Ordinal))
+            {
+                returnValue = new AddStation_AddStation_AddStationPayload(MapIAddStation_AddStation_Station(data.Station, snapshot));
+            }
+            else
+            {
+                throw new global::System.NotSupportedException();
+            }
+
+            return returnValue;
+        }
+
+        private global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Station? MapIAddStation_AddStation_Station(global::StrawberryShake.EntityId? entityId, global::StrawberryShake.IEntityStoreSnapshot snapshot)
+        {
+            if (entityId is null)
+            {
+                return null;
+            }
+
+            if (entityId.Value.Name.Equals("Station", global::System.StringComparison.Ordinal))
+            {
+                return _addStation_AddStation_Station_StationFromStationEntityMapper.Map(snapshot.GetEntity<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity>(entityId.Value) ?? throw new global::StrawberryShake.GraphQLClientException());
+            }
+
+            throw new global::System.NotSupportedException();
+        }
+
+        global::System.Object global::StrawberryShake.IOperationResultDataFactory.Create(global::StrawberryShake.IOperationResultDataInfo dataInfo, global::StrawberryShake.IEntityStoreSnapshot? snapshot)
+        {
+            return Create(dataInfo, snapshot);
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddStationResultInfo : global::StrawberryShake.IOperationResultDataInfo
+    {
+        private readonly global::System.Collections.Generic.IReadOnlyCollection<global::StrawberryShake.EntityId> _entityIds;
+        private readonly global::System.UInt64 _version;
+        public AddStationResultInfo(global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddStationPayloadData addStation, global::System.Collections.Generic.IReadOnlyCollection<global::StrawberryShake.EntityId> entityIds, global::System.UInt64 version)
+        {
+            AddStation = addStation;
+            _entityIds = entityIds ?? throw new global::System.ArgumentNullException(nameof(entityIds));
+            _version = version;
+        }
+
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddStationPayloadData AddStation { get; }
+
+        public global::System.Collections.Generic.IReadOnlyCollection<global::StrawberryShake.EntityId> EntityIds => _entityIds;
+        public global::System.UInt64 Version => _version;
+        public global::StrawberryShake.IOperationResultDataInfo WithVersion(global::System.UInt64 version)
+        {
+            return new AddStationResultInfo(AddStation, _entityIds, version);
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddStation_AddStation_Station_StationFromStationEntityMapper : global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, AddStation_AddStation_Station_Station>
+    {
+        private readonly global::StrawberryShake.IEntityStore _entityStore;
+        public AddStation_AddStation_Station_StationFromStationEntityMapper(global::StrawberryShake.IEntityStore entityStore)
+        {
+            _entityStore = entityStore ?? throw new global::System.ArgumentNullException(nameof(entityStore));
+        }
+
+        public AddStation_AddStation_Station_Station Map(global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity entity, global::StrawberryShake.IEntityStoreSnapshot? snapshot = null)
+        {
+            if (snapshot is null)
+            {
+                snapshot = _entityStore.CurrentSnapshot;
+            }
+
+            return new AddStation_AddStation_Station_Station(entity.Id, entity.Name, entity.Cluster, entity.Ip);
+        }
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
@@ -1730,7 +2559,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
                 snapshot = _entityStore.CurrentSnapshot;
             }
 
-            return new GetAllStations_Station_Station(entity.Id, entity.IP, entity.Name, entity.Cluster);
+            return new GetAllStations_Station_Station(entity.Id, entity.Ip, entity.Name, entity.Cluster);
         }
     }
 
@@ -1838,7 +2667,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
                 snapshot = _entityStore.CurrentSnapshot;
             }
 
-            return new GetCredentialsByStationId_Station_Station(MapIGetCredentialsByStationId_Station_FtpCredentialsArray(entity.FtpCredentials, snapshot), entity.Name, entity.IP);
+            return new GetCredentialsByStationId_Station_Station(MapIGetCredentialsByStationId_Station_FtpCredentialsArray(entity.FtpCredentials, snapshot), entity.Name, entity.Ip);
         }
 
         private global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationId_Station_FtpCredentials?>? MapIGetCredentialsByStationId_Station_FtpCredentialsArray(global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.EntityId?>? list, global::StrawberryShake.IEntityStoreSnapshot snapshot)
@@ -1997,7 +2826,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
                 snapshot = _entityStore.CurrentSnapshot;
             }
 
-            return new GetStationsByCluster_Station_Station(entity.Name, entity.Id, entity.IP, MapIGetStationsByCluster_Station_FtpCredentialsArray(entity.FtpCredentials, snapshot));
+            return new GetStationsByCluster_Station_Station(entity.Name, entity.Id, entity.Ip, MapIGetStationsByCluster_Station_FtpCredentialsArray(entity.FtpCredentials, snapshot));
         }
 
         private global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByCluster_Station_FtpCredentials?>? MapIGetStationsByCluster_Station_FtpCredentialsArray(global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.EntityId?>? list, global::StrawberryShake.IEntityStoreSnapshot snapshot)
@@ -2126,17 +2955,170 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    internal interface IAddStationInputInfo
+    {
+        global::System.Boolean IsIdSet { get; }
+
+        global::System.Boolean IsNameSet { get; }
+
+        global::System.Boolean IsIpSet { get; }
+
+        global::System.Boolean IsClusterSet { get; }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddStationBuilder : global::StrawberryShake.IOperationResultBuilder<global::System.Text.Json.JsonDocument, global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationResult>
+    {
+        private readonly global::StrawberryShake.IEntityStore _entityStore;
+        private readonly global::StrawberryShake.IEntityIdSerializer _idSerializer;
+        private readonly global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationResult> _resultDataFactory;
+        private readonly global::StrawberryShake.Serialization.ILeafValueParser<global::System.String, global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster> _clusterParser;
+        private readonly global::StrawberryShake.Serialization.ILeafValueParser<global::System.String, global::System.String> _iDParser;
+        private readonly global::StrawberryShake.Serialization.ILeafValueParser<global::System.String, global::System.String> _stringParser;
+        public AddStationBuilder(global::StrawberryShake.IEntityStore entityStore, global::StrawberryShake.IEntityIdSerializer idSerializer, global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationResult> resultDataFactory, global::StrawberryShake.Serialization.ISerializerResolver serializerResolver)
+        {
+            _entityStore = entityStore ?? throw new global::System.ArgumentNullException(nameof(entityStore));
+            _idSerializer = idSerializer ?? throw new global::System.ArgumentNullException(nameof(idSerializer));
+            _resultDataFactory = resultDataFactory ?? throw new global::System.ArgumentNullException(nameof(resultDataFactory));
+            _clusterParser = serializerResolver.GetLeafValueParser<global::System.String, global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster>("Cluster") ?? throw new global::System.ArgumentException("No serializer for type `Cluster` found.");
+            _iDParser = serializerResolver.GetLeafValueParser<global::System.String, global::System.String>("ID") ?? throw new global::System.ArgumentException("No serializer for type `ID` found.");
+            _stringParser = serializerResolver.GetLeafValueParser<global::System.String, global::System.String>("String") ?? throw new global::System.ArgumentException("No serializer for type `String` found.");
+        }
+
+        public global::StrawberryShake.IOperationResult<IAddStationResult> Build(global::StrawberryShake.Response<global::System.Text.Json.JsonDocument> response)
+        {
+            (IAddStationResult Result, AddStationResultInfo Info)? data = null;
+            global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.IClientError>? errors = null;
+            if (response.Exception is null)
+            {
+                try
+                {
+                    if (response.Body != null)
+                    {
+                        if (response.Body.RootElement.TryGetProperty("data", out global::System.Text.Json.JsonElement dataElement) && dataElement.ValueKind == global::System.Text.Json.JsonValueKind.Object)
+                        {
+                            data = BuildData(dataElement);
+                        }
+
+                        if (response.Body.RootElement.TryGetProperty("errors", out global::System.Text.Json.JsonElement errorsElement))
+                        {
+                            errors = global::StrawberryShake.Json.JsonErrorParser.ParseErrors(errorsElement);
+                        }
+                    }
+                }
+                catch (global::System.Exception ex)
+                {
+                    errors = new global::StrawberryShake.IClientError[]{new global::StrawberryShake.ClientError(ex.Message, exception: ex, extensions: new global::System.Collections.Generic.Dictionary<global::System.String, global::System.Object?>{{"body", response.Body?.RootElement.ToString()}})};
+                }
+            }
+            else
+            {
+                if (response.Body != null && response.Body.RootElement.TryGetProperty("errors", out global::System.Text.Json.JsonElement errorsElement))
+                {
+                    errors = global::StrawberryShake.Json.JsonErrorParser.ParseErrors(errorsElement);
+                }
+                else
+                {
+                    errors = new global::StrawberryShake.IClientError[]{new global::StrawberryShake.ClientError(response.Exception.Message, exception: response.Exception, extensions: new global::System.Collections.Generic.Dictionary<global::System.String, global::System.Object?>{{"body", response.Body?.RootElement.ToString()}})};
+                }
+            }
+
+            return new global::StrawberryShake.OperationResult<IAddStationResult>(data?.Result, data?.Info, _resultDataFactory, errors);
+        }
+
+        private (IAddStationResult, AddStationResultInfo) BuildData(global::System.Text.Json.JsonElement obj)
+        {
+            var entityIds = new global::System.Collections.Generic.HashSet<global::StrawberryShake.EntityId>();
+            global::StrawberryShake.IEntityStoreSnapshot snapshot = default !;
+            global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddStationPayloadData addStationId = default !;
+            _entityStore.Update(session =>
+            {
+                addStationId = DeserializeNonNullableIAddStation_AddStation(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "addStation"), entityIds);
+                snapshot = session.CurrentSnapshot;
+            });
+            var resultInfo = new AddStationResultInfo(addStationId, entityIds, snapshot.Version);
+            return (_resultDataFactory.Create(resultInfo), resultInfo);
+        }
+
+        private global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddStationPayloadData DeserializeNonNullableIAddStation_AddStation(global::StrawberryShake.IEntityStoreUpdateSession session, global::System.Text.Json.JsonElement? obj, global::System.Collections.Generic.ISet<global::StrawberryShake.EntityId> entityIds)
+        {
+            if (!obj.HasValue)
+            {
+                throw new global::System.ArgumentNullException();
+            }
+
+            var typename = obj.Value.GetProperty("__typename").GetString();
+            if (typename?.Equals("AddStationPayload", global::System.StringComparison.Ordinal) ?? false)
+            {
+                return new global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddStationPayloadData(typename, station: UpdateIAddStation_AddStation_StationEntity(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "station"), entityIds));
+            }
+
+            throw new global::System.NotSupportedException();
+        }
+
+        private global::StrawberryShake.EntityId? UpdateIAddStation_AddStation_StationEntity(global::StrawberryShake.IEntityStoreUpdateSession session, global::System.Text.Json.JsonElement? obj, global::System.Collections.Generic.ISet<global::StrawberryShake.EntityId> entityIds)
+        {
+            if (!obj.HasValue)
+            {
+                return null;
+            }
+
+            global::StrawberryShake.EntityId entityId = _idSerializer.Parse(obj.Value);
+            entityIds.Add(entityId);
+            if (entityId.Name.Equals("Station", global::System.StringComparison.Ordinal))
+            {
+                if (session.CurrentSnapshot.TryGetEntity(entityId, out global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity? entity))
+                {
+                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "id")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), DeserializeNonNullableCluster(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "cluster")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ip")), entity.FtpCredentials));
+                }
+                else
+                {
+                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "id")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), DeserializeNonNullableCluster(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "cluster")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ip")), default !));
+                }
+
+                return entityId;
+            }
+
+            throw new global::System.NotSupportedException();
+        }
+
+        private global::System.String DeserializeNonNullableString(global::System.Text.Json.JsonElement? obj)
+        {
+            if (!obj.HasValue)
+            {
+                throw new global::System.ArgumentNullException();
+            }
+
+            return _iDParser.Parse(obj.Value.GetString()!);
+        }
+
+        private global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster DeserializeNonNullableCluster(global::System.Text.Json.JsonElement? obj)
+        {
+            if (!obj.HasValue)
+            {
+                throw new global::System.ArgumentNullException();
+            }
+
+            return _clusterParser.Parse(obj.Value.GetString()!);
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial class GetAllStationsBuilder : global::StrawberryShake.IOperationResultBuilder<global::System.Text.Json.JsonDocument, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsResult>
     {
         private readonly global::StrawberryShake.IEntityStore _entityStore;
         private readonly global::StrawberryShake.IEntityIdSerializer _idSerializer;
         private readonly global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsResult> _resultDataFactory;
+        private readonly global::StrawberryShake.Serialization.ILeafValueParser<global::System.String, global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster> _clusterParser;
+        private readonly global::StrawberryShake.Serialization.ILeafValueParser<global::System.String, global::System.String> _iDParser;
         private readonly global::StrawberryShake.Serialization.ILeafValueParser<global::System.String, global::System.String> _stringParser;
         public GetAllStationsBuilder(global::StrawberryShake.IEntityStore entityStore, global::StrawberryShake.IEntityIdSerializer idSerializer, global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsResult> resultDataFactory, global::StrawberryShake.Serialization.ISerializerResolver serializerResolver)
         {
             _entityStore = entityStore ?? throw new global::System.ArgumentNullException(nameof(entityStore));
             _idSerializer = idSerializer ?? throw new global::System.ArgumentNullException(nameof(idSerializer));
             _resultDataFactory = resultDataFactory ?? throw new global::System.ArgumentNullException(nameof(resultDataFactory));
+            _clusterParser = serializerResolver.GetLeafValueParser<global::System.String, global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster>("Cluster") ?? throw new global::System.ArgumentException("No serializer for type `Cluster` found.");
+            _iDParser = serializerResolver.GetLeafValueParser<global::System.String, global::System.String>("ID") ?? throw new global::System.ArgumentException("No serializer for type `ID` found.");
             _stringParser = serializerResolver.GetLeafValueParser<global::System.String, global::System.String>("String") ?? throw new global::System.ArgumentException("No serializer for type `String` found.");
         }
 
@@ -2224,11 +3206,11 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             {
                 if (session.CurrentSnapshot.TryGetEntity(entityId, out global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity? entity))
                 {
-                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "id")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "iP")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "cluster")), entity.FtpCredentials));
+                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "id")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), DeserializeNonNullableCluster(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "cluster")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ip")), entity.FtpCredentials));
                 }
                 else
                 {
-                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "id")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "iP")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "cluster")), default !));
+                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "id")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), DeserializeNonNullableCluster(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "cluster")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ip")), default !));
                 }
 
                 return entityId;
@@ -2244,7 +3226,17 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
                 throw new global::System.ArgumentNullException();
             }
 
-            return _stringParser.Parse(obj.Value.GetString()!);
+            return _iDParser.Parse(obj.Value.GetString()!);
+        }
+
+        private global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster DeserializeNonNullableCluster(global::System.Text.Json.JsonElement? obj)
+        {
+            if (!obj.HasValue)
+            {
+                throw new global::System.ArgumentNullException();
+            }
+
+            return _clusterParser.Parse(obj.Value.GetString()!);
         }
     }
 
@@ -2347,11 +3339,11 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             {
                 if (session.CurrentSnapshot.TryGetEntity(entityId, out global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity? entity))
                 {
-                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(entity.Id, DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "iP")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), entity.Cluster, UpdateIGetCredentialsByStationId_Station_FtpCredentialsEntityArray(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ftpCredentials"), entityIds)));
+                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(entity.Id, DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), entity.Cluster, DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ip")), UpdateIGetCredentialsByStationId_Station_FtpCredentialsEntityArray(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ftpCredentials"), entityIds)));
                 }
                 else
                 {
-                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(default !, DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "iP")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), default !, UpdateIGetCredentialsByStationId_Station_FtpCredentialsEntityArray(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ftpCredentials"), entityIds)));
+                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(default !, DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), default !, DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ip")), UpdateIGetCredentialsByStationId_Station_FtpCredentialsEntityArray(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ftpCredentials"), entityIds)));
                 }
 
                 return entityId;
@@ -2419,13 +3411,17 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
         private readonly global::StrawberryShake.IEntityStore _entityStore;
         private readonly global::StrawberryShake.IEntityIdSerializer _idSerializer;
         private readonly global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByClusterResult> _resultDataFactory;
+        private readonly global::StrawberryShake.Serialization.ILeafValueParser<global::System.String, global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster> _clusterParser;
         private readonly global::StrawberryShake.Serialization.ILeafValueParser<global::System.String, global::System.String> _stringParser;
+        private readonly global::StrawberryShake.Serialization.ILeafValueParser<global::System.String, global::System.String> _iDParser;
         public GetStationsByClusterBuilder(global::StrawberryShake.IEntityStore entityStore, global::StrawberryShake.IEntityIdSerializer idSerializer, global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByClusterResult> resultDataFactory, global::StrawberryShake.Serialization.ISerializerResolver serializerResolver)
         {
             _entityStore = entityStore ?? throw new global::System.ArgumentNullException(nameof(entityStore));
             _idSerializer = idSerializer ?? throw new global::System.ArgumentNullException(nameof(idSerializer));
             _resultDataFactory = resultDataFactory ?? throw new global::System.ArgumentNullException(nameof(resultDataFactory));
+            _clusterParser = serializerResolver.GetLeafValueParser<global::System.String, global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster>("Cluster") ?? throw new global::System.ArgumentException("No serializer for type `Cluster` found.");
             _stringParser = serializerResolver.GetLeafValueParser<global::System.String, global::System.String>("String") ?? throw new global::System.ArgumentException("No serializer for type `String` found.");
+            _iDParser = serializerResolver.GetLeafValueParser<global::System.String, global::System.String>("ID") ?? throw new global::System.ArgumentException("No serializer for type `ID` found.");
         }
 
         public global::StrawberryShake.IOperationResult<IGetStationsByClusterResult> Build(global::StrawberryShake.Response<global::System.Text.Json.JsonDocument> response)
@@ -2512,11 +3508,11 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             {
                 if (session.CurrentSnapshot.TryGetEntity(entityId, out global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity? entity))
                 {
-                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "id")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "iP")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), entity.Cluster, UpdateIGetStationsByCluster_Station_FtpCredentialsEntityArray(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ftpCredentials"), entityIds)));
+                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "id")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), entity.Cluster, DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ip")), UpdateIGetStationsByCluster_Station_FtpCredentialsEntityArray(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ftpCredentials"), entityIds)));
                 }
                 else
                 {
-                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "id")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "iP")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), default !, UpdateIGetStationsByCluster_Station_FtpCredentialsEntityArray(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ftpCredentials"), entityIds)));
+                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "id")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), default !, DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ip")), UpdateIGetStationsByCluster_Station_FtpCredentialsEntityArray(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ftpCredentials"), entityIds)));
                 }
 
                 return entityId;
@@ -2674,6 +3670,20 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddStationPayloadData
+    {
+        public AddStationPayloadData(global::System.String __typename, global::StrawberryShake.EntityId? station = default !)
+        {
+            this.__typename = __typename ?? throw new global::System.ArgumentNullException(nameof(__typename));
+            Station = station;
+        }
+
+        public global::System.String __typename { get; }
+
+        public global::StrawberryShake.EntityId? Station { get; }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial class LoginPayloadData
     {
         public LoginPayloadData(global::System.String __typename, global::System.String? accessToken = default !, global::System.String? username = default !)
@@ -2733,7 +3743,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
 
         private global::StrawberryShake.EntityId ParseFtpCredentialsEntityId(global::System.Text.Json.JsonElement obj, global::System.String type)
         {
-            return new global::StrawberryShake.EntityId(type, obj.GetProperty("id").GetInt32()!);
+            return new global::StrawberryShake.EntityId(type, obj.GetProperty("id").GetString()!);
         }
 
         private global::System.String FormatFtpCredentialsEntityId(global::StrawberryShake.EntityId entityId)
@@ -2742,7 +3752,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             using var jsonWriter = new global::System.Text.Json.Utf8JsonWriter(writer, _options);
             jsonWriter.WriteStartObject();
             jsonWriter.WriteString("__typename", entityId.Name);
-            jsonWriter.WriteNumber("id", (global::System.Int32)entityId.Value);
+            jsonWriter.WriteString("id", (global::System.String)entityId.Value);
             jsonWriter.WriteEndObject();
             jsonWriter.Flush();
             return global::System.Text.Encoding.UTF8.GetString(writer.GetInternalBuffer(), 0, writer.Length);

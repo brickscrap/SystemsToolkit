@@ -4,38 +4,101 @@
 }
 
 type Query {
-  station(id: String cluster: String where: StationFilterInput order: [StationSortInput!]): [Station]
+  station(id: String cluster: Cluster where: StationFilterInput order: [StationSortInput!]): [Station]
+  debugProcesses(id: Int name: String where: DebugProcessFilterInput order: [DebugProcessSortInput!]): [DebugProcess]
+  user(where: AppUserFilterInput): [AppUser]
+}
+
+type Mutation {
+  addStation(input: AddStationInput): AddStationPayload!
+  updateStation(input: UpdateStationInput): UpdateStationPayload!
+  deleteStation(input: DeleteStationInput): DeleteStationPayload!
+  addFtpCredentials(input: AddFtpCredentialsInput): AddFtpCredentialsPayload!
+  updateFtpCredentials(input: UpdateFtpCredentialsInput): UpdateFtpCredentialsPayload!
+  deleteFtpCredentials(input: DeleteFtpCredentialsInput): DeleteFtpCredentialsPayload!
+  addDebugProcess(input: AddDebugProcessInput): AddDebugProcessPayload!
+  updateDebugProcess(input: UpdateDebugProcessInput): UpdateDebugProcessPayload!
+  deleteDebugProcess(input: DeleteDebugProcessInput): DeleteDebugProcessPayload!
+  addDebugParameter(input: AddDebugParameterInput): AddDebugParameterPayload!
+  updateDebugParameter(input: UpdateDebugParameterInput): UpdateDebugParameterPayload!
+  deleteDebugParameter(input: DeleteDebugParameterInput): DeleteDebugParameterPayload!
+  addUser(input: AddUserInput): AddUserPayload!
+  addUserToRole(input: AddUserToRoleInput): AddUserToRolePayload
+  login(input: LoginInput): LoginPayload
 }
 
 "Represents a FuelPOS station"
 type Station {
-  "This is the list of available FTP credentials for this station."
-  ftpCredentials: [FtpCredentials]
-  id: String!
-  cluster: String!
+  "The station ID, equal to the Petrol Server ID"
+  id: ID!
+  "The name of the station"
   name: String!
-  iP: String!
+  "The Petrol Server cluster the station belongs to"
+  cluster: Cluster!
+  "The IP address of the FuelPOS CIS\/INT of the station"
+  ip: String!
+  "Any stored FTP credentials for the FuelPOS system at this station"
+  ftpCredentials: [FtpCredentials]
+  createdDate: DateTime
+  lastModified: DateTime
 }
 
-"Represents a set of FTP credentials for a FuelPOS system."
+"Represents an API user, only accessible by admin users."
+type AppUser {
+  "The list of roles which this user is in."
+  roles: [String]
+  firstName: String
+  lastName: String
+  email: String!
+}
+
+"Represents a set of FTP credentials (username and password) for a FuelPOS station"
 type FtpCredentials {
-  "This is the station on which the credentials are valid."
-  station: Station
-  id: Int!
-  stationId: String!
+  id: ID!
+  stationId: ID!
   username: String!
   password: String!
-  lastModified: DateTime!
+  station: Station
+  createdDate: DateTime
+  lastModified: DateTime
+}
+
+"Represents a FuelPOS process which is available for debugging"
+type DebugProcess {
+  id: ID!
+  "The name of the process as seen in the FuelPOS debug menu"
+  name: String!
+  "A friendly description of the FuelPOS process, and what debugging it provides"
+  description: String!
+  "Available parameters for the process"
+  parameters: [DebugParameter]
+  createdDate: DateTime
+  lastModified: DateTime
+}
+
+"Represents a possible parameter of a debug process"
+type DebugParameter {
+  id: ID!
+  "Description of the parameter"
+  description: String!
+  "The name of the parameter as it would be entered into the FuelPOS debug menu"
+  name: String!
+  debugProcessId: Int!
+  process: DebugProcess
+  createdDate: DateTime
+  lastModified: DateTime
 }
 
 input StationFilterInput {
   and: [StationFilterInput!]
   or: [StationFilterInput!]
   id: StringOperationFilterInput
-  cluster: StringOperationFilterInput
+  cluster: ClusterOperationFilterInput
   name: StringOperationFilterInput
   iP: StringOperationFilterInput
   ftpCredentials: ListFilterInputTypeOfFtpCredentialsFilterInput
+  createdDate: ComparableNullableOfDateTimeOperationFilterInput
+  lastModified: ComparableNullableOfDateTimeOperationFilterInput
 }
 
 input StationSortInput {
@@ -43,6 +106,94 @@ input StationSortInput {
   cluster: SortEnumType
   name: SortEnumType
   iP: SortEnumType
+  createdDate: SortEnumType
+  lastModified: SortEnumType
+}
+
+input DebugProcessFilterInput {
+  and: [DebugProcessFilterInput!]
+  or: [DebugProcessFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  parameters: ListFilterInputTypeOfDebugParameterFilterInput
+  createdDate: ComparableNullableOfDateTimeOperationFilterInput
+  lastModified: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input DebugProcessSortInput {
+  id: SortEnumType
+  name: SortEnumType
+  description: SortEnumType
+  createdDate: SortEnumType
+  lastModified: SortEnumType
+}
+
+input AppUserFilterInput {
+  and: [AppUserFilterInput!]
+  or: [AppUserFilterInput!]
+  firstName: StringOperationFilterInput
+  lastName: StringOperationFilterInput
+  roles: ListStringOperationFilterInput
+  id: ComparableGuidOperationFilterInput
+  userName: StringOperationFilterInput
+  normalizedUserName: StringOperationFilterInput
+  email: StringOperationFilterInput
+  normalizedEmail: StringOperationFilterInput
+  emailConfirmed: BooleanOperationFilterInput
+  passwordHash: StringOperationFilterInput
+  securityStamp: StringOperationFilterInput
+  concurrencyStamp: StringOperationFilterInput
+  phoneNumber: StringOperationFilterInput
+  phoneNumberConfirmed: BooleanOperationFilterInput
+  twoFactorEnabled: BooleanOperationFilterInput
+  lockoutEnd: ComparableNullableOfDateTimeOffsetOperationFilterInput
+  lockoutEnabled: BooleanOperationFilterInput
+  accessFailedCount: ComparableInt32OperationFilterInput
+}
+
+enum Cluster {
+  SHELL_RBA
+  SHELL_RFA
+  SHELL
+  ESSO
+  INDEPENDENTS
+  RONTEC
+  BP
+  CERTAS
+  TEXACO
+}
+
+type StationExistsError implements Error {
+  message: String!
+}
+
+type StationNotExistsError implements Error {
+  message: String!
+}
+
+type FtpCredentialsNotExistError implements Error {
+  message: String!
+}
+
+type DebugProcessExistsError implements Error {
+  message: String!
+}
+
+type DebugProcessNotExistsError implements Error {
+  message: String!
+}
+
+type DebugParamExistsError implements Error {
+  message: String!
+}
+
+type DebugParameterNotExistsError implements Error {
+  message: String!
+}
+
+type LoginFailedError implements Error {
+  message: String!
 }
 
 enum ApplyPolicy {
@@ -65,6 +216,13 @@ input StringOperationFilterInput {
   nendsWith: String
 }
 
+input ClusterOperationFilterInput {
+  eq: Cluster
+  neq: Cluster
+  in: [Cluster!]
+  nin: [Cluster!]
+}
+
 input ListFilterInputTypeOfFtpCredentialsFilterInput {
   all: FtpCredentialsFilterInput
   none: FtpCredentialsFilterInput
@@ -72,20 +230,24 @@ input ListFilterInputTypeOfFtpCredentialsFilterInput {
   any: Boolean
 }
 
+input ComparableNullableOfDateTimeOperationFilterInput {
+  eq: DateTime
+  neq: DateTime
+  in: [DateTime]
+  nin: [DateTime]
+  gt: DateTime
+  ngt: DateTime
+  gte: DateTime
+  ngte: DateTime
+  lt: DateTime
+  nlt: DateTime
+  lte: DateTime
+  nlte: DateTime
+}
+
 enum SortEnumType {
   ASC
   DESC
-}
-
-input FtpCredentialsFilterInput {
-  and: [FtpCredentialsFilterInput!]
-  or: [FtpCredentialsFilterInput!]
-  id: ComparableInt32OperationFilterInput
-  stationId: StringOperationFilterInput
-  username: StringOperationFilterInput
-  password: StringOperationFilterInput
-  lastModified: ComparableDateTimeOperationFilterInput
-  station: StationFilterInput
 }
 
 input ComparableInt32OperationFilterInput {
@@ -103,11 +265,45 @@ input ComparableInt32OperationFilterInput {
   nlte: Int
 }
 
-input ComparableDateTimeOperationFilterInput {
+input ListFilterInputTypeOfDebugParameterFilterInput {
+  all: DebugParameterFilterInput
+  none: DebugParameterFilterInput
+  some: DebugParameterFilterInput
+  any: Boolean
+}
+
+input ListStringOperationFilterInput {
+  all: StringOperationFilterInput
+  none: StringOperationFilterInput
+  some: StringOperationFilterInput
+  any: Boolean
+}
+
+input ComparableGuidOperationFilterInput {
+  eq: UUID
+  neq: UUID
+  in: [UUID!]
+  nin: [UUID!]
+  gt: UUID
+  ngt: UUID
+  gte: UUID
+  ngte: UUID
+  lt: UUID
+  nlt: UUID
+  lte: UUID
+  nlte: UUID
+}
+
+input BooleanOperationFilterInput {
+  eq: Boolean
+  neq: Boolean
+}
+
+input ComparableNullableOfDateTimeOffsetOperationFilterInput {
   eq: DateTime
   neq: DateTime
-  in: [DateTime!]
-  nin: [DateTime!]
+  in: [DateTime]
+  nin: [DateTime]
   gt: DateTime
   ngt: DateTime
   gte: DateTime
@@ -118,88 +314,107 @@ input ComparableDateTimeOperationFilterInput {
   nlte: DateTime
 }
 
-type Mutation {
-  addStation(input: AddStationInput): AddStationPayload
-  addFtpCredentials(input: AddFtpCredentialsInput): AddFtpCredentialsPayload
-  deleteStation(input: DeleteStationInput): DeleteStationPayload
-  deleteFtpCredentials(input: DeleteFtpCredentialsInput): DeleteFtpCredentialsPayload
-  addUser(input: AddUserInput): AddUserPayload
-  addUserToRole(input: AddUserToRoleInput): AddUserToRolePayload
-  login(input: LoginInput): LoginPayload
+interface Error {
+  message: String!
 }
 
-type AppUser {
-  firstName: String
-  lastName: String
-  roles: [String]
-  id: UUID!
-  userName: String
-  normalizedUserName: String
-  email: String
-  normalizedEmail: String
-  emailConfirmed: Boolean!
-  passwordHash: String
-  securityStamp: String
-  concurrencyStamp: String
-  phoneNumber: String
-  phoneNumberConfirmed: Boolean!
-  twoFactorEnabled: Boolean!
-  lockoutEnd: DateTime
-  lockoutEnabled: Boolean!
-  accessFailedCount: Int!
+input FtpCredentialsFilterInput {
+  and: [FtpCredentialsFilterInput!]
+  or: [FtpCredentialsFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  stationId: StringOperationFilterInput
+  username: StringOperationFilterInput
+  password: StringOperationFilterInput
+  station: StationFilterInput
+  createdDate: ComparableNullableOfDateTimeOperationFilterInput
+  lastModified: ComparableNullableOfDateTimeOperationFilterInput
 }
 
-"The `DateTime` scalar represents an ISO-8601 compliant date time type."
-scalar DateTime
+input DebugParameterFilterInput {
+  and: [DebugParameterFilterInput!]
+  or: [DebugParameterFilterInput!]
+  id: ComparableInt32OperationFilterInput
+  name: StringOperationFilterInput
+  description: StringOperationFilterInput
+  debugProcessId: ComparableInt32OperationFilterInput
+  process: DebugProcessFilterInput
+  createdDate: ComparableNullableOfDateTimeOperationFilterInput
+  lastModified: ComparableNullableOfDateTimeOperationFilterInput
+}
+
+input AddStationInput {
+  id: ID!
+  name: String!
+  ip: String!
+  cluster: Cluster!
+}
+
+input UpdateStationInput {
+  id: ID!
+  name: String
+  ip: String
+  cluster: Cluster
+}
+
+input DeleteStationInput {
+  id: ID!
+}
 
 input AddFtpCredentialsInput {
-  stationId: String
+  stationId: ID!
+  username: String!
+  password: String!
+}
+
+input UpdateFtpCredentialsInput {
+  stationId: ID!
   username: String
   password: String
 }
 
-type AddFtpCredentialsPayload {
-  credentials: FtpCredentials
-}
-
-input AddStationInput {
-  id: String
-  cluster: String
-  name: String
-  iP: String
-}
-
-type AddStationPayload {
-  station: Station
-}
-
-type DeleteStationPayload {
-  station: Station
-}
-
-input DeleteStationInput {
-  stationId: String
-}
-
-type DeleteFtpCredentialsPayload {
-  ftpCredentials: FtpCredentials
-}
-
 input DeleteFtpCredentialsInput {
-  id: Int!
+  stationId: ID!
+  username: String
+  password: String
+  id: ID
 }
 
-type AddUserPayload {
-  firstName: String
-  lastName: String
-  email: String
+input AddDebugProcessInput {
+  name: String!
+  description: String!
+}
+
+input UpdateDebugProcessInput {
+  name: String
+  description: String
+}
+
+input DeleteDebugProcessInput {
+  id: ID!
+}
+
+input AddDebugParameterInput {
+  name: String!
+  description: String!
+  debugProcessId: ID!
+}
+
+input UpdateDebugParameterInput {
+  name: String
+  description: String
+  debugProcessName: String
+}
+
+input DeleteDebugParameterInput {
+  name: String
+  debugProcessName: String
 }
 
 input AddUserInput {
-  email: String
-  firstName: String
-  lastName: String
-  password: String
+  firstName: String!
+  lastName: String!
+  email: String!
+  password: String!
 }
 
 type AddUserToRolePayload {
@@ -208,8 +423,8 @@ type AddUserToRolePayload {
 }
 
 input AddUserToRoleInput {
-  email: String
-  roleName: String
+  email: String!
+  role: UserRole!
 }
 
 type LoginPayload {
@@ -218,10 +433,107 @@ type LoginPayload {
 }
 
 input LoginInput {
-  username: String
-  password: String
+  username: String!
+  password: String!
 }
 
+"The `DateTime` scalar represents an ISO-8601 compliant date time type."
+scalar DateTime
+
 scalar UUID
+
+enum UserRole {
+  ADMIN
+  SUPERVISOR
+  MEMBER
+}
+
+union AddStationError = StationExistsError
+
+type AddStationPayload {
+  station: Station
+  errors: [AddStationError!]
+}
+
+union UpdateStationError = StationNotExistsError
+
+type UpdateStationPayload {
+  station: Station
+  errors: [UpdateStationError!]
+}
+
+union DeleteStationError = StationNotExistsError
+
+type DeleteStationPayload {
+  station: Station
+  errors: [DeleteStationError!]
+}
+
+union AddFtpCredentialsError = StationNotExistsError
+
+type AddFtpCredentialsPayload {
+  ftpCredentials: FtpCredentials
+  errors: [AddFtpCredentialsError!]
+}
+
+union UpdateFtpCredentialsError = StationNotExistsError | FtpCredentialsNotExistError
+
+type UpdateFtpCredentialsPayload {
+  ftpCredentials: FtpCredentials
+  errors: [UpdateFtpCredentialsError!]
+}
+
+union DeleteFtpCredentialsError = StationNotExistsError | FtpCredentialsNotExistError
+
+type DeleteFtpCredentialsPayload {
+  ftpCredentials: FtpCredentials
+  errors: [DeleteFtpCredentialsError!]
+}
+
+union AddDebugProcessError = DebugProcessExistsError
+
+type AddDebugProcessPayload {
+  debugProcess: DebugProcess
+  errors: [AddDebugProcessError!]
+}
+
+union UpdateDebugProcessError = DebugProcessNotExistsError
+
+type UpdateDebugProcessPayload {
+  debugProcess: DebugProcess
+  errors: [UpdateDebugProcessError!]
+}
+
+union DeleteDebugProcessError = DebugProcessNotExistsError
+
+type DeleteDebugProcessPayload {
+  debugProcess: DebugProcess
+  errors: [DeleteDebugProcessError!]
+}
+
+union AddDebugParameterError = DebugParamExistsError
+
+type AddDebugParameterPayload {
+  debugParameter: DebugParameter
+  errors: [AddDebugParameterError!]
+}
+
+union UpdateDebugParameterError = DebugProcessNotExistsError | DebugParameterNotExistsError
+
+type UpdateDebugParameterPayload {
+  debugParameter: DebugParameter
+  errors: [UpdateDebugParameterError!]
+}
+
+union DeleteDebugParameterError = DebugProcessNotExistsError | DebugParameterNotExistsError
+
+type DeleteDebugParameterPayload {
+  debugParameter: DebugParameter
+  errors: [DeleteDebugParameterError!]
+}
+
+type AddUserPayload {
+  appUser: AppUser
+}
 
 directive @authorize("The name of the authorization policy that determines access to the annotated resource." policy: String "Roles that are allowed to access the annotated resource." roles: [String!] "Defines when when the resolver shall be executed.By default the resolver is executed after the policy has determined that the current user is allowed to access the field." apply: ApplyPolicy! = BEFORE_RESOLVER) repeatable on SCHEMA | OBJECT | FIELD_DEFINITION
