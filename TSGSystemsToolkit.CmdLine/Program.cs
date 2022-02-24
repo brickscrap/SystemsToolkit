@@ -2,9 +2,7 @@
 using FuelPOS.TankTableTools;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Http;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
@@ -13,17 +11,14 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using SysTk.DataManager.DataAccess;
 using SysTk.DataManager.Ftp;
-using SysTk.Utils;
 using TSGSystemsToolkit.CmdLine.Commands;
-using TSGSystemsToolkit.CmdLine.Handlers;
-using TSGSystemsToolkit.CmdLine.Options;
 using TSGSystemsToolkit.CmdLine.Services;
 
 namespace TSGSystemsToolkit.CmdLine
 {
-    class Program
+    internal class Program
     {
-        static async Task<int> Main(string[] args)
+        private static async Task<int> Main(string[] args)
         {
             var builder = new ConfigurationBuilder();
             var absolutePath = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
@@ -36,7 +31,7 @@ namespace TSGSystemsToolkit.CmdLine
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
                 .Enrich.FromLogContext()
-                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+                .WriteTo.Console(theme: AnsiConsoleTheme.Code, outputTemplate: "[{Level:u3}] {Message:lj} {NewLine}")
                 .CreateLogger();
 
             var host = Host.CreateDefaultBuilder()
@@ -52,20 +47,12 @@ namespace TSGSystemsToolkit.CmdLine
                     services.AddTransient<ICardIdentificationData, CardIdentificationData>();
                     services.AddTransient<IAuthService, AuthService>();
                     services.AddSysTkApiClient()
-                        .ConfigureHttpClient(client => {
+                        .ConfigureHttpClient(client =>
+                        {
                             client.BaseAddress = new Uri(config["GraphQLAddress"]);
                             client.DefaultRequestHeaders.Authorization =
                                 new AuthenticationHeaderValue("bearer", config["AccessToken"]);
-                            });
-
-                    // Handlers
-                    services.AddTransient<IHandler<VeederRootOptions>, VeederRootHandler>();
-                    services.AddTransient<IHandler<ProgaugeOptions>, ProgaugeHandler>();
-                    services.AddTransient<IHandler<TerminalsOptions>, TerminalsHandler>();
-                    services.AddTransient<IHandler<MutationOptions>, MutationHandler>();
-                    services.AddTransient<IHandler<SurveyOptions>, SurveyHandler>();
-                    services.AddTransient<IHandler<UpdateOptions>, UpdateHandler>();
-                    services.AddTransient<IHandler<SendFileOptions>, SendFileHandler>();
+                        });
 
                     // Business Services
                     services.AddTransient<IVdrRootFileParser, VdrRootFileParser>();

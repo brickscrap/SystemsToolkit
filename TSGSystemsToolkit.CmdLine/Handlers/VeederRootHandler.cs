@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.CommandLine.Invocation;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -10,38 +11,43 @@ using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    public class VeederRootHandler : AbstractHandler<VeederRootOptions>
+    public class VeederRootHandler : ICommandHandler
     {
         private IVdrRootFileParser _parser;
-        private readonly ILogger<VeederRootHandler> _logger;
+        private ILogger<VeederRootHandler> _logger;
+        private readonly VeederRootOptions _options;
+        private readonly CancellationToken _ct;
 
-        public VeederRootHandler() : base()
+        public VeederRootHandler(VeederRootOptions options, CancellationToken ct = default)
         {
-
+            _options = options;
+            _ct = ct;
         }
 
-        public VeederRootHandler(IVdrRootFileParser parser, ILogger<VeederRootHandler> logger)
+        private void GetDependencies(InvocationContext context)
         {
-            _parser = parser;
-            _logger = logger;
+            _parser = (IVdrRootFileParser)context.BindingContext.GetService(typeof(IVdrRootFileParser));
+            _logger = (ILogger<VeederRootHandler>)context.BindingContext.GetService(typeof(ILogger<VeederRootHandler>));
         }
 
-        public override async Task<int> RunHandlerAndReturnExitCode(VeederRootOptions options, CancellationToken ct = default(CancellationToken))
+        public async Task<int> InvokeAsync(InvocationContext context)
         {
+            GetDependencies(context);
+
             try
             {
-                FileAttributes attr = File.GetAttributes(options.FilePath);
+                FileAttributes attr = File.GetAttributes(_options.FilePath);
 
                 if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
                 {
-                    _logger.LogInformation("Parsing files in directory: {Directory}.", options.FilePath);
-                    ParseFilesInDir(options);
+                    _logger.LogInformation("Parsing files in directory: {Directory}.", _options.FilePath);
+                    ParseFilesInDir();
 
                     return 0;
                 }
                 else
                 {
-                    ParseSingleFile(options);
+                    ParseSingleFile();
 
                     return 0;
                 }
@@ -56,28 +62,28 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             }
         }
 
-        private void ParseSingleFile(VeederRootOptions opts)
+        private void ParseSingleFile()
         {
-            _parser = ParseFile(_parser, opts);
-            var outputDir = opts.OutputPath;
+            _parser = ParseFile();
+            var outputDir = _options.OutputPath;
 
-            if (string.IsNullOrWhiteSpace(opts.OutputPath))
+            if (string.IsNullOrWhiteSpace(_options.OutputPath))
             {
-                outputDir = Path.GetDirectoryName(opts.FilePath);
+                outputDir = Path.GetDirectoryName(_options.FilePath);
             }
 
-            HandleBoolOptions(opts, outputDir);
+            HandleBoolOptions(outputDir);
         }
 
-        private void HandleBoolOptions(VeederRootOptions opts, string outputDir)
+        private void HandleBoolOptions(string outputDir)
         {
-            if (opts.CreateFuelPosFile)
+            if (_options.CreateFuelPosFile)
             {
                 _logger.LogInformation("Creating TMS_AOF.INP at {OutputDir}", outputDir);
                 POSFileCreator.CreateTmsAofFile(_parser.TankTables, outputDir);
             }
 
-            if (opts.CreateCsv)
+            if (_options.CreateCsv)
             {
                 _logger.LogInformation("Creating tank setup CSV at {OutputDir}", outputDir);
                 try
@@ -92,48 +98,50 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             }
         }
 
-        private void ParseFilesInDir(VeederRootOptions opts)
+        private void ParseFilesInDir()
         {
-            List<string> filesToConvert = GetFilesInDirectory(opts.FilePath);
+            List<string> filesToConvert = GetFilesInDirectory(_options.FilePath);
 
             foreach (var file in filesToConvert)
             {
                 _parser.FilePath = file;
                 _parser.Parse();
 
-                var outputDir = CreateNewDirectoryName(opts, _parser);
+                var outputDir = CreateNewDirectoryName();
 
-                HandleBoolOptions(opts, outputDir);
+                HandleBoolOptions(outputDir);
             }
         }
 
-        private static string CreateNewDirectoryName(VeederRootOptions opts, IVdrRootFileParser parser)
+        private string CreateNewDirectoryName()
         {
             string newDirectory;
-            if (string.IsNullOrWhiteSpace(parser.SiteName))
-                newDirectory = $"{opts.FilePath}\\{Path.GetFileNameWithoutExtension(parser.FilePath)}";
+            if (string.IsNullOrWhiteSpace(_parser.SiteName))
+            {
+                newDirectory = $"{_options.FilePath}\\{Path.GetFileNameWithoutExtension(_parser.FilePath)}";
+            }
             else
-                newDirectory = $"{opts.FilePath}\\{parser.SiteName}";
+            {
+                newDirectory = $"{_options.FilePath}\\{_parser.SiteName}";
+            }
 
             return newDirectory;
         }
 
-        private static IVdrRootFileParser ParseFile(IVdrRootFileParser parser, VeederRootOptions opts)
+        private IVdrRootFileParser ParseFile()
         {
-            parser.FilePath = opts.FilePath;
+            _parser.FilePath = _options.FilePath;
 
-            parser.Parse();
+            _parser.Parse();
 
-            return parser;
+            return _parser;
         }
 
-        private static List<string> GetFilesInDirectory(string directoryPath)
-        {
-            var files = Directory.EnumerateFiles(directoryPath, "*.*", SearchOption.TopDirectoryOnly)
+        private static List<string> GetFilesInDirectory(string directoryPath) =>
+            Directory.EnumerateFiles(directoryPath, "*.*", SearchOption.TopDirectoryOnly)
                 .Where(f => f.EndsWith(".cal") || f.EndsWith(".txt") || f.EndsWith(".cap"))
                 .ToList();
 
-            return files;
-        }
+
     }
 }

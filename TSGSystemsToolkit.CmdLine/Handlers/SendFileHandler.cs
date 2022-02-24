@@ -1,15 +1,14 @@
 ﻿using FluentFTP;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using ShellProgressBar;
 using Spectre.Console;
 using StrawberryShake;
 using System;
 using System.Collections.Generic;
+using System.CommandLine.Invocation;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using SysTk.DataManager.Ftp;
@@ -21,38 +20,158 @@ using TSGSystemsToolkit.CmdLine.Services;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    internal class SendFileHandler : AbstractHandler<SendFileOptions>
+    internal class SendFileHandler : ICommandHandler
     {
-        private readonly SysTkApiClient _apiClient;
-        private readonly ILogger<SendFileHandler> _logger;
-        private readonly IConfiguration _config;
-        private readonly IAuthService _authService;
-        private readonly IFtpService _ftpService;
+        private SysTkApiClient _apiClient;
+        private ILogger<SendFileHandler> _logger;
+        private IConfiguration _config;
+        private IAuthService _authService;
+        private IFtpService _ftpService;
+        private SendFileOptions _options;
+        private CancellationToken _ct;
 
-        public SendFileHandler(SysTkApiClient apiClient, ILogger<SendFileHandler> logger, IConfiguration config,
-            IAuthService authService, IFtpService ftpService)
+        public SendFileHandler(SendFileOptions options, CancellationToken ct = default)
         {
-            _apiClient = apiClient;
-            _logger = logger;
-            _config = config;
-            _authService = authService;
-            _ftpService = ftpService;
+            _options = options;
+            _ct = ct;
         }
 
-        public override async Task<int> RunHandlerAndReturnExitCode(SendFileOptions options, CancellationToken ct = default(CancellationToken))
+        public async Task<int> InvokeAsync(InvocationContext context)
         {
-            // Validate Options
-            if (!ValidateOptions(options))
-                return -1;
+            GetDependencies(context);
 
-            // Add all transfers to this list
-            List<FtpTransferModel> transfers = new();
-
-            // Get cluster stations first
-            if (options.Cluster is not null)
+            // Validate Options - move to do this inside binders
+            if (!ValidateOptions(_options))
             {
-                string cluster = options.Cluster.Replace(" ", "");
-                var result = await _apiClient.GetStationsByCluster.ExecuteAsync(cluster, ct);
+                return 1;
+            }
+
+            List<FtpTransferModel> transfers = await BuildTransfers(context);
+
+            if (transfers is null || transfers.Count == 0)
+            {
+                return 1;
+            }
+
+            return RunTransfers(transfers);
+        }
+
+        private async Task<List<FtpTransferModel>> BuildTransfers(InvocationContext context)
+        {
+            List<FtpTransferModel> transfers = new();
+            try
+            {
+                if (_options.Cluster is not null)
+                {
+                    var result = await HandleClusterOption(transfers, context);
+
+                    if (result.isSuccess)
+                    {
+                        transfers.AddRange(result.transfers);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+
+                // Get sites from list file
+                if (_options.List is not null)
+                {
+                    var result = await HandleListOption(transfers, context);
+
+                    if (result.isSuccess)
+                    {
+                        transfers.AddRange(result.transfers);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+
+                // Get individual site
+
+                if (_options.Site is not null)
+                {
+                    var result = await HandleSiteOption(transfers, context);
+
+                    if (result.isSuccess)
+                    {
+                        transfers.AddRange(result.transfers);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            }
+            catch (HttpRequestException ex)
+            {
+                _logger.LogCritical("Error connecting to data service: {Message}", ex.Message);
+                _logger.LogDebug("Inner exception: {Inner}", ex.InnerException);
+                _logger.LogDebug("Stack trace: {Trace}", ex.StackTrace);
+                return null;
+            }
+
+            return transfers;
+        }
+
+        private async Task<(bool isSuccess, List<FtpTransferModel> transfers, IOperationResult failureResult)> HandleClusterOption(List<FtpTransferModel> transfers, InvocationContext context)
+        {
+            Cluster cluster = Enum.Parse<Cluster>(_options.Cluster);
+
+            var result = await _apiClient.GetStationsByCluster.ExecuteAsync(cluster, _ct);
+
+            try
+            {
+                result.EnsureNoErrors();
+            }
+            catch (GraphQLClientException ex)
+            {
+                var errorCode = await HandleGraphQLExceptions<IGetStationsByClusterResult>(ex, result, context);
+                if (errorCode > 0)
+                {
+                    return (false, null, result);
+                }
+            }
+
+            foreach (var station in result.Data.Station)
+            {
+                var credentials = station.FtpCredentials
+                    .FirstOrDefault(x => x.Username.ToUpper() == "SUPERVISOR");
+
+                if (credentials is null)
+                {
+                    _logger.LogInformation("No supervisor credentials found for station {Id}: {Name}, skipping...", station.Id, station.Name);
+                    continue;
+                }
+
+                FtpTransferModel transfer = new()
+                {
+                    SiteId = station.Id,
+                    Name = station.Name,
+                    IP = station.Ip,
+                    Port = 0,
+                    Username = credentials.Username,
+                    Password = credentials.Password,
+                    LocalPath = _options.FilePath,
+                    RemotePath = _options.Target
+                };
+
+                transfers.Add(transfer);
+            }
+
+            return (true, transfers, null);
+        }
+
+        private async Task<(bool isSuccess, List<FtpTransferModel> transfers, IOperationResult result)> HandleListOption(List<FtpTransferModel> transfers, InvocationContext context)
+        {
+            var listFile = File.ReadAllLines(_options.List).ToList();
+
+            foreach (var id in listFile)
+            {
+                var result = await _apiClient.GetCredentialsByStationId.ExecuteAsync(id, _ct);
 
                 try
                 {
@@ -60,252 +179,202 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 }
                 catch (GraphQLClientException ex)
                 {
-                    return await HandleGraphQLExceptions<IGetStationsByClusterResult>(ex, result);
+                    var errorCode = await HandleGraphQLExceptions<IGetCredentialsByStationIdResult>(ex, result, context);
+                    if (errorCode > 0)
+                    {
+                        return (false, null, result);
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
-            }
 
-            // Get sites from list file
-            if (options.List is not null)
-            {
-                var listFile = File.ReadAllLines(options.List).ToList();
+                var station = result.Data.Station.FirstOrDefault();
+                var credentials = station.FtpCredentials.FirstOrDefault(x => x.Username == "SUPERVISOR");
 
-                foreach (var id in listFile)
+                // TODO: Handle supervisor credentials not existing, offer option to add
+                if (credentials is null)
                 {
-                    var result = await _apiClient.GetCredentialsByStationId.ExecuteAsync(id);
+                    _logger.LogInformation("No supervisor credentials found for station {Id}: {Name}, skipping...", id, station.Name);
+                    continue;
+                }
+
+                FtpTransferModel transfer = new()
+                {
+                    SiteId = id,
+                    Name = station.Name,
+                    IP = station.Ip,
+                    Port = 0,
+                    Username = credentials.Username,
+                    Password = credentials.Password,
+                    LocalPath = _options.FilePath,
+                    RemotePath = _options.Target
+                };
+
+                transfers.Add(transfer);
+            }
+
+            return (true, transfers, null);
+        }
+
+        public async Task<(bool isSuccess, List<FtpTransferModel> transfers, IOperationResult result)> HandleSiteOption(List<FtpTransferModel> transfers, InvocationContext context)
+        {
+            var result = await _apiClient.GetCredentialsByStationId.ExecuteAsync(_options.Site, _ct);
+
+            try
+            {
+                result.EnsureNoErrors();
+            }
+            catch (GraphQLClientException ex)
+            {
+                var errorCode = await HandleGraphQLExceptions<IGetCredentialsByStationIdResult>(ex, result, context);
+                if (errorCode > 0)
+                {
+                    return (false, null, result);
                 }
             }
 
-            // Get individual site
-            if (options.Site is not null)
-            {
+            var station = result.Data.Station.FirstOrDefault();
+            var credentials = station.FtpCredentials.FirstOrDefault(x => x.Username == "SUPERVISOR");
 
+            if (credentials is null)
+            {
+                _logger.LogInformation("No supervisor credentials found for station {Id}: {Name}, skipping...", _options.Site, station.Name);
+            }
+            else
+            {
+                FtpTransferModel transfer = new()
+                {
+                    SiteId = _options.Site,
+                    Name = station.Name,
+                    IP = station.Ip,
+                    Port = 0,
+                    Username = station.FtpCredentials.Where(x => x.Username == "SUPERVISOR").FirstOrDefault().Username,
+                    Password = station.FtpCredentials.Where(x => x.Username == "SUPERVISOR").FirstOrDefault().Password,
+                    LocalPath = _options.FilePath,
+                    RemotePath = _options.Target
+                };
+
+                transfers.Add(transfer);
             }
 
+            return (true, transfers, null);
+        }
+
+
+
+        private int RunTransfers(List<FtpTransferModel> transfers)
+        {
             ThreadPool.GetMaxThreads(out int maxThreads, out int completionPortThreads);
             ThreadPool.SetMaxThreads(5, 5);
-
-            var creds = new List<dynamic>
-            {
-                new { IP = "185.149.90.82", Username = "brickscrap", Password = "4uUiEUMVXJTb", Local = @"C:\Users\GaryM\Downloads\VSCodeUserSetup-x64-1.63.2.exe", Target = "/poller_test/VSCodeUserSetup-x64-1.63.2.exe", Port = 9979},
-                //new { IP = "185.149.90.82", Username = "brickscrap", Password = "4uUiEUMVXJTb", Local = @"C:\Users\GaryM\Downloads\go1.17.6.windows-amd64.msi", Target = "/poller_test/go1.17.6.windows-amd64.msi", Port = 9979},
-                new { IP = "185.149.90.82", Username = "brickscrap", Password = "4uUiEUMVXJTb", Local = @"C:\Users\GaryM\Downloads\Insomnia.Core-2021.7.2.exe", Target = "/poller_test/Insomnia.Core-2021.7.2.exe", Port = 9979}
-            };
 
             List<Task> tasks = new();
 
             AnsiConsole.Progress()
-                .AutoClear(true)
-                .Columns(new ProgressColumn[]
-            {
+                        .AutoClear(true)
+                        .Columns(new ProgressColumn[]
+                    {
                     new TaskDescriptionColumn(),
                     new ProgressBarColumn(),
                     new PercentageColumn(),
                     new RemainingTimeColumn(),
                     new SpinnerColumn()
-            })
-            .Start(ctx =>
-            {
-                foreach (var stat in creds)
-                {
-                    Task task = Task.Factory.StartNew((x) =>
+                    })
+                    .Start(ctx =>
                     {
-                        try
+                        foreach (var stat in transfers)
                         {
-                            _logger.LogInformation("Uploading...");
-
-                            using var ftpClient = new FtpClient(stat.IP, stat.Port, stat.Username, stat.Password);
-                            ftpClient.Connect();
-                            ProgressTask progTask = ctx.AddTask(stat.Local, maxValue: 100, autoStart: true);
-
-                            double increment = 0;
-                            double lastProg = 0;
-                            Action<FtpProgress> prog = x =>
-                            {
-                                if (increment == 0)
-                                {
-                                    increment = x.Progress;
-                                    lastProg = x.Progress;
-                                } 
-                                else
-                                {
-                                    increment = x.Progress - lastProg;
-                                    lastProg = x.Progress;
-                                }
-
-                                progTask.Increment(increment);
-                            };
-
-                            ftpClient.UploadFile(stat.Local, stat.Target, FtpRemoteExists.Overwrite, progress: prog);
-                        }
-                        catch (Exception ex)
-                        {
-                            _logger.LogError("Inside Task: {Message}", ex.Message);
-                            _logger.LogError("{Inner}", ex.InnerException);
-                            _logger.LogError("{Trace}", ex.StackTrace);
-                        }
-                    }, TaskCreationOptions.AttachedToParent, cancellationToken: ct);
-
-                    tasks.Add(task);
-                }
-                try
-                {
-                    Task.WaitAll(tasks.ToArray(), ct);
-
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Errrrror: {Error}", ex.Message);
-                }
-            });
-            return 0;
-            // END TEST CODE
-
-
-            // Try to log in to API
-            //      Update token in AppSettings
-
-            // Determine cluster or site list CSV
-
-            try
-            {
-                /*
-                if (options.Cluster is not null)
-                {
-                    string cluster = options.Cluster.Replace(" ", "");
-                    var result = await _apiClient.GetStationsByCluster.ExecuteAsync(cluster);
-
-                    if (result.Errors.Count > 0)
-                    {
-                        if (result.Errors.Where(x => x.Code == "AUTH_NOT_AUTHENTICATED").Any())
-                        {
-                            Console.WriteLine("Not authenticated. Current token invalid or expired. Proceed with login process.");
-                            var authResult = await _authService.Authenticate();
-
-                            if (authResult)
-                            {
-                                _logger.LogInformation("Login success. Please re-run your command.");
-                                return 0;
-                            }
-                        }
-                    }
-
-                    
-                    if (result.Data.Station.Count == 0)
-                    {
-                        _logger.LogError("Could not find any stations in cluster: {cluster}", options.Cluster);
-                        _logger.LogDebug("Input: {InputCluster}; Transform: {TransformCluster}", options.Cluster, cluster);
-                        return -1;
-                    }
-                    else
-                    {
-                        ThreadPool.GetMaxThreads(out int maxThreads, out int completionPortThreads);
-                        ThreadPool.SetMaxThreads(5, 5);
-
-                        var stations = result.Data.Station;
-
-
-                        List<Task> tasks = new();
-
-                        foreach (var stat in stations)
-                        {
-                            Task task = Task.Factory.StartNew(async (x) =>
+                            Task task = Task.Factory.StartNew((x) =>
                             {
                                 try
                                 {
-                                    var success = await _ftpService.UploadFileAsync(stat.IP, stat.FtpCredentials[0].Username, stat.FtpCredentials[0].Password, options.FilePath, options.Target, overwrite: true, ct: ct);
+                                    _logger.LogInformation("Uploading {File} to {Station}...", stat.LocalPath, stat.Name);
 
-                                    if (success)
+                                    using var ftpClient = new FtpClient(stat.IP, stat.Port, stat.Username, stat.Password);
+                                    ftpClient.Connect();
+                                    ProgressTask progTask = ctx.AddTask(stat.Name, maxValue: 100, autoStart: true);
+
+                                    double increment = 0;
+                                    double lastProg = 0;
+                                    void prog(FtpProgress x)
                                     {
-                                        _logger.LogInformation("Upload of {File} to {StationID} - {StationName} success!", options.FilePath, stat.Name, stat.IP);
+                                        if (increment == 0)
+                                        {
+                                            increment = x.Progress;
+                                            lastProg = x.Progress;
+                                        }
+                                        else
+                                        {
+                                            increment = x.Progress - lastProg;
+                                            lastProg = x.Progress;
+                                        }
+
+                                        progTask.Increment(increment);
                                     }
+
+                                    ftpClient.UploadFile(stat.LocalPath, stat.RemotePath, FtpRemoteExists.Overwrite, progress: prog);
                                 }
                                 catch (Exception ex)
                                 {
-                                    _logger.LogError("Could not upload file to {StationId} - {StationName}: {Message}", stat.Id, stat.Name, ex.Message);
+                                    // TODO: Better handle the various exceptions
+                                    _logger.LogError("Inside Task: {Message}", ex.Message);
+                                    _logger.LogError("{Inner}", ex.InnerException);
+                                    _logger.LogError("{Trace}", ex.StackTrace);
                                 }
-                            }, TaskCreationOptions.AttachedToParent, cancellationToken: ct);
+                            }, TaskCreationOptions.AttachedToParent, cancellationToken: _ct);
 
                             tasks.Add(task);
                         }
-
-                        Task.WaitAll(tasks.ToArray(), ct);
-
-                        //foreach (var item in result.Data.Station)
-                        //{
-                        //    // Connect to station
-                            
-                        //    // Send file
-                        //}
-                    }
-                }
-                */
-                if (options.List is not null)
-                {
-
-                }
-            }
-            catch (HttpRequestException ex)
-            {
-                _logger.LogCritical("Error connecting to API: {Message}", ex.Message);
-                _logger.LogDebug("Inner Exception: {Inner}", ex.InnerException);
-                _logger.LogDebug("Trace: {StackTrace}", ex.StackTrace);
-            }
-
-
-            //      Validate cluster via API call
-
-            //      Validate site list CSV
-
-            // Get list of FTP credentials from API
-
-            // Connect to each station (can we do multiple at a time?)
-            //      Send file
-            //      Validate file has been delivered successfully
-
+                        try
+                        {
+                            Task.WaitAll(tasks.ToArray(), _ct);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.LogError("Error: {Error}", ex.Message);
+                            _logger.LogDebug("Inner: {Inner}", ex.InnerException);
+                            _logger.LogDebug("Trace: {Trace}", ex.StackTrace);
+                        }
+                    });
             return 0;
         }
 
-        private async Task<int> HandleGraphQLExceptions<T>(GraphQLClientException exception, IOperationResult<T> operationResult) where T : class
+        // TODO: Put this in a separate class ErrorHandlers?
+        private async Task<int> HandleGraphQLExceptions<T>(GraphQLClientException exception, IOperationResult<T> operationResult, InvocationContext context) where T : class
         {
             _logger.LogError("Error from API: {Message}", exception.Message);
             if (operationResult.Errors.Where(x => x.Code == ApiErrorCodes.NotAuthenticated).Any())
             {
-                bool authSuccess = await HandleNotAuthenticated();
+                Func<InvocationContext, Task<int>> func = InvokeAsync;
+
+                bool authSuccess = await _authService.Authenticate(func, context);
                 if (authSuccess)
+                {
                     return 0;
+                }
                 else
+                {
                     return 1;
+                }
             }
 
             return 1;
         }
 
-        private async Task<bool> HandleNotAuthenticated()
-        {
-            AnsiConsole.WriteLine("[bold red]Not authenticated.[/] Current token invalid or expired. Proceed with login process.");
-            var authResult = await _authService.Authenticate();
-
-            if (authResult)
-            {
-                AnsiConsole.WriteLine("[bold green]Login success.[/] Please re-run your command.");
-                return true;
-            }
-            else
-            {
-                AnsiConsole.WriteLine("[bold red]Authentication failed.[/]");
-                return false;
-            }
-        }
-
-        private bool ValidateOptions(SendFileOptions options)
+        private bool ValidateOptions(SendFileOptions _options)
         {
             try
             {
-                if (IsDirectory(options.FilePath))
-                    throw new FileNotFoundException($"{options.FilePath} is a directory, please provide the path to a file.");
+                if (IsDirectory(_options.FilePath))
+                {
+                    throw new FileNotFoundException($"{_options.FilePath} is a directory, please provide the path to a file.");
+                }
 
-                if (options.List is not null && IsDirectory(options.List))
-                    throw new FileNotFoundException($"{options.List} is a directory, please provide the path to a CSV or text file containing a list of station IDs.");
+                if (_options.List is not null && IsDirectory(_options.List))
+                {
+                    throw new FileNotFoundException($"{_options.List} is a directory, please provide the path to a CSV or text file containing a list of station IDs.");
+                }
             }
             catch (Exception ex) when (ex is FileNotFoundException || ex is DirectoryNotFoundException)
             {
@@ -313,17 +382,47 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 return false;
             }
 
+            try
+            {
+                Cluster cluster = Enum.Parse<Cluster>(_options.Cluster);
+            }
+            catch (ArgumentException)
+            {
+                _logger.LogError("The provided cluster name \"{Cluster}\" is not a valid cluster.", _options.Cluster);
+                var clusters = Enum.GetValues<Cluster>();
+                Console.WriteLine("Possible clusters are:");
+                foreach (var item in clusters)
+                {
+                    Console.WriteLine(item);
+                }
+
+                return false;
+            }
+
             return true;
         }
 
-        private bool IsDirectory(string path)
+        private void GetDependencies(InvocationContext context)
+        {
+            _apiClient = context.BindingContext.GetService(typeof(SysTkApiClient)) as SysTkApiClient;
+            _logger = context.BindingContext.GetService(typeof(ILogger<SendFileHandler>)) as ILogger<SendFileHandler>;
+            _config = context.BindingContext.GetService(typeof(IConfiguration)) as IConfiguration;
+            _authService = context.BindingContext.GetService(typeof(IAuthService)) as IAuthService;
+            _ftpService = context.BindingContext.GetService(typeof(IFtpService)) as IFtpService;
+        }
+
+        private static bool IsDirectory(string path)
         {
             FileAttributes attr = File.GetAttributes(path);
 
             if (attr == FileAttributes.Directory)
+            {
                 return true;
+            }
 
             return false;
         }
+
+
     }
 }

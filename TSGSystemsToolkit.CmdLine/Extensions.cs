@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.CommandLine;
-using System.CommandLine.Invocation;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
@@ -12,17 +10,6 @@ namespace TSGSystemsToolkit.CmdLine
 {
     internal static class Extensions
     {
-        internal static Command WithHandler<T>(this Command command, string name)
-        {
-            var flags = BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public | BindingFlags.Instance;
-            var method = typeof(T).GetMethod(name, flags);
-
-            var handler = CommandHandler.Create(method!);
-            command.Handler = handler;
-
-            return command;
-        }
-
         internal static Version GetAvailableVersion(string folderPath)
         {
             Version ver = new();
@@ -70,9 +57,9 @@ namespace TSGSystemsToolkit.CmdLine
 
             json["AccessToken"] = accessToken;
 
-            var newJson = JsonSerializer.Serialize<dynamic>(json, 
-                new JsonSerializerOptions 
-                { 
+            var newJson = JsonSerializer.Serialize<dynamic>(json,
+                new JsonSerializerOptions
+                {
                     WriteIndented = true
                 });
             File.WriteAllText(asPath, newJson);

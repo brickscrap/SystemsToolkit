@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using System.CommandLine.Invocation;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
@@ -8,19 +9,29 @@ using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    public class UpdateHandler : AbstractHandler<UpdateOptions>
+    public class UpdateHandler : ICommandHandler
     {
-        private readonly IConfiguration _config;
-        private readonly ILogger<UpdateHandler> _logger;
+        private IConfiguration _config;
+        private ILogger<UpdateHandler> _logger;
+        private readonly UpdateOptions _options;
+        private readonly CancellationToken _ct;
 
-        public UpdateHandler(IConfiguration config, ILogger<UpdateHandler> logger)
+        public UpdateHandler(UpdateOptions options, CancellationToken ct = default)
         {
-            _config = config;
-            _logger = logger;
+            _options = options;
+            _ct = ct;
         }
 
-        public override async Task<int> RunHandlerAndReturnExitCode(UpdateOptions options, CancellationToken ct = default(CancellationToken))
+        private void GetDependencies(InvocationContext context)
         {
+            _config = context.BindingContext.GetService(typeof(IConfiguration)) as IConfiguration;
+            _logger = context.BindingContext.GetService(typeof(ILogger<UpdateHandler>)) as ILogger<UpdateHandler>;
+        }
+
+        public async Task<int> InvokeAsync(InvocationContext context)
+        {
+            GetDependencies(context);
+
             var fileVersion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>().Version.Split('.');
             Version currentVersion = new(fileVersion[0], fileVersion[1], fileVersion[2]);
             _logger.LogInformation("Current version: {Current}", currentVersion);

@@ -1,5 +1,6 @@
 ﻿using FuelPOS.MutationCreator;
 using Microsoft.Extensions.Logging;
+using System.CommandLine.Invocation;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,24 +9,36 @@ using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    public class MutationHandler : AbstractHandler<MutationOptions>
+    public class MutationHandler : ICommandHandler
     {
-        private readonly ILogger<MutationHandler> _logger;
-        private readonly ICardIdentificationData _crdIdData;
+        private readonly MutationOptions _options;
+        private readonly CancellationToken _ct;
+        private ILogger<MutationHandler> _logger;
+        private ICardIdentificationData _crdIdData;
 
-        public MutationHandler(ILogger<MutationHandler> logger, ICardIdentificationData crdIdData)
+        public MutationHandler(MutationOptions options, CancellationToken ct = default)
         {
-            _logger = logger;
-            _crdIdData = crdIdData;
+            _options = options;
+            _ct = ct;
         }
 
-        public override async Task<int> RunHandlerAndReturnExitCode(MutationOptions options, CancellationToken ct = default(CancellationToken))
+        public async Task<int> InvokeAsync(InvocationContext context)
         {
+            GetDependencies(context);
+
             int result = 1;
-            if (!string.IsNullOrWhiteSpace(options.CardIdMutPath))
-                result = RunCardIdMut(options);
+            if (!string.IsNullOrWhiteSpace(_options.CardIdMutPath))
+            {
+                result = RunCardIdMut(_options);
+            }
 
             return result;
+        }
+
+        private void GetDependencies(InvocationContext context)
+        {
+            _logger = context.BindingContext.GetService(typeof(ILogger<MutationHandler>)) as ILogger<MutationHandler>;
+            _crdIdData = context.BindingContext.GetService(typeof(ICardIdentificationData)) as ICardIdentificationData;
         }
 
         private int RunCardIdMut(MutationOptions options)

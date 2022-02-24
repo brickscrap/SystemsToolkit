@@ -1,6 +1,7 @@
 ﻿using FuelPOS.TankTableTools;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using System.CommandLine.Invocation;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -9,37 +10,46 @@ using TSGSystemsToolkit.CmdLine.Options;
 
 namespace TSGSystemsToolkit.CmdLine.Handlers
 {
-    public class ProgaugeHandler : AbstractHandler<ProgaugeOptions>
+    public class ProgaugeHandler : ICommandHandler
     {
         // TODO: Add logging/output
-        private readonly ILogger<ProgaugeHandler> _logger;
-        private readonly IProgaugeFileParser _parser;
+        private ILogger<ProgaugeHandler> _logger;
+        private IProgaugeFileParser _parser;
+        private readonly ProgaugeOptions _options;
+        private readonly CancellationToken _ct;
 
-        public ProgaugeHandler(ILogger<ProgaugeHandler> logger, IProgaugeFileParser parser)
+        public ProgaugeHandler(ProgaugeOptions options, CancellationToken ct = default)
         {
-            _logger = logger;
-            _parser = parser;
+            _options = options;
+            _ct = ct;
         }
 
-        public override async Task<int> RunHandlerAndReturnExitCode(ProgaugeOptions options, CancellationToken ct = default(CancellationToken))
+        private void GetDependencies(InvocationContext context)
         {
-            // TODO: Validate file path, handle exceptions
-            ParseBasicFileInDir(options);
+            _logger = context.BindingContext.GetService(typeof(ILogger<ProgaugeHandler>)) as ILogger<ProgaugeHandler>;
+            _parser = context.BindingContext.GetService(typeof(IProgaugeFileParser)) as IProgaugeFileParser;
+        }
+
+        public async Task<int> InvokeAsync(InvocationContext context)
+        {
+            GetDependencies(context);
+
+            ParseBasicFileInDir();
 
             return 1;
         }
 
-        private void ParseBasicFileInDir(ProgaugeOptions opts)
+        private void ParseBasicFileInDir()
         {
-            _parser.FolderPath = opts.FilePath;
+            _parser.FolderPath = _options.FilePath;
 
             _parser.LoadFilesAndParse();
 
             if (_parser.TankTables is not null)
             {
-                if (opts.CreateFuelPosFile)
+                if (_options.CreateFuelPosFile)
                 {
-                    POSFileCreator.CreateTmsAofFile(_parser.TankTables, opts.FilePath);
+                    POSFileCreator.CreateTmsAofFile(_parser.TankTables, _options.FilePath);
                 }
             }
         }
@@ -50,5 +60,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 .Where(f => f.EndsWith("*.cal") || f.EndsWith("*.txt") || f.EndsWith("*.cap"))
                 .ToList();
         }
+
+
     }
 }

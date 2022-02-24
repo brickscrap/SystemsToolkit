@@ -29,22 +29,40 @@
         public static bool operator >(Version a, Version b)
         {
             if (a.Major != b.Major)
+            {
                 if (a.Major > b.Major)
+                {
                     return true;
+                }
                 else
+                {
                     return false;
+                }
+            }
 
             if (a.Minor != b.Minor)
+            {
                 if (a.Minor > b.Minor)
+                {
                     return true;
+                }
                 else
+                {
                     return false;
+                }
+            }
 
             if (a.Patch != b.Patch)
+            {
                 if (a.Patch > b.Patch)
+                {
                     return true;
+                }
                 else
+                {
                     return false;
+                }
+            }
 
             return false;
         }
@@ -52,22 +70,40 @@
         public static bool operator <(Version a, Version b)
         {
             if (a.Major != b.Major)
+            {
                 if (a.Major < b.Major)
+                {
                     return true;
+                }
                 else
+                {
                     return false;
+                }
+            }
 
             if (a.Minor != b.Minor)
+            {
                 if (a.Minor < b.Minor)
+                {
                     return true;
+                }
                 else
+                {
                     return false;
+                }
+            }
 
             if (a.Patch != b.Patch)
+            {
                 if (a.Patch < b.Patch)
+                {
                     return true;
+                }
                 else
+                {
                     return false;
+                }
+            }
 
             return false;
         }
