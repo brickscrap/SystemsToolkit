@@ -76,23 +76,7 @@ builder.Services.AddIdentity<AppUser, Role>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-string jwtKey;
-
-if (builder.Environment.IsProduction())
-{
-    try
-    {
-        jwtKey = Environment.GetEnvironmentVariable("JwtKey");
-        builder.Configuration["JwtKey"] = jwtKey;
-    }
-    catch (ArgumentNullException)
-    {
-        Console.WriteLine("Could not find JwtKey environment variable.");
-        throw;
-    }
-}
-else
-    jwtKey = builder.Configuration["JwtKey"];
+string jwtKey = builder.Configuration["JwtKey"];
 
 builder.Services.AddAuthentication(options =>
 {
