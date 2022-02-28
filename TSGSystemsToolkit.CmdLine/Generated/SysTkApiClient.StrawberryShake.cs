@@ -190,12 +190,15 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial class AddStation_AddStation_AddStationPayload : global::System.IEquatable<AddStation_AddStation_AddStationPayload>, IAddStation_AddStation_AddStationPayload
     {
-        public AddStation_AddStation_AddStationPayload(global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Station? station)
+        public AddStation_AddStation_AddStationPayload(global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Station? station, global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Errors>? errors)
         {
             Station = station;
+            Errors = errors;
         }
 
         public global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Station? Station { get; }
+
+        public global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Errors>? Errors { get; }
 
         public virtual global::System.Boolean Equals(AddStation_AddStation_AddStationPayload? other)
         {
@@ -214,7 +217,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
                 return false;
             }
 
-            return (((Station is null && other.Station is null) || Station != null && Station.Equals(other.Station)));
+            return (((Station is null && other.Station is null) || Station != null && Station.Equals(other.Station))) && global::StrawberryShake.Helper.ComparisonHelper.SequenceEqual(Errors, other.Errors);
         }
 
         public override global::System.Boolean Equals(global::System.Object? obj)
@@ -245,6 +248,14 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
                 if (Station != null)
                 {
                     hash ^= 397 * Station.GetHashCode();
+                }
+
+                if (Errors != null)
+                {
+                    foreach (var Errors_elm in Errors)
+                    {
+                        hash ^= 397 * Errors_elm.GetHashCode();
+                    }
                 }
 
                 return hash;
@@ -341,6 +352,67 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddStation_AddStation_Errors_StationExistsError : global::System.IEquatable<AddStation_AddStation_Errors_StationExistsError>, IAddStation_AddStation_Errors_StationExistsError
+    {
+        public AddStation_AddStation_Errors_StationExistsError(global::System.String message)
+        {
+            Message = message;
+        }
+
+        public global::System.String Message { get; }
+
+        public virtual global::System.Boolean Equals(AddStation_AddStation_Errors_StationExistsError? other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            if (other.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return (Message.Equals(other.Message));
+        }
+
+        public override global::System.Boolean Equals(global::System.Object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return Equals((AddStation_AddStation_Errors_StationExistsError)obj);
+        }
+
+        public override global::System.Int32 GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 5;
+                hash ^= 397 * Message.GetHashCode();
+                return hash;
+            }
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial interface IAddStationResult
     {
         public global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation AddStation { get; }
@@ -350,6 +422,8 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     public partial interface IAddStation_AddStation
     {
         public global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Station? Station { get; }
+
+        public global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Errors>? Errors { get; }
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
@@ -390,6 +464,17 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial interface IAddStation_AddStation_Station_Station : IAddStation_AddStation_Station
     {
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IAddStation_AddStation_Errors
+    {
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IAddStation_AddStation_Errors_StationExistsError : IAddStation_AddStation_Errors
+    {
+        public global::System.String Message { get; }
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
@@ -1596,6 +1681,12 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     ///         id
     ///       }
     ///     }
+    ///     errors {
+    ///       __typename
+    ///       ... on StationExistsError {
+    ///         message
+    ///       }
+    ///     }
     ///   }
     /// }
     /// </code>
@@ -1609,8 +1700,8 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
 
         public static AddStationMutationDocument Instance { get; } = new AddStationMutationDocument();
         public global::StrawberryShake.OperationKind Kind => global::StrawberryShake.OperationKind.Mutation;
-        public global::System.ReadOnlySpan<global::System.Byte> Body => new global::System.Byte[]{0x6d, 0x75, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x41, 0x64, 0x64, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x28, 0x24, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x3a, 0x20, 0x41, 0x64, 0x64, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x21, 0x29, 0x20, 0x7b, 0x20, 0x61, 0x64, 0x64, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x28, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x3a, 0x20, 0x24, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x29, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x69, 0x64, 0x20, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x20, 0x69, 0x70, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d};
-        public global::StrawberryShake.DocumentHash Hash { get; } = new global::StrawberryShake.DocumentHash("md5Hash", "de73397267487d4ca1252ea434936310");
+        public global::System.ReadOnlySpan<global::System.Byte> Body => new global::System.Byte[]{0x6d, 0x75, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x41, 0x64, 0x64, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x28, 0x24, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x3a, 0x20, 0x41, 0x64, 0x64, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x21, 0x29, 0x20, 0x7b, 0x20, 0x61, 0x64, 0x64, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x28, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x3a, 0x20, 0x24, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x29, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x69, 0x64, 0x20, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x20, 0x69, 0x70, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x73, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x20, 0x7b, 0x20, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d};
+        public global::StrawberryShake.DocumentHash Hash { get; } = new global::StrawberryShake.DocumentHash("md5Hash", "3717ba4b468860b54a2e29fb8402e9a3");
         public override global::System.String ToString()
         {
 #if NETSTANDARD2_0
@@ -1635,6 +1726,12 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     ///       ip
     ///       ... on Station {
     ///         id
+    ///       }
+    ///     }
+    ///     errors {
+    ///       __typename
+    ///       ... on StationExistsError {
+    ///         message
     ///       }
     ///     }
     ///   }
@@ -1707,6 +1804,12 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     ///       ip
     ///       ... on Station {
     ///         id
+    ///       }
+    ///     }
+    ///     errors {
+    ///       __typename
+    ///       ... on StationExistsError {
+    ///         message
     ///       }
     ///     }
     ///   }
@@ -2384,7 +2487,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             IAddStation_AddStation returnValue = default !;
             if (data.__typename.Equals("AddStationPayload", global::System.StringComparison.Ordinal))
             {
-                returnValue = new AddStation_AddStation_AddStationPayload(MapIAddStation_AddStation_Station(data.Station, snapshot));
+                returnValue = new AddStation_AddStation_AddStationPayload(MapIAddStation_AddStation_Station(data.Station, snapshot), MapIAddStation_AddStation_ErrorsNonNullableArray(data.Errors, snapshot));
             }
             else
             {
@@ -2407,6 +2510,37 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             }
 
             throw new global::System.NotSupportedException();
+        }
+
+        private global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Errors>? MapIAddStation_AddStation_ErrorsNonNullableArray(global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationErrorData>? list, global::StrawberryShake.IEntityStoreSnapshot snapshot)
+        {
+            if (list is null)
+            {
+                return null;
+            }
+
+            var addStationErrors = new global::System.Collections.Generic.List<global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Errors>();
+            foreach (global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationErrorData child in list)
+            {
+                addStationErrors.Add(MapNonNullableIAddStation_AddStation_Errors(child, snapshot));
+            }
+
+            return addStationErrors;
+        }
+
+        private global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStation_AddStation_Errors MapNonNullableIAddStation_AddStation_Errors(global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationErrorData data, global::StrawberryShake.IEntityStoreSnapshot snapshot)
+        {
+            IAddStation_AddStation_Errors? returnValue;
+            if (data is global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationExistsErrorData stationExistsError)
+            {
+                returnValue = new global::TSGSystemsToolkit.CmdLine.GraphQL.AddStation_AddStation_Errors_StationExistsError(stationExistsError.Message ?? throw new global::System.ArgumentNullException());
+            }
+            else
+            {
+                throw new global::System.NotSupportedException();
+            }
+
+            return returnValue;
         }
 
         global::System.Object global::StrawberryShake.IOperationResultDataFactory.Create(global::StrawberryShake.IOperationResultDataInfo dataInfo, global::StrawberryShake.IEntityStoreSnapshot? snapshot)
@@ -3050,7 +3184,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             var typename = obj.Value.GetProperty("__typename").GetString();
             if (typename?.Equals("AddStationPayload", global::System.StringComparison.Ordinal) ?? false)
             {
-                return new global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddStationPayloadData(typename, station: UpdateIAddStation_AddStation_StationEntity(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "station"), entityIds));
+                return new global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddStationPayloadData(typename, station: UpdateIAddStation_AddStation_StationEntity(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "station"), entityIds), errors: DeserializeIAddStation_AddStation_ErrorsNonNullableArray(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "errors")));
             }
 
             throw new global::System.NotSupportedException();
@@ -3100,6 +3234,38 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             }
 
             return _clusterParser.Parse(obj.Value.GetString()!);
+        }
+
+        private global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationErrorData>? DeserializeIAddStation_AddStation_ErrorsNonNullableArray(global::System.Text.Json.JsonElement? obj)
+        {
+            if (!obj.HasValue)
+            {
+                return null;
+            }
+
+            var addStationErrors = new global::System.Collections.Generic.List<global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationErrorData>();
+            foreach (global::System.Text.Json.JsonElement child in obj.Value.EnumerateArray())
+            {
+                addStationErrors.Add(DeserializeNonNullableIAddStation_AddStation_Errors(child));
+            }
+
+            return addStationErrors;
+        }
+
+        private global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationErrorData DeserializeNonNullableIAddStation_AddStation_Errors(global::System.Text.Json.JsonElement? obj)
+        {
+            if (!obj.HasValue)
+            {
+                throw new global::System.ArgumentNullException();
+            }
+
+            var typename = obj.Value.GetProperty("__typename").GetString();
+            if (typename?.Equals("StationExistsError", global::System.StringComparison.Ordinal) ?? false)
+            {
+                return new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationExistsErrorData(typename, message: DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "message")));
+            }
+
+            throw new global::System.NotSupportedException();
         }
     }
 
@@ -3672,15 +3838,44 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial class AddStationPayloadData
     {
-        public AddStationPayloadData(global::System.String __typename, global::StrawberryShake.EntityId? station = default !)
+        public AddStationPayloadData(global::System.String __typename, global::StrawberryShake.EntityId? station = default !, global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationErrorData>? errors = default !)
         {
             this.__typename = __typename ?? throw new global::System.ArgumentNullException(nameof(__typename));
             Station = station;
+            Errors = errors;
         }
 
         public global::System.String __typename { get; }
 
         public global::StrawberryShake.EntityId? Station { get; }
+
+        public global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddStationErrorData>? Errors { get; }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IAddStationErrorData
+    {
+        global::System.String __typename { get; }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IErrorData
+    {
+        global::System.String __typename { get; }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class StationExistsErrorData : IAddStationErrorData, IErrorData
+    {
+        public StationExistsErrorData(global::System.String __typename, global::System.String? message = default !)
+        {
+            this.__typename = __typename ?? throw new global::System.ArgumentNullException(nameof(__typename));
+            Message = message;
+        }
+
+        public global::System.String __typename { get; }
+
+        public global::System.String? Message { get; }
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]

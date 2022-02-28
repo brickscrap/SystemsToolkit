@@ -181,13 +181,9 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 {
                     var errorCode = await HandleGraphQLExceptions<IGetCredentialsByStationIdResult>(ex, result, context);
                     if (errorCode > 0)
-                    {
                         return (false, null, result);
-                    }
                     else
-                    {
                         continue;
-                    }
                 }
 
                 var station = result.Data.Station.FirstOrDefault();
@@ -279,7 +275,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                     new ProgressBarColumn(),
                     new PercentageColumn(),
                     new RemainingTimeColumn(),
-                    new SpinnerColumn()
+                    new SpinnerColumn(Spinner.Known.BetaWave)
                     })
                     .Start(ctx =>
                     {
@@ -350,13 +346,9 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
                 bool authSuccess = await _authService.Authenticate(func, context);
                 if (authSuccess)
-                {
                     return 0;
-                }
                 else
-                {
                     return 1;
-                }
             }
 
             return 1;

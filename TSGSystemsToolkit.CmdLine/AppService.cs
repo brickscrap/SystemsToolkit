@@ -1,13 +1,18 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Spectre.Console;
+using StrawberryShake;
 using System;
 using System.CommandLine;
+using System.CommandLine.Builder;
 using System.CommandLine.Help;
-using System.CommandLine.Rendering;
+using System.CommandLine.Parsing;
+using System.Linq;
 using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.Commands;
+using TSGSystemsToolkit.CmdLine.Constants;
 using TSGSystemsToolkit.CmdLine.GraphQL;
+using TSGSystemsToolkit.CmdLine.Services;
 
 namespace TSGSystemsToolkit.CmdLine
 {
@@ -16,14 +21,14 @@ namespace TSGSystemsToolkit.CmdLine
         private readonly ILogger<AppService> _logger;
         private readonly IRootCommands _rootCommands;
         private readonly IConfiguration _config;
-        private readonly SysTkApiClient _client;
+        private readonly IAuthService _authService;
 
-        public AppService(ILogger<AppService> logger, IRootCommands rootCommands, IConfiguration config, SysTkApiClient client)
+        public AppService(ILogger<AppService> logger, IRootCommands rootCommands, IConfiguration config, IAuthService authService)
         {
             _logger = logger;
             _rootCommands = rootCommands;
             _config = config;
-            _client = client;
+            _authService = authService;
         }
 
         public async Task<int> Run(string[] args)
@@ -52,18 +57,43 @@ namespace TSGSystemsToolkit.CmdLine
                 return 0;
             }
 
-            return await cmd.InvokeAsync(args);
+            var commandLineBuilder = new CommandLineBuilder(cmd);
+            commandLineBuilder.AddMiddleware(async (context, next) =>
+            {
+                try
+                {
+                    await next(context);
+                }
+                catch (GraphQLClientException ex)
+                {
+                    if(ex.Errors.Any(x => x.Code == ApiErrorCodes.NotAuthenticated))
+                    {
+                        var authResult = await _authService.AuthSimple();
+
+                        if (authResult)
+                            await next(context);
+                    }
+                }
+            });
+
+            commandLineBuilder.UseTypoCorrections();
+
+            //commandLineBuilder.UseExceptionHandler((x, y) =>
+            //{
+                
+            //}, 1);
+
+            var parser = commandLineBuilder.Build();
+
+            return await parser.InvokeAsync(args);
         }
 
         private void CheckForUpdates()
         {
             if (Extensions.IsUpdateAvailable(_config.GetValue<string>("MasterLocation")))
             {
-                Console.BackgroundColor = ConsoleColor.DarkGreen;
-                Console.WriteLine($"A new version of SystemsToolkit is available!");
-                Console.WriteLine($"Use command: {ForegroundColorSpan.Yellow()}systk --update{ForegroundColorSpan.Reset()} to update automatically.");
-
-                Console.BackgroundColor = ConsoleColor.Black;
+                AnsiConsole.MarkupLine($"A new version of SystemsToolkit is available!");
+                AnsiConsole.MarkupLine($"Use command: [yellow]systk --update[/] to update automatically.");
             }
         }
     }

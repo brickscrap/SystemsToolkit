@@ -8,12 +8,14 @@ namespace TSGSystemsToolkit.CmdLine.Binders
 {
     public class AddStationsBinder : BinderBase<AddStationsOptions>
     {
-        private readonly Option<string> _many;
+        private readonly Option<string> _file;
+        private readonly Option<string> _individual;
         private readonly IHost _host;
 
-        public AddStationsBinder(Option<string> many, IHost host)
+        public AddStationsBinder(Option<string> file, Option<string> individual, IHost host)
         {
-            _many = many;
+            _file = file;
+            _individual = individual;
             _host = host;
         }
         protected override AddStationsOptions GetBoundValue(BindingContext bindingContext)
@@ -22,7 +24,8 @@ namespace TSGSystemsToolkit.CmdLine.Binders
 
             return new()
             {
-                Many = bindingContext.ParseResult.GetValueForOption(_many)
+                File = bindingContext.ParseResult.GetValueForOption(_file),
+                Individual = bindingContext.ParseResult.GetValueForOption(_individual)
             };
         }
 

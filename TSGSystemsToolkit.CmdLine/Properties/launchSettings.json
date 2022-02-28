@@ -2,7 +2,7 @@
   "profiles": {
     "TSGSystemsToolkit.CmdLine": {
       "commandName": "Project",
-      "commandLineArgs": "fuelpos send-file \"C:\\Users\\GaryM\\Documents\\Work\\HTEC_GEMPAY_IPT.xml\" -t \"/\" -c \"ShellRBA\""
+      "commandLineArgs": "database add-stations -o \"R2798;Rontec;Billinghurst;FTP://SUPERVISOR:DF572BBC9@10.68.25.21\""
     }
   }
 }

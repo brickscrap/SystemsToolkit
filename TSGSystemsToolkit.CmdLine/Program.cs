@@ -6,6 +6,8 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Sinks.SystemConsole.Themes;
 using System;
+using System.CommandLine;
+using System.CommandLine.Builder;
 using System.IO;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;

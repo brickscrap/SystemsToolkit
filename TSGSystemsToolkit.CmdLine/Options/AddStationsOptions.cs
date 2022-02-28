@@ -2,6 +2,7 @@
 {
     public class AddStationsOptions : OptionsBase
     {
-        public string Many { get; set; }
+        public string File { get; set; }
+        public string Individual { get; set; }
     }
 }

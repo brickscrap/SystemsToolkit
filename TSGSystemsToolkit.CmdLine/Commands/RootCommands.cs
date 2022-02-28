@@ -37,7 +37,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
                 var handler = new UpdateHandler(options, ct);
                 return handler.InvokeAsync(ctx);
             }, binder);
-
+            
             return cmd;
         }
 
@@ -228,13 +228,15 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
         private Command CreateAddStationsCommand()
         {
-            var manyOption = new Option<string>(new[] { "--many", "-m" }, "Path to a CSV file in format \"Site ID;Cluster;Station Name;FTP://Username:Password@IPAddress\" with stations to be added.");
+            var fileOption = new Option<string?>(new[] { "--file", "-f" }, "Path to a CSV file in format \"Site ID;Cluster;Station Name;FTP://Username:Password@IPAddress\" with stations to be added.");
+            var individualOption = new Option<string?>(new[] { "--one", "-o" }, "Station details to add, must be in format \"Site ID;Cluster;Station Name;FTP://Username:Password@IPAddress\" (the FTP section is the link copied from Petrol Server)");
             Command cmd = new("add-stations", "Add one or more stations to the database")
             {
-                manyOption
+                fileOption,
+                individualOption
             };
 
-            var binder = new AddStationsBinder(manyOption, _host);
+            var binder = new AddStationsBinder(fileOption, individualOption, _host);
 
             cmd.SetHandler((AddStationsOptions options, InvocationContext ctx, CancellationToken ct) =>
             {

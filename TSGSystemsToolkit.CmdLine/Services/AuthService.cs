@@ -83,5 +83,59 @@ namespace TSGSystemsToolkit.CmdLine.Services
                 new TextPrompt<string>("Enter your API password:")
                 .PromptStyle("red")
                 .Secret());
+
+        public async Task<bool> AuthSimple() 
+        {
+            AnsiConsole.MarkupLine("[bold red]Not authenticated.[/] Current token invalid or expired. Proceed with login process.");
+
+            var authResult = await AuthSimple(0);
+
+            if (authResult)
+            {
+                AnsiConsole.MarkupLine("[bold green]Login success.[/]");
+                return true;
+            }
+            else
+            {
+                AnsiConsole.MarkupLine("[bold red]Authentication failed.[/]");
+                return false;
+            }
+        }
+
+        public async Task<bool> AuthSimple(int counter)
+        {
+            if (counter == 3)
+            {
+                return false;
+            }
+
+            Console.WriteLine("Please enter your API password:");
+            var result = await _apiClient.GetToken.ExecuteAsync(_config["EmailAddress"], GetHiddenConsoleInput());
+
+            if (result.Errors.Count > 0)
+            {
+                var loginFailure = result.Errors.Where(x => x.Code == "LOGIN_FAILURE");
+
+                if (loginFailure.Any())
+                {
+                    Console.WriteLine($"{loginFailure.FirstOrDefault().Message}");
+                    await AuthSimple(counter += 1);
+                    return false;
+                }
+            }
+
+            try
+            {
+                Extensions.UpdateAccessToken(result.Data.Login.AccessToken);
+                _config["AccessToken"] = result.Data.Login.AccessToken;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Unable to update Appsettings.json: {Message}", ex.Message);
+                return false;
+            }
+
+            return true;
+        }
     }
 }

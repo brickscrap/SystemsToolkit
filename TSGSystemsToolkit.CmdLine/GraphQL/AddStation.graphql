@@ -6,5 +6,10 @@ mutation AddStation($input: AddStationInput!) {
 			cluster
 			ip
 		}
+		errors {
+			... on StationExistsError {
+				message
+			}
+		}
 	}
 }
