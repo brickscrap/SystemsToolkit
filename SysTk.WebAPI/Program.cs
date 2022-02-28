@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting.WindowsServices;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using SysTk.WebApi.Data.DataAccess;
 using SysTk.WebApi.Data.Models;
@@ -31,6 +33,7 @@ if (builder.Environment.IsProduction())
 {
     builder.Host.UseSerilog((ctx, lc) =>
     lc.WriteTo.File("C:\\logs\\log.txt"));
+    
 }
 
 if (WindowsServiceHelpers.IsWindowsService())
@@ -47,14 +50,32 @@ if (WindowsServiceHelpers.IsWindowsService())
 
 // Add services to the container.
 
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 builder.Configuration.AddEnvironmentVariables();
+builder.Configuration.AddJsonFile(builder.Configuration["certPath"], optional: true, reloadOnChange: true);
 
-builder.WebHost.UseIISIntegration().UseKestrel();
+var certificateSettings = builder.Configuration.GetSection("certificateSettings");
+string certFileName = certificateSettings.GetValue<string>("filename");
+string certPassword = certificateSettings.GetValue<string>("password");
+
+var certificate = new X509Certificate2(certFileName, certPassword);
+
+builder.WebHost.UseKestrel(options =>
+{
+    options.AddServerHeader = false;
+    options.Listen(IPAddress.Loopback, 14592, listenOptions =>
+    {
+        listenOptions.UseHttps(certificate);
+    });
+});
+
+builder.Services.AddAntiforgery(options =>
+{
+    options.Cookie.Name = "_af";
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.HeaderName = "X-XSRF-TOKEN";
+});
+
 builder.Host.UseWindowsService();
 
 builder.Services.AddPooledDbContextFactory<AppDbContext>(options =>
