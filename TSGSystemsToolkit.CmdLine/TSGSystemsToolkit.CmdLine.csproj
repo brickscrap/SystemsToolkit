@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <GraphQL Remove="GraphQL\AddCredentials.graphql" />
     <GraphQL Remove="GraphQL\AddStation.graphql" />
     <GraphQL Remove="GraphQL\GetAllStations.graphql" />
     <GraphQL Remove="GraphQL\GetCredentialsByStationId.graphql" />
@@ -20,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="GraphQL\AddCredentials.graphql" />
     <None Remove="GraphQL\AddStation.graphql" />
     <None Remove="GraphQL\GetAllStations.graphql" />
     <None Remove="GraphQL\GetCredentialsByStationId.graphql" />
@@ -28,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <GraphQLConfig Include="GraphQL\AddCredentials.graphql" />
     <GraphQLConfig Include="GraphQL\AddStation.graphql" />
     <GraphQLConfig Include="GraphQL\GetAllStations.graphql" />
     <GraphQLConfig Include="GraphQL\GetCredentialsByStationId.graphql" />

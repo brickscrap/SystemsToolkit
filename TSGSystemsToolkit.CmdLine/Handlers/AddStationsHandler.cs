@@ -3,6 +3,7 @@ using StrawberryShake;
 using System;
 using System.Collections.Generic;
 using System.CommandLine.Invocation;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.GraphQL;
@@ -28,42 +29,88 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
             if (_options.Individual is not null)
             {
-                string[] stationDetails = _options.Individual.Split(';');
-                var ftpCreds = new Uri(stationDetails[3]);
-                var userInfo = ftpCreds.UserInfo.Split(':');
-                var cluster = (Cluster)Enum.Parse(typeof(Cluster), stationDetails[1]);
+                await HandleIndividualStation(_options.Individual);
+            }
 
-                AddStationInput input = new()
+            if (_options.File is not null)
+            {
+                // TODO: Validate file contents
+                var siteList = File.ReadAllLines(_options.File);
+
+                foreach (var site in siteList)
                 {
-                    Cluster = cluster,
-                    Id = stationDetails[0],
-                    Name = stationDetails[2],
-                    Ip = ftpCreds.Host
+                    await HandleIndividualStation(site);
+                }
+            }
+
+            return 0;
+        }
+
+        private async Task HandleIndividualStation(string stationLine)
+        {
+            string[] stationDetails = stationLine.Split(';');
+            var ftpCreds = new Uri(stationDetails[3]);
+            var userInfo = ftpCreds.UserInfo.Split(':');
+            var cluster = (Cluster)Enum.Parse(typeof(Cluster), stationDetails[1]);
+
+            AddStationInput input = new()
+            {
+                Cluster = cluster,
+                Id = stationDetails[0],
+                Name = stationDetails[2],
+                Ip = ftpCreds.Host
+            };
+
+            var stationResult = await _apiClient.AddStation.ExecuteAsync(input, _ct);
+            stationResult.EnsureNoErrors();
+
+            if (stationResult.IsSuccessResult() && stationResult.Data.AddStation.Station is not null)
+            {
+                AnsiConsole.MarkupLine($"Station {stationResult.Data.AddStation.Station.Id} - {stationResult.Data.AddStation.Station.Name} [green]added successfully[/].");
+
+                AddFtpCredentialsInput creds = new()
+                {
+                    Username = userInfo[0],
+                    Password = userInfo[1],
+                    StationId = stationDetails[0]
                 };
 
-                var result = await _apiClient.AddStation.ExecuteAsync(input);
-                result.EnsureNoErrors();
+                var credsResult = await _apiClient.AddCredentials.ExecuteAsync(creds, _ct);
+                credsResult.EnsureNoErrors();
 
-                if (result.IsSuccessResult() && result.Data.AddStation.Station is not null)
-                    AnsiConsole.MarkupLine($"Station {result.Data.AddStation.Station.Id} - {result.Data.AddStation.Station.Name} [green]added successfully[/].");
-                else if (result.Data.AddStation.Errors.Count > 0)
+                if (credsResult.IsSuccessResult() && credsResult.Data.AddFtpCredentials.FtpCredentials is not null)
                 {
-                    foreach (var error in result.Data.AddStation.Errors)
+                    AnsiConsole.MarkupLine($"FTP credentials for station {creds.StationId} [green]added successfully[/].");
+                }
+                else if (credsResult.Data.AddFtpCredentials.Errors.Count > 0)
+                {
+                    foreach (var error in credsResult.Data.AddFtpCredentials.Errors)
                     {
                         switch (error)
                         {
-                            case AddStation_AddStation_Errors_StationExistsError stationExists:
-                                AnsiConsole.MarkupLine($"[red]Error:[/] {stationExists.Message}");
+                            case AddCredentials_AddFtpCredentials_Errors_StationNotExistsError stationNotExists:
+                                AnsiConsole.MarkupLine($"[red]Error:[/] {stationNotExists.Message}");
                                 break;
                             default:
                                 break;
                         }
                     }
                 }
-
             }
-
-            return 0;
+            else if (stationResult.Data.AddStation.Errors.Count > 0)
+            {
+                foreach (var error in stationResult.Data.AddStation.Errors)
+                {
+                    switch (error)
+                    {
+                        case AddStation_AddStation_Errors_StationExistsError stationExists:
+                            AnsiConsole.MarkupLine($"[red]Error:[/] {stationExists.Message}");
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
         }
 
         private void GetDependencies(InvocationContext context)
