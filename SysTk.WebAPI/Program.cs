@@ -51,30 +51,34 @@ if (WindowsServiceHelpers.IsWindowsService())
 // Add services to the container.
 
 builder.Configuration.AddEnvironmentVariables();
-builder.Configuration.AddJsonFile(builder.Configuration["certPath"], optional: true, reloadOnChange: true);
 
-var certificateSettings = builder.Configuration.GetSection("certificateSettings");
-string certFileName = certificateSettings.GetValue<string>("filename");
-string certPassword = certificateSettings.GetValue<string>("password");
-
-var certificate = new X509Certificate2(certFileName, certPassword);
-
-builder.WebHost.UseKestrel(options =>
+if (builder.Environment.IsProduction())
 {
-    options.AddServerHeader = false;
-    options.Listen(IPAddress.Loopback, 14592, listenOptions =>
+    builder.Configuration.AddJsonFile(builder.Configuration["certPath"], optional: true, reloadOnChange: true);
+
+    var certificateSettings = builder.Configuration.GetSection("certificateSettings");
+    string certFileName = certificateSettings.GetValue<string>("filename");
+    string certPassword = certificateSettings.GetValue<string>("password");
+
+    var certificate = new X509Certificate2(certFileName, certPassword);
+
+    builder.WebHost.UseKestrel(options =>
     {
-        listenOptions.UseHttps(certificate);
+        options.AddServerHeader = false;
+        options.Listen(IPAddress.Loopback, 14592, listenOptions =>
+        {
+            listenOptions.UseHttps(certificate);
+        });
     });
-});
 
-builder.Services.AddAntiforgery(options =>
-{
-    options.Cookie.Name = "_af";
-    options.Cookie.HttpOnly = true;
-    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-    options.HeaderName = "X-XSRF-TOKEN";
-});
+    builder.Services.AddAntiforgery(options =>
+    {
+        options.Cookie.Name = "_af";
+        options.Cookie.HttpOnly = true;
+        options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+        options.HeaderName = "X-XSRF-TOKEN";
+    });
+}
 
 builder.Host.UseWindowsService();
 
@@ -177,9 +181,6 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-
     await SeedTestData(app.Services);
 }
 
