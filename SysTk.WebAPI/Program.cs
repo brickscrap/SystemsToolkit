@@ -49,7 +49,6 @@ if (WindowsServiceHelpers.IsWindowsService())
 }
 
 // Add services to the container.
-
 builder.Configuration.AddEnvironmentVariables();
 
 if (builder.Environment.IsProduction())

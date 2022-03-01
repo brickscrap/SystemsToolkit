@@ -98,11 +98,15 @@ namespace SysTk.WebAPI.GraphQL
         [Authorize(Policy = Policies.CanAdd)]
         [UseMutationConvention]
         [Error(typeof(StationNotExistsError))]
+        [Error(typeof(FtpCredentialsExistsError))]
         public async Task<FtpCredentials> AddFtpCredentialsAsync(AddFtpCredentialsInput input,
             [ScopedService] AppDbContext context)
         {
             if (!context.Stations.Exists(id: input.StationId))
                 throw new StationNotExistsError(input.StationId);
+
+            if(context.FtpCredentials.Exists(input.Username, input.StationId))
+                throw new FtpCredentialsExistsError(input.Username, input.StationId);
 
             var creds = new FtpCredentials
             {
@@ -358,6 +362,7 @@ namespace SysTk.WebAPI.GraphQL
 
         [UseDbContext(typeof(AppDbContext))]
         [Authorize(Policy = Policies.CanModifyUsers)]
+        [UseMutationConvention]
         public async Task<AddUserToRolePayload> AddUserToRole(AddUserToRoleInput input,
             [Service] UserManager<AppUser> userManager,
             [ScopedService] AppDbContext context)
@@ -370,9 +375,7 @@ namespace SysTk.WebAPI.GraphQL
                 var result = await userManager.AddToRoleAsync(user, input.Role.ToString());
 
                 if (result.Succeeded)
-                {
                     return new AddUserToRolePayload(input.Email, input.Role.ToString());
-                }
                 else
                 {
                     throw new QueryException($"The user {input.Email} could not be added to role: {input.Role}. Reason: {result.Errors}");
@@ -390,16 +393,23 @@ namespace SysTk.WebAPI.GraphQL
             // TODO: Handle this better
             throw new QueryException("Unknown error.");
         }
-
-        [Error(typeof(LoginFailedError))]
+        
         public async Task<LoginPayload> Login(LoginInput input,
             [Service] ITokenService tokenService)
         {
             if (!await tokenService.IsValidUsernameAndPassword(input.Username, input.Password))
-                throw new LoginFailedError();
+            {
+                var error = ErrorBuilder.New()
+                    .SetMessage("Login failed. The username or password provided is invalid.")
+                    .SetCode("LOGIN_FAILURE")
+                    .ClearExtensions()
+                    .Build();
+
+                throw new QueryException(error);
+            }
 
             var output = await tokenService.GenerateToken(input.Username);
-            return new LoginPayload(output.AccessToken, output.Username);  
+            return new LoginPayload(output.AccessToken, output.Username);
         }
     }
 }
