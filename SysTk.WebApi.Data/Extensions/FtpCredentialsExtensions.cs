@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,9 @@ namespace SysTk.WebApi.Data.Extensions
             context.Entry(credentials)
                 .Reference(x => x.Station)
                 .Query().First();
+
+        public static bool Exists(this DbSet<FtpCredentials> credentials, string username, string stationId) =>
+            credentials.Where(x => x.StationId == stationId && x.Username == username)
+            .Any();
     }
 }
