@@ -221,8 +221,10 @@ async Task CreateRoles(IServiceProvider services)
     var powerUser = new AppUser
     {
         UserName = app.Configuration["PowerUser:Username"],
-        Email = app.Configuration["PowerUser:Email"]
+        Email = app.Configuration["PowerUser:Username"]
     };
+
+    powerUser.Email = app.Configuration["PowerUser:Username"];
 
     string userPassword = app.Configuration["PowerUser:Password"];
 
