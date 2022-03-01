@@ -68,34 +68,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             {
                 AnsiConsole.MarkupLine($"Station {stationResult.Data.AddStation.Station.Id} - {stationResult.Data.AddStation.Station.Name} [green]added successfully[/].");
 
-                AddFtpCredentialsInput creds = new()
-                {
-                    Username = userInfo[0],
-                    Password = userInfo[1],
-                    StationId = stationDetails[0]
-                };
-
-                var credsResult = await _apiClient.AddCredentials.ExecuteAsync(creds, _ct);
-                credsResult.EnsureNoErrors();
-
-                if (credsResult.IsSuccessResult() && credsResult.Data.AddFtpCredentials.FtpCredentials is not null)
-                {
-                    AnsiConsole.MarkupLine($"FTP credentials for station {creds.StationId} [green]added successfully[/].");
-                }
-                else if (credsResult.Data.AddFtpCredentials.Errors.Count > 0)
-                {
-                    foreach (var error in credsResult.Data.AddFtpCredentials.Errors)
-                    {
-                        switch (error)
-                        {
-                            case AddCredentials_AddFtpCredentials_Errors_StationNotExistsError stationNotExists:
-                                AnsiConsole.MarkupLine($"[red]Error:[/] {stationNotExists.Message}");
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
+                await AddFtpCredentials(userInfo[0], userInfo[1], input.Id);
             }
             else if (stationResult.Data.AddStation.Errors.Count > 0)
             {
@@ -105,6 +78,39 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                     {
                         case AddStation_AddStation_Errors_StationExistsError stationExists:
                             AnsiConsole.MarkupLine($"[red]Error:[/] {stationExists.Message}");
+                            await AddFtpCredentials(userInfo[0], userInfo[1], input.Id);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        private async Task AddFtpCredentials(string username, string password, string stationId)
+        {
+            AddFtpCredentialsInput creds = new()
+            {
+                Username = username,
+                Password = password,
+                StationId = stationId
+            };
+
+            var credsResult = await _apiClient.AddCredentials.ExecuteAsync(creds, _ct);
+            credsResult.EnsureNoErrors();
+
+            if (credsResult.IsSuccessResult() && credsResult.Data.AddFtpCredentials.FtpCredentials is not null)
+            {
+                AnsiConsole.MarkupLine($"FTP credentials for station {creds.StationId} [green]added successfully[/].");
+            }
+            else if (credsResult.Data.AddFtpCredentials.Errors.Count > 0)
+            {
+                foreach (var error in credsResult.Data.AddFtpCredentials.Errors)
+                {
+                    switch (error)
+                    {
+                        case AddCredentials_AddFtpCredentials_Errors_StationNotExistsError stationNotExists:
+                            AnsiConsole.MarkupLine($"[red]Error:[/] {stationNotExists.Message}");
                             break;
                         default:
                             break;
