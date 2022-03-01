@@ -172,6 +172,10 @@ type StationNotExistsError implements Error {
   message: String!
 }
 
+type FtpCredentialsExistsError implements Error {
+  message: String!
+}
+
 type FtpCredentialsNotExistError implements Error {
   message: String!
 }
@@ -469,7 +473,7 @@ type DeleteStationPayload {
   errors: [DeleteStationError!]
 }
 
-union AddFtpCredentialsError = StationNotExistsError
+union AddFtpCredentialsError = StationNotExistsError | FtpCredentialsExistsError
 
 type AddFtpCredentialsPayload {
   ftpCredentials: FtpCredentials

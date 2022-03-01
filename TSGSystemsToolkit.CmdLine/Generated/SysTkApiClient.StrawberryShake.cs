@@ -407,6 +407,67 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class AddCredentials_AddFtpCredentials_Errors_FtpCredentialsExistsError : global::System.IEquatable<AddCredentials_AddFtpCredentials_Errors_FtpCredentialsExistsError>, IAddCredentials_AddFtpCredentials_Errors_FtpCredentialsExistsError
+    {
+        public AddCredentials_AddFtpCredentials_Errors_FtpCredentialsExistsError(global::System.String message)
+        {
+            Message = message;
+        }
+
+        public global::System.String Message { get; }
+
+        public virtual global::System.Boolean Equals(AddCredentials_AddFtpCredentials_Errors_FtpCredentialsExistsError? other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            if (other.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return (Message.Equals(other.Message));
+        }
+
+        public override global::System.Boolean Equals(global::System.Object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return Equals((AddCredentials_AddFtpCredentials_Errors_FtpCredentialsExistsError)obj);
+        }
+
+        public override global::System.Int32 GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 5;
+                hash ^= 397 * Message.GetHashCode();
+                return hash;
+            }
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial interface IAddCredentialsResult
     {
         public global::TSGSystemsToolkit.CmdLine.GraphQL.IAddCredentials_AddFtpCredentials AddFtpCredentials { get; }
@@ -453,6 +514,12 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
 
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial interface IAddCredentials_AddFtpCredentials_Errors_StationNotExistsError : IAddCredentials_AddFtpCredentials_Errors
+    {
+        public global::System.String Message { get; }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IAddCredentials_AddFtpCredentials_Errors_FtpCredentialsExistsError : IAddCredentials_AddFtpCredentials_Errors
     {
         public global::System.String Message { get; }
     }
@@ -2188,6 +2255,9 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     ///       ... on StationNotExistsError {
     ///         message
     ///       }
+    ///       ... on FtpCredentialsExistsError {
+    ///         message
+    ///       }
     ///     }
     ///   }
     /// }
@@ -2202,8 +2272,8 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
 
         public static AddCredentialsMutationDocument Instance { get; } = new AddCredentialsMutationDocument();
         public global::StrawberryShake.OperationKind Kind => global::StrawberryShake.OperationKind.Mutation;
-        public global::System.ReadOnlySpan<global::System.Byte> Body => new global::System.Byte[]{0x6d, 0x75, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x41, 0x64, 0x64, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x28, 0x24, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x3a, 0x20, 0x41, 0x64, 0x64, 0x46, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x21, 0x29, 0x20, 0x7b, 0x20, 0x61, 0x64, 0x64, 0x46, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x28, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x3a, 0x20, 0x24, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x29, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x66, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x20, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x46, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x73, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4e, 0x6f, 0x74, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x20, 0x7b, 0x20, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d};
-        public global::StrawberryShake.DocumentHash Hash { get; } = new global::StrawberryShake.DocumentHash("md5Hash", "eb088fc5b34f11efd2b58c37cef5acb5");
+        public global::System.ReadOnlySpan<global::System.Byte> Body => new global::System.Byte[]{0x6d, 0x75, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x41, 0x64, 0x64, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x28, 0x24, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x3a, 0x20, 0x41, 0x64, 0x64, 0x46, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x49, 0x6e, 0x70, 0x75, 0x74, 0x21, 0x29, 0x20, 0x7b, 0x20, 0x61, 0x64, 0x64, 0x46, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x28, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x3a, 0x20, 0x24, 0x69, 0x6e, 0x70, 0x75, 0x74, 0x29, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x66, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x20, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x46, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x65, 0x72, 0x72, 0x6f, 0x72, 0x73, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4e, 0x6f, 0x74, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x20, 0x7b, 0x20, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x20, 0x7d, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x46, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x45, 0x78, 0x69, 0x73, 0x74, 0x73, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x20, 0x7b, 0x20, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d};
+        public global::StrawberryShake.DocumentHash Hash { get; } = new global::StrawberryShake.DocumentHash("md5Hash", "b47d0b464e13ef37c0258fa55064aea5");
         public override global::System.String ToString()
         {
 #if NETSTANDARD2_0
@@ -2232,6 +2302,9 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     ///     errors {
     ///       __typename
     ///       ... on StationNotExistsError {
+    ///         message
+    ///       }
+    ///       ... on FtpCredentialsExistsError {
     ///         message
     ///       }
     ///     }
@@ -2309,6 +2382,9 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     ///     errors {
     ///       __typename
     ///       ... on StationNotExistsError {
+    ///         message
+    ///       }
+    ///       ... on FtpCredentialsExistsError {
     ///         message
     ///       }
     ///     }
@@ -3201,6 +3277,10 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             {
                 returnValue = new global::TSGSystemsToolkit.CmdLine.GraphQL.AddCredentials_AddFtpCredentials_Errors_StationNotExistsError(stationNotExistsError.Message ?? throw new global::System.ArgumentNullException());
             }
+            else if (data is global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsExistsErrorData ftpCredentialsExistsError)
+            {
+                returnValue = new global::TSGSystemsToolkit.CmdLine.GraphQL.AddCredentials_AddFtpCredentials_Errors_FtpCredentialsExistsError(ftpCredentialsExistsError.Message ?? throw new global::System.ArgumentNullException());
+            }
             else
             {
                 throw new global::System.NotSupportedException();
@@ -3994,7 +4074,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             var typename = obj.Value.GetProperty("__typename").GetString();
             if (typename?.Equals("AddFtpCredentialsPayload", global::System.StringComparison.Ordinal) ?? false)
             {
-                return new global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddFtpCredentialsPayloadData(typename, ftpCredentials: UpdateIAddCredentials_AddFtpCredentials_FtpCredentialsEntity(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ftpCredentials"), entityIds), errors: DeserializeIAddCredentials_AddFtpCredentials_ErrorsNonNullableArray(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "errors")));
+                return new global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddFtpCredentialsPayloadData(typename, ftpCredentials: UpdateIAddCredentials_AddFtpCredentials_FtpCredentialsEntity(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ftpCredentials"), entityIds), errors: DeserializeIAddFtpCredentialsErrorDataNonNullableArray(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "errors")));
             }
 
             throw new global::System.NotSupportedException();
@@ -4036,7 +4116,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             return _iDParser.Parse(obj.Value.GetString()!);
         }
 
-        private global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddFtpCredentialsErrorData>? DeserializeIAddCredentials_AddFtpCredentials_ErrorsNonNullableArray(global::System.Text.Json.JsonElement? obj)
+        private global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddFtpCredentialsErrorData>? DeserializeIAddFtpCredentialsErrorDataNonNullableArray(global::System.Text.Json.JsonElement? obj)
         {
             if (!obj.HasValue)
             {
@@ -4046,13 +4126,13 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             var addFtpCredentialsErrors = new global::System.Collections.Generic.List<global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddFtpCredentialsErrorData>();
             foreach (global::System.Text.Json.JsonElement child in obj.Value.EnumerateArray())
             {
-                addFtpCredentialsErrors.Add(DeserializeNonNullableIAddCredentials_AddFtpCredentials_Errors(child));
+                addFtpCredentialsErrors.Add(DeserializeNonNullableIAddFtpCredentialsErrorData(child));
             }
 
             return addFtpCredentialsErrors;
         }
 
-        private global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddFtpCredentialsErrorData DeserializeNonNullableIAddCredentials_AddFtpCredentials_Errors(global::System.Text.Json.JsonElement? obj)
+        private global::TSGSystemsToolkit.CmdLine.GraphQL.State.IAddFtpCredentialsErrorData DeserializeNonNullableIAddFtpCredentialsErrorData(global::System.Text.Json.JsonElement? obj)
         {
             if (!obj.HasValue)
             {
@@ -4063,6 +4143,11 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             if (typename?.Equals("StationNotExistsError", global::System.StringComparison.Ordinal) ?? false)
             {
                 return new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationNotExistsErrorData(typename, message: DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "message")));
+            }
+
+            if (typename?.Equals("FtpCredentialsExistsError", global::System.StringComparison.Ordinal) ?? false)
+            {
+                return new global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsExistsErrorData(typename, message: DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "message")));
             }
 
             throw new global::System.NotSupportedException();
@@ -4861,6 +4946,20 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
     public partial class StationNotExistsErrorData : IUpdateStationErrorData, IDeleteStationErrorData, IAddFtpCredentialsErrorData, IUpdateFtpCredentialsErrorData, IDeleteFtpCredentialsErrorData, IErrorData
     {
         public StationNotExistsErrorData(global::System.String __typename, global::System.String? message = default !)
+        {
+            this.__typename = __typename ?? throw new global::System.ArgumentNullException(nameof(__typename));
+            Message = message;
+        }
+
+        public global::System.String __typename { get; }
+
+        public global::System.String? Message { get; }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class FtpCredentialsExistsErrorData : IAddFtpCredentialsErrorData, IErrorData
+    {
+        public FtpCredentialsExistsErrorData(global::System.String __typename, global::System.String? message = default !)
         {
             this.__typename = __typename ?? throw new global::System.ArgumentNullException(nameof(__typename));
             Message = message;

@@ -110,7 +110,12 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                     switch (error)
                     {
                         case AddCredentials_AddFtpCredentials_Errors_StationNotExistsError stationNotExists:
+                            Console.WriteLine();
                             AnsiConsole.MarkupLine($"[red]Error:[/] {stationNotExists.Message}");
+                            break;
+                        case AddCredentials_AddFtpCredentials_Errors_FtpCredentialsExistsError credentialsExists:
+                            Console.WriteLine();
+                            AnsiConsole.MarkupLine($"[red]Error:[/] {credentialsExists.Message}");
                             break;
                         default:
                             break;
