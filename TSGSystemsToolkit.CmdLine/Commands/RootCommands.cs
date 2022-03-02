@@ -218,9 +218,10 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
         private Command CreateDatabaseCommand()
         {
-            Command cmd = new("database", "Commands to add/modify data stored in the database")
+            Command cmd = new("db", "Commands to add/modify data stored in the database")
             {
-                CreateAddStationsCommand()
+                CreateAddStationsCommand(),
+                CreateFileZillaCommand()
             };
 
             return cmd;
@@ -241,6 +242,26 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             cmd.SetHandler((AddStationsOptions options, InvocationContext ctx, CancellationToken ct) =>
             {
                 var handler = new AddStationsHandler(options, ct);
+                return handler.InvokeAsync(ctx);
+            }, binder);
+
+            return cmd;
+        }
+
+        private Command CreateFileZillaCommand()
+        {
+            var siteManagerOption = new Option<string?>(new[] { "--filePath", "-f" }, "Path to your sitemanager.xml. Do not include this option, and SysTk will find it automatically.");
+
+            Command cmd = new("update-filezilla", "Update your FileZilla site manager list with all FuelPOS stations from the API.")
+            {
+                siteManagerOption
+            };
+
+            var binder = new FileZillaOptionsBinder(siteManagerOption, _host);
+
+            cmd.SetHandler((FileZillaOptions options, InvocationContext ctx, CancellationToken ct) =>
+            {
+                var handler = new FileZillaHandler(options, ct);
                 return handler.InvokeAsync(ctx);
             }, binder);
 
