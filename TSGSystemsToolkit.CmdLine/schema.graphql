@@ -162,6 +162,7 @@ enum Cluster {
   BP
   CERTAS
   TEXACO
+  MORGAN
 }
 
 type StationExistsError implements Error {
@@ -193,10 +194,6 @@ type DebugParamExistsError implements Error {
 }
 
 type DebugParameterNotExistsError implements Error {
-  message: String!
-}
-
-type LoginFailedError implements Error {
   message: String!
 }
 
