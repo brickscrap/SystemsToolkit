@@ -49,14 +49,24 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
         private async Task HandleIndividualStation(string stationLine)
         {
+            var stationInput = CreateStationInput(stationLine);
+
+            if (stationInput is null)
+                return;
+
             var stationResult = await _apiClient.AddStation.ExecuteAsync(CreateStationInput(stationLine), _ct);
             stationResult.EnsureNoErrors();
 
-                if (stationResult.IsSuccessResult() && stationResult.Data.AddStation.Station is not null)
-                {
-                    AnsiConsole.MarkupLine($"Station {stationResult.Data.AddStation.Station.Id} - {stationResult.Data.AddStation.Station.Name} [green]added successfully[/].");
+            if (stationResult.IsSuccessResult() && stationResult.Data.AddStation.Station is not null)
+            {
+                AnsiConsole.MarkupLine($"Station {stationResult.Data.AddStation.Station.Id} - {stationResult.Data.AddStation.Station.Name} [green]added successfully[/].");
 
-                await AddFtpCredentials(CreateFtpCredentialsInput(stationLine));
+                var ftpInput = CreateFtpCredentialsInput(stationLine);
+
+                if (ftpInput is null)
+                    return;
+
+                await AddFtpCredentials(ftpInput);
             }
             else if (stationResult.Data.AddStation.Errors.Count > 0)
             {
@@ -66,7 +76,12 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                     {
                         case AddStation_AddStation_Errors_StationExistsError stationExists:
                             AnsiConsole.MarkupLine($"[red]Error:[/] {stationExists.Message}");
-                            await AddFtpCredentials(CreateFtpCredentialsInput(stationLine));
+                            var ftpInput = CreateFtpCredentialsInput(stationLine);
+
+                            if (ftpInput is null)
+                                return;
+
+                            await AddFtpCredentials(ftpInput);
                             break;
                         default:
                             break;
@@ -75,33 +90,51 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             }
         }
 
-        private static AddStationInput CreateStationInput(string stationLine) 
+        private static AddStationInput CreateStationInput(string stationLine)
         {
-            string[] stationDetails = stationLine.Split(';');
-            var ftpCreds = new Uri(stationDetails[3]);
-            var cluster = (Cluster)Enum.Parse(typeof(Cluster), stationDetails[1]);
-
-            return new AddStationInput
+            try
             {
-                Cluster = cluster,
-                Id = stationDetails[0],
-                Name = stationDetails[2],
-                Ip = ftpCreds.Host
-            };
+                string[] stationDetails = stationLine.Split(';');
+                var ftpCreds = new Uri(stationDetails[3]);
+                var cluster = (Cluster)Enum.Parse(typeof(Cluster), stationDetails[1]);
+
+                return new AddStationInput
+                {
+                    Cluster = cluster,
+                    Id = stationDetails[0],
+                    Name = stationDetails[2],
+                    Ip = ftpCreds.Host
+                };
+            }
+            catch (UriFormatException)
+            {
+                AnsiConsole.MarkupLine($"[Yellow]Warning:[/] Could not parse URI for {stationLine}");
+            }
+
+            return null;
         }
 
         private static AddFtpCredentialsInput CreateFtpCredentialsInput(string stationLine)
         {
-            string[] stationDetails = stationLine.Split(';');
-            var ftpCreds = new Uri(stationDetails[3]);
-            var userInfo = ftpCreds.UserInfo.Split(':');
-
-            return new AddFtpCredentialsInput
+            try
             {
-                StationId = stationDetails[0],
-                Username = userInfo[0],
-                Password = userInfo[1]
-            };
+                string[] stationDetails = stationLine.Split(';');
+                var ftpCreds = new Uri(stationDetails[3]);
+                var userInfo = ftpCreds.UserInfo.Split(':');
+
+                return new AddFtpCredentialsInput
+                {
+                    StationId = stationDetails[0],
+                    Username = userInfo[0],
+                    Password = userInfo[1]
+                };
+            }
+            catch (UriFormatException)
+            {
+                AnsiConsole.MarkupLine($"[Yellow]Warning:[/] Could not parse URI for {stationLine}");
+            }
+
+            return null;
         }
 
         private async Task AddFtpCredentials(AddFtpCredentialsInput input)
