@@ -62,6 +62,7 @@ namespace TSGSystemsToolkit.CmdLine
                 var email = AnsiConsole.Prompt(new TextPrompt<string>("Enter the email addess associated with your API account:")
                     .PromptStyle("green"));
 
+                _config["EmailAddress"] = email;
                 Extensions.UpdateEmailAddress(email);
             }
 
