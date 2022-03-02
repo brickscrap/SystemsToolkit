@@ -2514,7 +2514,8 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
         Rontec,
         Bp,
         Certas,
-        Texaco
+        Texaco,
+        Morgan
     }
 
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
@@ -2534,6 +2535,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
                 "BP" => Cluster.Bp,
                 "CERTAS" => Cluster.Certas,
                 "TEXACO" => Cluster.Texaco,
+                "MORGAN" => Cluster.Morgan,
                 _ => throw new global::StrawberryShake.GraphQLClientException()};
         }
 
@@ -2550,6 +2552,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
                 Cluster.Bp => "BP",
                 Cluster.Certas => "CERTAS",
                 Cluster.Texaco => "TEXACO",
+                Cluster.Morgan => "MORGAN",
                 _ => throw new global::StrawberryShake.GraphQLClientException()};
         }
     }

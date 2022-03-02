@@ -14,7 +14,6 @@ namespace SysTk.WebAPI.Validators
     {
         public AddStationInputValidator()
         {
-            RuleFor(x => x.Cluster).NotEmpty();
             RuleFor(x => x.Name).NotEmpty();
             RuleFor(x => x.Id).Length(5).WithMessage("Site ID must be exactly 5 characters.").WithErrorCode("InvalidId");
             RuleFor(x => x.Ip).Must(BeIPAddress).WithMessage("Invalid IP address provided.");

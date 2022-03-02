@@ -37,6 +37,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 // TODO: Validate file contents
                 var siteList = File.ReadAllLines(_options.File);
 
+                // TODO: Build a list of errors to report at the end
                 foreach (var site in siteList)
                 {
                     await HandleIndividualStation(site);
@@ -51,9 +52,9 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             var stationResult = await _apiClient.AddStation.ExecuteAsync(CreateStationInput(stationLine), _ct);
             stationResult.EnsureNoErrors();
 
-            if (stationResult.IsSuccessResult() && stationResult.Data.AddStation.Station is not null)
-            {
-                AnsiConsole.MarkupLine($"Station {stationResult.Data.AddStation.Station.Id} - {stationResult.Data.AddStation.Station.Name} [green]added successfully[/].");
+                if (stationResult.IsSuccessResult() && stationResult.Data.AddStation.Station is not null)
+                {
+                    AnsiConsole.MarkupLine($"Station {stationResult.Data.AddStation.Station.Id} - {stationResult.Data.AddStation.Station.Name} [green]added successfully[/].");
 
                 await AddFtpCredentials(CreateFtpCredentialsInput(stationLine));
             }
