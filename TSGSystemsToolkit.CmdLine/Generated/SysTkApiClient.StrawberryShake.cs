@@ -18,6 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.AddCredentialsMutation>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)));
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.AddStationMutation>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)));
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.GetAllStationsQuery>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)));
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.GetAllStationsAndCredentialsQuery>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)));
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.GetCredentialsByStationIdQuery>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)));
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.GetStationsByClusterQuery>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)));
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.GetTokenMutation>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<ClientServiceProvider>(sp)));
@@ -38,6 +39,8 @@ namespace Microsoft.Extensions.DependencyInjection
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.AddCredentials_AddFtpCredentials_FtpCredentials_FtpCredentials>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddCredentials_AddFtpCredentials_FtpCredentials_FtpCredentialsFromFtpCredentialsEntityMapper>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.AddStation_AddStation_Station_Station>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.AddStation_AddStation_Station_StationFromStationEntityMapper>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.GetAllStations_Station_Station>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetAllStations_Station_StationFromStationEntityMapper>(services);
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.GetAllStationsAndCredentials_Station_Station>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetAllStationsAndCredentials_Station_StationFromStationEntityMapper>(services);
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentials>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentialsFromFtpCredentialsEntityMapper>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.GetCredentialsByStationId_Station_Station>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetCredentialsByStationId_Station_StationFromStationEntityMapper>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.GetCredentialsByStationId_Station_FtpCredentials_FtpCredentials>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetCredentialsByStationId_Station_FtpCredentials_FtpCredentialsFromFtpCredentialsEntityMapper>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, global::TSGSystemsToolkit.CmdLine.GraphQL.GetStationsByCluster_Station_Station>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetStationsByCluster_Station_StationFromStationEntityMapper>(services);
@@ -83,6 +86,13 @@ namespace Microsoft.Extensions.DependencyInjection
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationExecutor<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsResult>>(services, sp => new global::StrawberryShake.OperationExecutor<global::System.Text.Json.JsonDocument, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsResult>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.Transport.Http.IHttpConnection>(sp), () => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.IOperationResultBuilder<global::System.Text.Json.JsonDocument, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsResult>>(sp), global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.IOperationStore>(sp), strategy));
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::TSGSystemsToolkit.CmdLine.GraphQL.GetAllStationsQuery>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsQuery>(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.GetAllStationsQuery>(sp));
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsResult>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetAllStationsAndCredentialsResultFactory>(services);
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationResultDataFactory>(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsResult>>(sp));
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationRequestFactory>(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsQuery>(sp));
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationResultBuilder<global::System.Text.Json.JsonDocument, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsResult>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetAllStationsAndCredentialsBuilder>(services);
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationExecutor<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsResult>>(services, sp => new global::StrawberryShake.OperationExecutor<global::System.Text.Json.JsonDocument, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsResult>(global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.Transport.Http.IHttpConnection>(sp), () => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.IOperationResultBuilder<global::System.Text.Json.JsonDocument, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsResult>>(sp), global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.IOperationStore>(sp), strategy));
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::TSGSystemsToolkit.CmdLine.GraphQL.GetAllStationsAndCredentialsQuery>(services);
+            global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsQuery>(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.GetAllStationsAndCredentialsQuery>(sp));
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationIdResult>, global::TSGSystemsToolkit.CmdLine.GraphQL.State.GetCredentialsByStationIdResultFactory>(services);
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationResultDataFactory>(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationIdResult>>(sp));
             global::Microsoft.Extensions.DependencyInjection.ServiceCollectionServiceExtensions.AddSingleton<global::StrawberryShake.IOperationRequestFactory>(services, sp => global::Microsoft.Extensions.DependencyInjection.ServiceProviderServiceExtensions.GetRequiredService<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationIdQuery>(sp));
@@ -1072,6 +1082,315 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     /// </summary>
     [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
     public partial interface IGetAllStations_Station_Station : IGetAllStations_Station
+    {
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class GetAllStationsAndCredentialsResult : global::System.IEquatable<GetAllStationsAndCredentialsResult>, IGetAllStationsAndCredentialsResult
+    {
+        public GetAllStationsAndCredentialsResult(global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentials_Station?>? station)
+        {
+            Station = station;
+        }
+
+        public global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentials_Station?>? Station { get; }
+
+        public virtual global::System.Boolean Equals(GetAllStationsAndCredentialsResult? other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            if (other.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return (global::StrawberryShake.Helper.ComparisonHelper.SequenceEqual(Station, other.Station));
+        }
+
+        public override global::System.Boolean Equals(global::System.Object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return Equals((GetAllStationsAndCredentialsResult)obj);
+        }
+
+        public override global::System.Int32 GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 5;
+                if (Station != null)
+                {
+                    foreach (var Station_elm in Station)
+                    {
+                        if (Station_elm != null)
+                        {
+                            hash ^= 397 * Station_elm.GetHashCode();
+                        }
+                    }
+                }
+
+                return hash;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Represents a FuelPOS station
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class GetAllStationsAndCredentials_Station_Station : global::System.IEquatable<GetAllStationsAndCredentials_Station_Station>, IGetAllStationsAndCredentials_Station_Station
+    {
+        public GetAllStationsAndCredentials_Station_Station(global::System.String id, global::System.String name, global::System.String ip, global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster cluster, global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentials_Station_FtpCredentials?>? ftpCredentials)
+        {
+            Id = id;
+            Name = name;
+            Ip = ip;
+            Cluster = cluster;
+            FtpCredentials = ftpCredentials;
+        }
+
+        /// <summary>
+        /// The station ID, equal to the Petrol Server ID
+        /// </summary>
+        public global::System.String Id { get; }
+
+        /// <summary>
+        /// The name of the station
+        /// </summary>
+        public global::System.String Name { get; }
+
+        /// <summary>
+        /// The IP address of the FuelPOS CIS/INT of the station
+        /// </summary>
+        public global::System.String Ip { get; }
+
+        /// <summary>
+        /// The Petrol Server cluster the station belongs to
+        /// </summary>
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster Cluster { get; }
+
+        /// <summary>
+        /// Any stored FTP credentials for the FuelPOS system at this station
+        /// </summary>
+        public global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentials_Station_FtpCredentials?>? FtpCredentials { get; }
+
+        public virtual global::System.Boolean Equals(GetAllStationsAndCredentials_Station_Station? other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            if (other.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return (Id.Equals(other.Id)) && Name.Equals(other.Name) && Ip.Equals(other.Ip) && Cluster.Equals(other.Cluster) && global::StrawberryShake.Helper.ComparisonHelper.SequenceEqual(FtpCredentials, other.FtpCredentials);
+        }
+
+        public override global::System.Boolean Equals(global::System.Object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return Equals((GetAllStationsAndCredentials_Station_Station)obj);
+        }
+
+        public override global::System.Int32 GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 5;
+                hash ^= 397 * Id.GetHashCode();
+                hash ^= 397 * Name.GetHashCode();
+                hash ^= 397 * Ip.GetHashCode();
+                hash ^= 397 * Cluster.GetHashCode();
+                if (FtpCredentials != null)
+                {
+                    foreach (var FtpCredentials_elm in FtpCredentials)
+                    {
+                        if (FtpCredentials_elm != null)
+                        {
+                            hash ^= 397 * FtpCredentials_elm.GetHashCode();
+                        }
+                    }
+                }
+
+                return hash;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Represents a set of FTP credentials (username and password) for a FuelPOS station
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentials : global::System.IEquatable<GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentials>, IGetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentials
+    {
+        public GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentials(global::System.String username, global::System.String password)
+        {
+            Username = username;
+            Password = password;
+        }
+
+        public global::System.String Username { get; }
+
+        public global::System.String Password { get; }
+
+        public virtual global::System.Boolean Equals(GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentials? other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            if (other.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return (Username.Equals(other.Username)) && Password.Equals(other.Password);
+        }
+
+        public override global::System.Boolean Equals(global::System.Object? obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != GetType())
+            {
+                return false;
+            }
+
+            return Equals((GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentials)obj);
+        }
+
+        public override global::System.Int32 GetHashCode()
+        {
+            unchecked
+            {
+                int hash = 5;
+                hash ^= 397 * Username.GetHashCode();
+                hash ^= 397 * Password.GetHashCode();
+                return hash;
+            }
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IGetAllStationsAndCredentialsResult
+    {
+        public global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentials_Station?>? Station { get; }
+    }
+
+    /// <summary>
+    /// Represents a FuelPOS station
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IGetAllStationsAndCredentials_Station
+    {
+        /// <summary>
+        /// The station ID, equal to the Petrol Server ID
+        /// </summary>
+        public global::System.String Id { get; }
+
+        /// <summary>
+        /// The name of the station
+        /// </summary>
+        public global::System.String Name { get; }
+
+        /// <summary>
+        /// The IP address of the FuelPOS CIS/INT of the station
+        /// </summary>
+        public global::System.String Ip { get; }
+
+        /// <summary>
+        /// The Petrol Server cluster the station belongs to
+        /// </summary>
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster Cluster { get; }
+
+        /// <summary>
+        /// Any stored FTP credentials for the FuelPOS system at this station
+        /// </summary>
+        public global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentials_Station_FtpCredentials?>? FtpCredentials { get; }
+    }
+
+    /// <summary>
+    /// Represents a FuelPOS station
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IGetAllStationsAndCredentials_Station_Station : IGetAllStationsAndCredentials_Station
+    {
+    }
+
+    /// <summary>
+    /// Represents a set of FTP credentials (username and password) for a FuelPOS station
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IGetAllStationsAndCredentials_Station_FtpCredentials
+    {
+        public global::System.String Username { get; }
+
+        public global::System.String Password { get; }
+    }
+
+    /// <summary>
+    /// Represents a set of FTP credentials (username and password) for a FuelPOS station
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IGetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentials : IGetAllStationsAndCredentials_Station_FtpCredentials
     {
     }
 
@@ -2678,6 +2997,147 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
     }
 
     /// <summary>
+    /// Represents the operation service of the GetAllStationsAndCredentials GraphQL operation
+    /// <code>
+    /// query GetAllStationsAndCredentials {
+    ///   station {
+    ///     __typename
+    ///     id
+    ///     name
+    ///     ip
+    ///     cluster
+    ///     ftpCredentials {
+    ///       __typename
+    ///       username
+    ///       password
+    ///       ... on FtpCredentials {
+    ///         id
+    ///       }
+    ///     }
+    ///     ... on Station {
+    ///       id
+    ///     }
+    ///   }
+    /// }
+    /// </code>
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class GetAllStationsAndCredentialsQueryDocument : global::StrawberryShake.IDocument
+    {
+        private GetAllStationsAndCredentialsQueryDocument()
+        {
+        }
+
+        public static GetAllStationsAndCredentialsQueryDocument Instance { get; } = new GetAllStationsAndCredentialsQueryDocument();
+        public global::StrawberryShake.OperationKind Kind => global::StrawberryShake.OperationKind.Query;
+        public global::System.ReadOnlySpan<global::System.Byte> Body => new global::System.Byte[]{0x71, 0x75, 0x65, 0x72, 0x79, 0x20, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x6c, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x73, 0x41, 0x6e, 0x64, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x73, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x69, 0x64, 0x20, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x69, 0x70, 0x20, 0x63, 0x6c, 0x75, 0x73, 0x74, 0x65, 0x72, 0x20, 0x66, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x5f, 0x5f, 0x74, 0x79, 0x70, 0x65, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x75, 0x73, 0x65, 0x72, 0x6e, 0x61, 0x6d, 0x65, 0x20, 0x70, 0x61, 0x73, 0x73, 0x77, 0x6f, 0x72, 0x64, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x46, 0x74, 0x70, 0x43, 0x72, 0x65, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x61, 0x6c, 0x73, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x2e, 0x2e, 0x2e, 0x20, 0x6f, 0x6e, 0x20, 0x53, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x20, 0x7b, 0x20, 0x69, 0x64, 0x20, 0x7d, 0x20, 0x7d, 0x20, 0x7d};
+        public global::StrawberryShake.DocumentHash Hash { get; } = new global::StrawberryShake.DocumentHash("md5Hash", "6f10f64f959a17f62759b1f80e0b22f1");
+        public override global::System.String ToString()
+        {
+#if NETSTANDARD2_0
+        return global::System.Text.Encoding.UTF8.GetString(Body.ToArray());
+#else
+            return global::System.Text.Encoding.UTF8.GetString(Body);
+#endif
+        }
+    }
+
+    /// <summary>
+    /// Represents the operation service of the GetAllStationsAndCredentials GraphQL operation
+    /// <code>
+    /// query GetAllStationsAndCredentials {
+    ///   station {
+    ///     __typename
+    ///     id
+    ///     name
+    ///     ip
+    ///     cluster
+    ///     ftpCredentials {
+    ///       __typename
+    ///       username
+    ///       password
+    ///       ... on FtpCredentials {
+    ///         id
+    ///       }
+    ///     }
+    ///     ... on Station {
+    ///       id
+    ///     }
+    ///   }
+    /// }
+    /// </code>
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class GetAllStationsAndCredentialsQuery : global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsQuery
+    {
+        private readonly global::StrawberryShake.IOperationExecutor<IGetAllStationsAndCredentialsResult> _operationExecutor;
+        public GetAllStationsAndCredentialsQuery(global::StrawberryShake.IOperationExecutor<IGetAllStationsAndCredentialsResult> operationExecutor)
+        {
+            _operationExecutor = operationExecutor ?? throw new global::System.ArgumentNullException(nameof(operationExecutor));
+        }
+
+        global::System.Type global::StrawberryShake.IOperationRequestFactory.ResultType => typeof(IGetAllStationsAndCredentialsResult);
+        public async global::System.Threading.Tasks.Task<global::StrawberryShake.IOperationResult<IGetAllStationsAndCredentialsResult>> ExecuteAsync(global::System.Threading.CancellationToken cancellationToken = default)
+        {
+            var request = CreateRequest();
+            return await _operationExecutor.ExecuteAsync(request, cancellationToken).ConfigureAwait(false);
+        }
+
+        public global::System.IObservable<global::StrawberryShake.IOperationResult<IGetAllStationsAndCredentialsResult>> Watch(global::StrawberryShake.ExecutionStrategy? strategy = null)
+        {
+            var request = CreateRequest();
+            return _operationExecutor.Watch(request, strategy);
+        }
+
+        private global::StrawberryShake.OperationRequest CreateRequest()
+        {
+            return CreateRequest(null);
+        }
+
+        private global::StrawberryShake.OperationRequest CreateRequest(global::System.Collections.Generic.IReadOnlyDictionary<global::System.String, global::System.Object?>? variables)
+        {
+            return new global::StrawberryShake.OperationRequest(id: GetAllStationsAndCredentialsQueryDocument.Instance.Hash.Value, name: "GetAllStationsAndCredentials", document: GetAllStationsAndCredentialsQueryDocument.Instance, strategy: global::StrawberryShake.RequestStrategy.Default);
+        }
+
+        global::StrawberryShake.OperationRequest global::StrawberryShake.IOperationRequestFactory.Create(global::System.Collections.Generic.IReadOnlyDictionary<global::System.String, global::System.Object?>? variables)
+        {
+            return CreateRequest();
+        }
+    }
+
+    /// <summary>
+    /// Represents the operation service of the GetAllStationsAndCredentials GraphQL operation
+    /// <code>
+    /// query GetAllStationsAndCredentials {
+    ///   station {
+    ///     __typename
+    ///     id
+    ///     name
+    ///     ip
+    ///     cluster
+    ///     ftpCredentials {
+    ///       __typename
+    ///       username
+    ///       password
+    ///       ... on FtpCredentials {
+    ///         id
+    ///       }
+    ///     }
+    ///     ... on Station {
+    ///       id
+    ///     }
+    ///   }
+    /// }
+    /// </code>
+    /// </summary>
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial interface IGetAllStationsAndCredentialsQuery : global::StrawberryShake.IOperationRequestFactory
+    {
+        global::System.Threading.Tasks.Task<global::StrawberryShake.IOperationResult<IGetAllStationsAndCredentialsResult>> ExecuteAsync(global::System.Threading.CancellationToken cancellationToken = default);
+        global::System.IObservable<global::StrawberryShake.IOperationResult<IGetAllStationsAndCredentialsResult>> Watch(global::StrawberryShake.ExecutionStrategy? strategy = null);
+    }
+
+    /// <summary>
     /// Represents the operation service of the GetCredentialsByStationId GraphQL operation
     /// <code>
     /// query GetCredentialsByStationId($id: String!) {
@@ -3109,14 +3569,16 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
         private readonly global::TSGSystemsToolkit.CmdLine.GraphQL.IAddCredentialsMutation _addCredentials;
         private readonly global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationMutation _addStation;
         private readonly global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsQuery _getAllStations;
+        private readonly global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsQuery _getAllStationsAndCredentials;
         private readonly global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationIdQuery _getCredentialsByStationId;
         private readonly global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByClusterQuery _getStationsByCluster;
         private readonly global::TSGSystemsToolkit.CmdLine.GraphQL.IGetTokenMutation _getToken;
-        public SysTkApiClient(global::TSGSystemsToolkit.CmdLine.GraphQL.IAddCredentialsMutation addCredentials, global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationMutation addStation, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsQuery getAllStations, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationIdQuery getCredentialsByStationId, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByClusterQuery getStationsByCluster, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetTokenMutation getToken)
+        public SysTkApiClient(global::TSGSystemsToolkit.CmdLine.GraphQL.IAddCredentialsMutation addCredentials, global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationMutation addStation, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsQuery getAllStations, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsQuery getAllStationsAndCredentials, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationIdQuery getCredentialsByStationId, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByClusterQuery getStationsByCluster, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetTokenMutation getToken)
         {
             _addCredentials = addCredentials ?? throw new global::System.ArgumentNullException(nameof(addCredentials));
             _addStation = addStation ?? throw new global::System.ArgumentNullException(nameof(addStation));
             _getAllStations = getAllStations ?? throw new global::System.ArgumentNullException(nameof(getAllStations));
+            _getAllStationsAndCredentials = getAllStationsAndCredentials ?? throw new global::System.ArgumentNullException(nameof(getAllStationsAndCredentials));
             _getCredentialsByStationId = getCredentialsByStationId ?? throw new global::System.ArgumentNullException(nameof(getCredentialsByStationId));
             _getStationsByCluster = getStationsByCluster ?? throw new global::System.ArgumentNullException(nameof(getStationsByCluster));
             _getToken = getToken ?? throw new global::System.ArgumentNullException(nameof(getToken));
@@ -3126,6 +3588,7 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
         public global::TSGSystemsToolkit.CmdLine.GraphQL.IAddCredentialsMutation AddCredentials => _addCredentials;
         public global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationMutation AddStation => _addStation;
         public global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsQuery GetAllStations => _getAllStations;
+        public global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsQuery GetAllStationsAndCredentials => _getAllStationsAndCredentials;
         public global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationIdQuery GetCredentialsByStationId => _getCredentialsByStationId;
         public global::TSGSystemsToolkit.CmdLine.GraphQL.IGetStationsByClusterQuery GetStationsByCluster => _getStationsByCluster;
         public global::TSGSystemsToolkit.CmdLine.GraphQL.IGetTokenMutation GetToken => _getToken;
@@ -3142,6 +3605,8 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL
         global::TSGSystemsToolkit.CmdLine.GraphQL.IAddStationMutation AddStation { get; }
 
         global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsQuery GetAllStations { get; }
+
+        global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsQuery GetAllStationsAndCredentials { get; }
 
         global::TSGSystemsToolkit.CmdLine.GraphQL.IGetCredentialsByStationIdQuery GetCredentialsByStationId { get; }
 
@@ -3579,6 +4044,165 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             }
 
             return new GetAllStations_Station_Station(entity.Id, entity.Ip, entity.Name, entity.Cluster);
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class GetAllStationsAndCredentialsResultFactory : global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.GetAllStationsAndCredentialsResult>
+    {
+        private readonly global::StrawberryShake.IEntityStore _entityStore;
+        private readonly global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, GetAllStationsAndCredentials_Station_Station> _getAllStationsAndCredentials_Station_StationFromStationEntityMapper;
+        public GetAllStationsAndCredentialsResultFactory(global::StrawberryShake.IEntityStore entityStore, global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, GetAllStationsAndCredentials_Station_Station> getAllStationsAndCredentials_Station_StationFromStationEntityMapper)
+        {
+            _entityStore = entityStore ?? throw new global::System.ArgumentNullException(nameof(entityStore));
+            _getAllStationsAndCredentials_Station_StationFromStationEntityMapper = getAllStationsAndCredentials_Station_StationFromStationEntityMapper ?? throw new global::System.ArgumentNullException(nameof(getAllStationsAndCredentials_Station_StationFromStationEntityMapper));
+        }
+
+        global::System.Type global::StrawberryShake.IOperationResultDataFactory.ResultType => typeof(global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsResult);
+        public GetAllStationsAndCredentialsResult Create(global::StrawberryShake.IOperationResultDataInfo dataInfo, global::StrawberryShake.IEntityStoreSnapshot? snapshot = null)
+        {
+            if (snapshot is null)
+            {
+                snapshot = _entityStore.CurrentSnapshot;
+            }
+
+            if (dataInfo is GetAllStationsAndCredentialsResultInfo info)
+            {
+                return new GetAllStationsAndCredentialsResult(MapIGetAllStationsAndCredentials_StationArray(info.Station, snapshot));
+            }
+
+            throw new global::System.ArgumentException("GetAllStationsAndCredentialsResultInfo expected.");
+        }
+
+        private global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentials_Station?>? MapIGetAllStationsAndCredentials_StationArray(global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.EntityId?>? list, global::StrawberryShake.IEntityStoreSnapshot snapshot)
+        {
+            if (list is null)
+            {
+                return null;
+            }
+
+            var stations = new global::System.Collections.Generic.List<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentials_Station?>();
+            foreach (global::StrawberryShake.EntityId? child in list)
+            {
+                stations.Add(MapIGetAllStationsAndCredentials_Station(child, snapshot));
+            }
+
+            return stations;
+        }
+
+        private global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentials_Station? MapIGetAllStationsAndCredentials_Station(global::StrawberryShake.EntityId? entityId, global::StrawberryShake.IEntityStoreSnapshot snapshot)
+        {
+            if (entityId is null)
+            {
+                return null;
+            }
+
+            if (entityId.Value.Name.Equals("Station", global::System.StringComparison.Ordinal))
+            {
+                return _getAllStationsAndCredentials_Station_StationFromStationEntityMapper.Map(snapshot.GetEntity<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity>(entityId.Value) ?? throw new global::StrawberryShake.GraphQLClientException());
+            }
+
+            throw new global::System.NotSupportedException();
+        }
+
+        global::System.Object global::StrawberryShake.IOperationResultDataFactory.Create(global::StrawberryShake.IOperationResultDataInfo dataInfo, global::StrawberryShake.IEntityStoreSnapshot? snapshot)
+        {
+            return Create(dataInfo, snapshot);
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class GetAllStationsAndCredentialsResultInfo : global::StrawberryShake.IOperationResultDataInfo
+    {
+        private readonly global::System.Collections.Generic.IReadOnlyCollection<global::StrawberryShake.EntityId> _entityIds;
+        private readonly global::System.UInt64 _version;
+        public GetAllStationsAndCredentialsResultInfo(global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.EntityId?>? station, global::System.Collections.Generic.IReadOnlyCollection<global::StrawberryShake.EntityId> entityIds, global::System.UInt64 version)
+        {
+            Station = station;
+            _entityIds = entityIds ?? throw new global::System.ArgumentNullException(nameof(entityIds));
+            _version = version;
+        }
+
+        public global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.EntityId?>? Station { get; }
+
+        public global::System.Collections.Generic.IReadOnlyCollection<global::StrawberryShake.EntityId> EntityIds => _entityIds;
+        public global::System.UInt64 Version => _version;
+        public global::StrawberryShake.IOperationResultDataInfo WithVersion(global::System.UInt64 version)
+        {
+            return new GetAllStationsAndCredentialsResultInfo(Station, _entityIds, version);
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class GetAllStationsAndCredentials_Station_StationFromStationEntityMapper : global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity, GetAllStationsAndCredentials_Station_Station>
+    {
+        private readonly global::StrawberryShake.IEntityStore _entityStore;
+        private readonly global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsEntity, GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentials> _getAllStationsAndCredentials_Station_FtpCredentials_FtpCredentialsFromFtpCredentialsEntityMapper;
+        public GetAllStationsAndCredentials_Station_StationFromStationEntityMapper(global::StrawberryShake.IEntityStore entityStore, global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsEntity, GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentials> getAllStationsAndCredentials_Station_FtpCredentials_FtpCredentialsFromFtpCredentialsEntityMapper)
+        {
+            _entityStore = entityStore ?? throw new global::System.ArgumentNullException(nameof(entityStore));
+            _getAllStationsAndCredentials_Station_FtpCredentials_FtpCredentialsFromFtpCredentialsEntityMapper = getAllStationsAndCredentials_Station_FtpCredentials_FtpCredentialsFromFtpCredentialsEntityMapper ?? throw new global::System.ArgumentNullException(nameof(getAllStationsAndCredentials_Station_FtpCredentials_FtpCredentialsFromFtpCredentialsEntityMapper));
+        }
+
+        public GetAllStationsAndCredentials_Station_Station Map(global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity entity, global::StrawberryShake.IEntityStoreSnapshot? snapshot = null)
+        {
+            if (snapshot is null)
+            {
+                snapshot = _entityStore.CurrentSnapshot;
+            }
+
+            return new GetAllStationsAndCredentials_Station_Station(entity.Id, entity.Name, entity.Ip, entity.Cluster, MapIGetAllStationsAndCredentials_Station_FtpCredentialsArray(entity.FtpCredentials, snapshot));
+        }
+
+        private global::System.Collections.Generic.IReadOnlyList<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentials_Station_FtpCredentials?>? MapIGetAllStationsAndCredentials_Station_FtpCredentialsArray(global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.EntityId?>? list, global::StrawberryShake.IEntityStoreSnapshot snapshot)
+        {
+            if (list is null)
+            {
+                return null;
+            }
+
+            var ftpCredentialss = new global::System.Collections.Generic.List<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentials_Station_FtpCredentials?>();
+            foreach (global::StrawberryShake.EntityId? child in list)
+            {
+                ftpCredentialss.Add(MapIGetAllStationsAndCredentials_Station_FtpCredentials(child, snapshot));
+            }
+
+            return ftpCredentialss;
+        }
+
+        private global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentials_Station_FtpCredentials? MapIGetAllStationsAndCredentials_Station_FtpCredentials(global::StrawberryShake.EntityId? entityId, global::StrawberryShake.IEntityStoreSnapshot snapshot)
+        {
+            if (entityId is null)
+            {
+                return null;
+            }
+
+            if (entityId.Value.Name.Equals("FtpCredentials", global::System.StringComparison.Ordinal))
+            {
+                return _getAllStationsAndCredentials_Station_FtpCredentials_FtpCredentialsFromFtpCredentialsEntityMapper.Map(snapshot.GetEntity<global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsEntity>(entityId.Value) ?? throw new global::StrawberryShake.GraphQLClientException());
+            }
+
+            throw new global::System.NotSupportedException();
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentialsFromFtpCredentialsEntityMapper : global::StrawberryShake.IEntityMapper<global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsEntity, GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentials>
+    {
+        private readonly global::StrawberryShake.IEntityStore _entityStore;
+        public GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentialsFromFtpCredentialsEntityMapper(global::StrawberryShake.IEntityStore entityStore)
+        {
+            _entityStore = entityStore ?? throw new global::System.ArgumentNullException(nameof(entityStore));
+        }
+
+        public GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentials Map(global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsEntity entity, global::StrawberryShake.IEntityStoreSnapshot? snapshot = null)
+        {
+            if (snapshot is null)
+            {
+                snapshot = _entityStore.CurrentSnapshot;
+            }
+
+            return new GetAllStationsAndCredentials_Station_FtpCredentials_FtpCredentials(entity.Username, entity.Password);
         }
     }
 
@@ -4460,6 +5084,185 @@ namespace TSGSystemsToolkit.CmdLine.GraphQL.State
             }
 
             return _clusterParser.Parse(obj.Value.GetString()!);
+        }
+    }
+
+    [global::System.CodeDom.Compiler.GeneratedCode("StrawberryShake", "12.6.0.0")]
+    public partial class GetAllStationsAndCredentialsBuilder : global::StrawberryShake.IOperationResultBuilder<global::System.Text.Json.JsonDocument, global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsResult>
+    {
+        private readonly global::StrawberryShake.IEntityStore _entityStore;
+        private readonly global::StrawberryShake.IEntityIdSerializer _idSerializer;
+        private readonly global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsResult> _resultDataFactory;
+        private readonly global::StrawberryShake.Serialization.ILeafValueParser<global::System.String, global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster> _clusterParser;
+        private readonly global::StrawberryShake.Serialization.ILeafValueParser<global::System.String, global::System.String> _iDParser;
+        private readonly global::StrawberryShake.Serialization.ILeafValueParser<global::System.String, global::System.String> _stringParser;
+        public GetAllStationsAndCredentialsBuilder(global::StrawberryShake.IEntityStore entityStore, global::StrawberryShake.IEntityIdSerializer idSerializer, global::StrawberryShake.IOperationResultDataFactory<global::TSGSystemsToolkit.CmdLine.GraphQL.IGetAllStationsAndCredentialsResult> resultDataFactory, global::StrawberryShake.Serialization.ISerializerResolver serializerResolver)
+        {
+            _entityStore = entityStore ?? throw new global::System.ArgumentNullException(nameof(entityStore));
+            _idSerializer = idSerializer ?? throw new global::System.ArgumentNullException(nameof(idSerializer));
+            _resultDataFactory = resultDataFactory ?? throw new global::System.ArgumentNullException(nameof(resultDataFactory));
+            _clusterParser = serializerResolver.GetLeafValueParser<global::System.String, global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster>("Cluster") ?? throw new global::System.ArgumentException("No serializer for type `Cluster` found.");
+            _iDParser = serializerResolver.GetLeafValueParser<global::System.String, global::System.String>("ID") ?? throw new global::System.ArgumentException("No serializer for type `ID` found.");
+            _stringParser = serializerResolver.GetLeafValueParser<global::System.String, global::System.String>("String") ?? throw new global::System.ArgumentException("No serializer for type `String` found.");
+        }
+
+        public global::StrawberryShake.IOperationResult<IGetAllStationsAndCredentialsResult> Build(global::StrawberryShake.Response<global::System.Text.Json.JsonDocument> response)
+        {
+            (IGetAllStationsAndCredentialsResult Result, GetAllStationsAndCredentialsResultInfo Info)? data = null;
+            global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.IClientError>? errors = null;
+            if (response.Exception is null)
+            {
+                try
+                {
+                    if (response.Body != null)
+                    {
+                        if (response.Body.RootElement.TryGetProperty("data", out global::System.Text.Json.JsonElement dataElement) && dataElement.ValueKind == global::System.Text.Json.JsonValueKind.Object)
+                        {
+                            data = BuildData(dataElement);
+                        }
+
+                        if (response.Body.RootElement.TryGetProperty("errors", out global::System.Text.Json.JsonElement errorsElement))
+                        {
+                            errors = global::StrawberryShake.Json.JsonErrorParser.ParseErrors(errorsElement);
+                        }
+                    }
+                }
+                catch (global::System.Exception ex)
+                {
+                    errors = new global::StrawberryShake.IClientError[]{new global::StrawberryShake.ClientError(ex.Message, exception: ex, extensions: new global::System.Collections.Generic.Dictionary<global::System.String, global::System.Object?>{{"body", response.Body?.RootElement.ToString()}})};
+                }
+            }
+            else
+            {
+                if (response.Body != null && response.Body.RootElement.TryGetProperty("errors", out global::System.Text.Json.JsonElement errorsElement))
+                {
+                    errors = global::StrawberryShake.Json.JsonErrorParser.ParseErrors(errorsElement);
+                }
+                else
+                {
+                    errors = new global::StrawberryShake.IClientError[]{new global::StrawberryShake.ClientError(response.Exception.Message, exception: response.Exception, extensions: new global::System.Collections.Generic.Dictionary<global::System.String, global::System.Object?>{{"body", response.Body?.RootElement.ToString()}})};
+                }
+            }
+
+            return new global::StrawberryShake.OperationResult<IGetAllStationsAndCredentialsResult>(data?.Result, data?.Info, _resultDataFactory, errors);
+        }
+
+        private (IGetAllStationsAndCredentialsResult, GetAllStationsAndCredentialsResultInfo) BuildData(global::System.Text.Json.JsonElement obj)
+        {
+            var entityIds = new global::System.Collections.Generic.HashSet<global::StrawberryShake.EntityId>();
+            global::StrawberryShake.IEntityStoreSnapshot snapshot = default !;
+            global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.EntityId?>? stationId = default !;
+            _entityStore.Update(session =>
+            {
+                stationId = UpdateIGetAllStationsAndCredentials_StationEntityArray(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "station"), entityIds);
+                snapshot = session.CurrentSnapshot;
+            });
+            var resultInfo = new GetAllStationsAndCredentialsResultInfo(stationId, entityIds, snapshot.Version);
+            return (_resultDataFactory.Create(resultInfo), resultInfo);
+        }
+
+        private global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.EntityId?>? UpdateIGetAllStationsAndCredentials_StationEntityArray(global::StrawberryShake.IEntityStoreUpdateSession session, global::System.Text.Json.JsonElement? obj, global::System.Collections.Generic.ISet<global::StrawberryShake.EntityId> entityIds)
+        {
+            if (!obj.HasValue)
+            {
+                return null;
+            }
+
+            var stations = new global::System.Collections.Generic.List<global::StrawberryShake.EntityId?>();
+            foreach (global::System.Text.Json.JsonElement child in obj.Value.EnumerateArray())
+            {
+                stations.Add(UpdateIGetAllStationsAndCredentials_StationEntity(session, child, entityIds));
+            }
+
+            return stations;
+        }
+
+        private global::StrawberryShake.EntityId? UpdateIGetAllStationsAndCredentials_StationEntity(global::StrawberryShake.IEntityStoreUpdateSession session, global::System.Text.Json.JsonElement? obj, global::System.Collections.Generic.ISet<global::StrawberryShake.EntityId> entityIds)
+        {
+            if (!obj.HasValue)
+            {
+                return null;
+            }
+
+            global::StrawberryShake.EntityId entityId = _idSerializer.Parse(obj.Value);
+            entityIds.Add(entityId);
+            if (entityId.Name.Equals("Station", global::System.StringComparison.Ordinal))
+            {
+                if (session.CurrentSnapshot.TryGetEntity(entityId, out global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity? entity))
+                {
+                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "id")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), DeserializeNonNullableCluster(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "cluster")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ip")), UpdateIGetAllStationsAndCredentials_Station_FtpCredentialsEntityArray(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ftpCredentials"), entityIds)));
+                }
+                else
+                {
+                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.StationEntity(DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "id")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "name")), DeserializeNonNullableCluster(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "cluster")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ip")), UpdateIGetAllStationsAndCredentials_Station_FtpCredentialsEntityArray(session, global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "ftpCredentials"), entityIds)));
+                }
+
+                return entityId;
+            }
+
+            throw new global::System.NotSupportedException();
+        }
+
+        private global::System.String DeserializeNonNullableString(global::System.Text.Json.JsonElement? obj)
+        {
+            if (!obj.HasValue)
+            {
+                throw new global::System.ArgumentNullException();
+            }
+
+            return _iDParser.Parse(obj.Value.GetString()!);
+        }
+
+        private global::TSGSystemsToolkit.CmdLine.GraphQL.Cluster DeserializeNonNullableCluster(global::System.Text.Json.JsonElement? obj)
+        {
+            if (!obj.HasValue)
+            {
+                throw new global::System.ArgumentNullException();
+            }
+
+            return _clusterParser.Parse(obj.Value.GetString()!);
+        }
+
+        private global::System.Collections.Generic.IReadOnlyList<global::StrawberryShake.EntityId?>? UpdateIGetAllStationsAndCredentials_Station_FtpCredentialsEntityArray(global::StrawberryShake.IEntityStoreUpdateSession session, global::System.Text.Json.JsonElement? obj, global::System.Collections.Generic.ISet<global::StrawberryShake.EntityId> entityIds)
+        {
+            if (!obj.HasValue)
+            {
+                return null;
+            }
+
+            var ftpCredentialss = new global::System.Collections.Generic.List<global::StrawberryShake.EntityId?>();
+            foreach (global::System.Text.Json.JsonElement child in obj.Value.EnumerateArray())
+            {
+                ftpCredentialss.Add(UpdateIGetAllStationsAndCredentials_Station_FtpCredentialsEntity(session, child, entityIds));
+            }
+
+            return ftpCredentialss;
+        }
+
+        private global::StrawberryShake.EntityId? UpdateIGetAllStationsAndCredentials_Station_FtpCredentialsEntity(global::StrawberryShake.IEntityStoreUpdateSession session, global::System.Text.Json.JsonElement? obj, global::System.Collections.Generic.ISet<global::StrawberryShake.EntityId> entityIds)
+        {
+            if (!obj.HasValue)
+            {
+                return null;
+            }
+
+            global::StrawberryShake.EntityId entityId = _idSerializer.Parse(obj.Value);
+            entityIds.Add(entityId);
+            if (entityId.Name.Equals("FtpCredentials", global::System.StringComparison.Ordinal))
+            {
+                if (session.CurrentSnapshot.TryGetEntity(entityId, out global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsEntity? entity))
+                {
+                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsEntity(entity.StationId, DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "username")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "password"))));
+                }
+                else
+                {
+                    session.SetEntity(entityId, new global::TSGSystemsToolkit.CmdLine.GraphQL.State.FtpCredentialsEntity(default !, DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "username")), DeserializeNonNullableString(global::StrawberryShake.Json.JsonElementExtensions.GetPropertyOrNull(obj, "password"))));
+                }
+
+                return entityId;
+            }
+
+            throw new global::System.NotSupportedException();
         }
     }
 
