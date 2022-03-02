@@ -37,6 +37,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 // TODO: Validate file contents
                 var siteList = File.ReadAllLines(_options.File);
 
+                // TODO: Build a list of errors to report at the end
                 foreach (var site in siteList)
                 {
                     await HandleIndividualStation(site);
@@ -48,42 +49,49 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
         private async Task HandleIndividualStation(string stationLine)
         {
-            string[] stationDetails = stationLine.Split(';');
-            var ftpCreds = new Uri(stationDetails[3]);
-            var userInfo = ftpCreds.UserInfo.Split(':');
-            var cluster = (Cluster)Enum.Parse(typeof(Cluster), stationDetails[1]);
-
-            AddStationInput input = new()
+            try
             {
-                Cluster = cluster,
-                Id = stationDetails[0],
-                Name = stationDetails[2],
-                Ip = ftpCreds.Host
-            };
+                string[] stationDetails = stationLine.Split(';');
+                var ftpCreds = new Uri(stationDetails[3]);
+                var userInfo = ftpCreds.UserInfo.Split(':');
+                var cluster = (Cluster)Enum.Parse(typeof(Cluster), stationDetails[1], true);
 
-            var stationResult = await _apiClient.AddStation.ExecuteAsync(input, _ct);
-            stationResult.EnsureNoErrors();
-
-            if (stationResult.IsSuccessResult() && stationResult.Data.AddStation.Station is not null)
-            {
-                AnsiConsole.MarkupLine($"Station {stationResult.Data.AddStation.Station.Id} - {stationResult.Data.AddStation.Station.Name} [green]added successfully[/].");
-
-                await AddFtpCredentials(userInfo[0], userInfo[1], input.Id);
-            }
-            else if (stationResult.Data.AddStation.Errors.Count > 0)
-            {
-                foreach (var error in stationResult.Data.AddStation.Errors)
+                AddStationInput input = new()
                 {
-                    switch (error)
+                    Cluster = cluster,
+                    Id = stationDetails[0],
+                    Name = stationDetails[2],
+                    Ip = ftpCreds.Host
+                };
+
+                var stationResult = await _apiClient.AddStation.ExecuteAsync(input, _ct);
+                stationResult.EnsureNoErrors();
+
+                if (stationResult.IsSuccessResult() && stationResult.Data.AddStation.Station is not null)
+                {
+                    AnsiConsole.MarkupLine($"Station {stationResult.Data.AddStation.Station.Id} - {stationResult.Data.AddStation.Station.Name} [green]added successfully[/].");
+
+                    await AddFtpCredentials(userInfo[0], userInfo[1], input.Id);
+                }
+                else if (stationResult.Data.AddStation.Errors.Count > 0)
+                {
+                    foreach (var error in stationResult.Data.AddStation.Errors)
                     {
-                        case AddStation_AddStation_Errors_StationExistsError stationExists:
-                            AnsiConsole.MarkupLine($"[red]Error:[/] {stationExists.Message}");
-                            await AddFtpCredentials(userInfo[0], userInfo[1], input.Id);
-                            break;
-                        default:
-                            break;
+                        switch (error)
+                        {
+                            case AddStation_AddStation_Errors_StationExistsError stationExists:
+                                AnsiConsole.MarkupLine($"[red]Error:[/] {stationExists.Message}");
+                                await AddFtpCredentials(userInfo[0], userInfo[1], input.Id);
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
+            }
+            catch (UriFormatException ex)
+            {
+                AnsiConsole.MarkupLine($"[Yellow]Warning:[/] Could not parse URI for {stationLine}");
             }
         }
 
