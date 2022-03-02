@@ -13,18 +13,49 @@ namespace SysTk.Utils
     {
         public static void Run(List<HostModel> hosts, string siteManagerPath)
         {
+            FileZilla3 siteManager = GetExistingXml(siteManagerPath);
+
+            var uniqueClusters = GetUniqueClusters(hosts);
+
+            Dictionary<string, List<Server>> folders = CreateFoldersWithServers(hosts, uniqueClusters);
+
+            var fuelPosFolder = CreateFuelPosFolder(folders);
+
+            siteManager.CheckFuelPosFolderExists(fuelPosFolder);
+
+            CreateXmlFile(siteManager, siteManagerPath);
+        }
+
+        private static FileZilla3 GetExistingXml(string filePath)
+        {
             XmlSerializer reader = new(typeof(FileZilla3));
 
-            StreamReader file = new(siteManagerPath);
+            StreamReader file = new(filePath);
             FileZilla3 siteManager = (FileZilla3)reader.Deserialize(file);
             file.Dispose();
 
+            return siteManager;
+        }
+
+        private static List<string> GetUniqueClusters(List<HostModel> hosts)
+        {
             var uniqueClusters = hosts.Select(x => x.Cluster)
                 .Distinct()
                 .ToList();
 
             uniqueClusters.Sort();
 
+            return uniqueClusters;
+        }
+
+        private static string ConvertToBase64(string input)
+        {
+            var bytes = Encoding.UTF8.GetBytes(input);
+            return Convert.ToBase64String(bytes);
+        }
+
+        private static Dictionary<string, List<Server>> CreateFoldersWithServers(List<HostModel> hosts, List<string> uniqueClusters)
+        {
             Dictionary<string, List<Server>> folders = new();
 
             foreach (var cluster in uniqueClusters)
@@ -32,20 +63,37 @@ namespace SysTk.Utils
 
             foreach (var host in hosts)
             {
-                var passBytes = Encoding.UTF8.GetBytes(host.Password);
-                var passBase64 = Convert.ToBase64String(passBytes);
                 folders[host.Cluster].Add(new Server()
                 {
                     Host = host.Ip,
                     User = host.Username,
                     Pass = new()
                     {
-                        Text = passBase64
+                        Text = ConvertToBase64(host.Password)
                     },
                     Name = $"{host.Name} - {host.Id}"
                 });
             }
 
+            return folders;
+        }
+
+        private static FileZilla3 CheckFuelPosFolderExists(this FileZilla3 siteManager, Folder fuelPosFolder)
+        {
+            if (!siteManager.Servers.Folders.Exists(x => x.Name == "FuelPOS"))
+                siteManager.Servers.Folders.Add(fuelPosFolder);
+            else
+            {
+                var toRemove = siteManager.Servers.Folders.Where(x => x.Name == "FuelPOS").First();
+                siteManager.Servers.Folders.Remove(toRemove);
+                siteManager.Servers.Folders.Add(fuelPosFolder);
+            }
+
+            return siteManager;
+        }
+
+        private static Folder CreateFuelPosFolder(Dictionary<string, List<Server>> folders)
+        {
             var fuelPosFolder = new Folder("FuelPOS");
 
             foreach (var key in folders.Keys)
@@ -58,15 +106,11 @@ namespace SysTk.Utils
                 });
             }
 
-            if (!siteManager.Servers.Folders.Exists(x => x.Name == "FuelPOS"))
-                siteManager.Servers.Folders.Add(fuelPosFolder);
-            else
-            {
-                var toRemove = siteManager.Servers.Folders.Where(x => x.Name == "FuelPOS").First();
-                siteManager.Servers.Folders.Remove(toRemove);
-                siteManager.Servers.Folders.Add(fuelPosFolder);
-            }
+            return fuelPosFolder;
+        }
 
+        private static void CreateXmlFile(FileZilla3 siteManager, string filePath)
+        {
             var x = new XmlSerializer(typeof(FileZilla3));
             var xml = "";
 
@@ -75,7 +119,7 @@ namespace SysTk.Utils
             XmlSerializerNamespaces blankNs = new(new[] { new XmlQualifiedName("", "") });
             x.Serialize(writer, siteManager, blankNs);
             xml = sww.ToString();
-            File.WriteAllText(siteManagerPath, xml);
+            File.WriteAllText(filePath, xml);
         }
     }
 }
