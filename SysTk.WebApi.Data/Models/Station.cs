@@ -48,6 +48,7 @@ namespace SysTk.WebApi.Data.Models
         Rontec,
         BP,
         Certas,
-        Texaco
+        Texaco,
+        Morgan
     }
 }
