@@ -57,6 +57,14 @@ namespace TSGSystemsToolkit.CmdLine
                 return 0;
             }
 
+            if(string.IsNullOrWhiteSpace(_config["EmailAddress"]))
+            {
+                var email = AnsiConsole.Prompt(new TextPrompt<string>("Enter the email addess associated with your API account:")
+                    .PromptStyle("green"));
+
+                Extensions.UpdateEmailAddress(email);
+            }
+
             var commandLineBuilder = new CommandLineBuilder(cmd);
             commandLineBuilder.AddMiddleware(async (context, next) =>
             {

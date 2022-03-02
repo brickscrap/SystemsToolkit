@@ -65,6 +65,23 @@ namespace TSGSystemsToolkit.CmdLine
             File.WriteAllText(asPath, newJson);
         }
 
+        internal static void UpdateEmailAddress(string emailAddress)
+        {
+            var asPath = GetAppsettingsPath();
+            var text = File.ReadAllText(asPath);
+
+            var json = JsonSerializer.Deserialize<ExpandoObject>(text) as IDictionary<string, object>;
+
+            json["EmailAddress"] = emailAddress;
+
+            var newJson = JsonSerializer.Serialize<dynamic>(json,
+                new JsonSerializerOptions
+                {
+                    WriteIndented = true
+                });
+            File.WriteAllText(asPath, newJson);
+        }
+
         internal static string GetAppsettingsPath()
         {
             var absolutePath = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
