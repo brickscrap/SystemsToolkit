@@ -48,27 +48,14 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
         private async Task HandleIndividualStation(string stationLine)
         {
-            string[] stationDetails = stationLine.Split(';');
-            var ftpCreds = new Uri(stationDetails[3]);
-            var userInfo = ftpCreds.UserInfo.Split(':');
-            var cluster = (Cluster)Enum.Parse(typeof(Cluster), stationDetails[1]);
-
-            AddStationInput input = new()
-            {
-                Cluster = cluster,
-                Id = stationDetails[0],
-                Name = stationDetails[2],
-                Ip = ftpCreds.Host
-            };
-
-            var stationResult = await _apiClient.AddStation.ExecuteAsync(input, _ct);
+            var stationResult = await _apiClient.AddStation.ExecuteAsync(CreateStationInput(stationLine), _ct);
             stationResult.EnsureNoErrors();
 
             if (stationResult.IsSuccessResult() && stationResult.Data.AddStation.Station is not null)
             {
                 AnsiConsole.MarkupLine($"Station {stationResult.Data.AddStation.Station.Id} - {stationResult.Data.AddStation.Station.Name} [green]added successfully[/].");
 
-                await AddFtpCredentials(userInfo[0], userInfo[1], input.Id);
+                await AddFtpCredentials(CreateFtpCredentialsInput(stationLine));
             }
             else if (stationResult.Data.AddStation.Errors.Count > 0)
             {
@@ -78,7 +65,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                     {
                         case AddStation_AddStation_Errors_StationExistsError stationExists:
                             AnsiConsole.MarkupLine($"[red]Error:[/] {stationExists.Message}");
-                            await AddFtpCredentials(userInfo[0], userInfo[1], input.Id);
+                            await AddFtpCredentials(CreateFtpCredentialsInput(stationLine));
                             break;
                         default:
                             break;
@@ -87,21 +74,43 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             }
         }
 
-        private async Task AddFtpCredentials(string username, string password, string stationId)
+        private static AddStationInput CreateStationInput(string stationLine) 
         {
-            AddFtpCredentialsInput creds = new()
-            {
-                Username = username,
-                Password = password,
-                StationId = stationId
-            };
+            string[] stationDetails = stationLine.Split(';');
+            var ftpCreds = new Uri(stationDetails[3]);
+            var cluster = (Cluster)Enum.Parse(typeof(Cluster), stationDetails[1]);
 
-            var credsResult = await _apiClient.AddCredentials.ExecuteAsync(creds, _ct);
+            return new AddStationInput
+            {
+                Cluster = cluster,
+                Id = stationDetails[0],
+                Name = stationDetails[2],
+                Ip = ftpCreds.Host
+            };
+        }
+
+        private static AddFtpCredentialsInput CreateFtpCredentialsInput(string stationLine)
+        {
+            string[] stationDetails = stationLine.Split(';');
+            var ftpCreds = new Uri(stationDetails[3]);
+            var userInfo = ftpCreds.UserInfo.Split(':');
+
+            return new AddFtpCredentialsInput
+            {
+                StationId = stationDetails[0],
+                Username = userInfo[0],
+                Password = userInfo[1]
+            };
+        }
+
+        private async Task AddFtpCredentials(AddFtpCredentialsInput input)
+        {
+            var credsResult = await _apiClient.AddCredentials.ExecuteAsync(input, _ct);
             credsResult.EnsureNoErrors();
 
             if (credsResult.IsSuccessResult() && credsResult.Data.AddFtpCredentials.FtpCredentials is not null)
             {
-                AnsiConsole.MarkupLine($"FTP credentials for station {creds.StationId} [green]added successfully[/].");
+                AnsiConsole.MarkupLine($"FTP credentials for station {input.StationId} [green]added successfully[/].");
             }
             else if (credsResult.Data.AddFtpCredentials.Errors.Count > 0)
             {

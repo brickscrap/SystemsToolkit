@@ -14,6 +14,7 @@
     <GraphQL Remove="GraphQL\AddCredentials.graphql" />
     <GraphQL Remove="GraphQL\AddStation.graphql" />
     <GraphQL Remove="GraphQL\GetAllStations.graphql" />
+    <GraphQL Remove="GraphQL\GetAllStationsAndCredentials.graphql" />
     <GraphQL Remove="GraphQL\GetCredentialsByStationId.graphql" />
     <GraphQL Remove="GraphQL\GetStationById.graphql" />
     <GraphQL Remove="GraphQL\GetStationsByCluster.graphql" />
@@ -24,6 +25,7 @@
     <None Remove="GraphQL\AddCredentials.graphql" />
     <None Remove="GraphQL\AddStation.graphql" />
     <None Remove="GraphQL\GetAllStations.graphql" />
+    <None Remove="GraphQL\GetAllStationsAndCredentials.graphql" />
     <None Remove="GraphQL\GetCredentialsByStationId.graphql" />
     <None Remove="GraphQL\GetStationsByCluster.graphql" />
     <None Remove="GraphQL\GetToken.graphql" />
@@ -33,6 +35,7 @@
     <GraphQLConfig Include="GraphQL\AddCredentials.graphql" />
     <GraphQLConfig Include="GraphQL\AddStation.graphql" />
     <GraphQLConfig Include="GraphQL\GetAllStations.graphql" />
+    <GraphQLConfig Include="GraphQL\GetAllStationsAndCredentials.graphql" />
     <GraphQLConfig Include="GraphQL\GetCredentialsByStationId.graphql" />
     <GraphQLConfig Include="GraphQL\GetStationsByCluster.graphql" />
     <GraphQLConfig Include="GraphQL\GetToken.graphql" />
