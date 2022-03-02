@@ -9,11 +9,13 @@ using System;
 using System.CommandLine;
 using System.CommandLine.Builder;
 using System.IO;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using SysTk.DataManager.DataAccess;
 using SysTk.DataManager.Ftp;
 using TSGSystemsToolkit.CmdLine.Commands;
+using TSGSystemsToolkit.CmdLine.GraphQL;
 using TSGSystemsToolkit.CmdLine.Services;
 
 namespace TSGSystemsToolkit.CmdLine
@@ -48,6 +50,18 @@ namespace TSGSystemsToolkit.CmdLine
                     services.AddTransient<ISqliteDataAccess, SqliteDataAccess>();
                     services.AddTransient<ICardIdentificationData, CardIdentificationData>();
                     services.AddTransient<IAuthService, AuthService>();
+
+                    services.AddHttpClient<SysTkApiClient>(c =>
+                    {
+
+                    }).ConfigurePrimaryHttpMessageHandler(() =>
+                    {
+                        return new HttpClientHandler
+                        {
+                            ClientCertificateOptions = ClientCertificateOption.Manual,
+                            ServerCertificateCustomValidationCallback = (httpRequestMessage, cert, certChain, policyErrors) => true
+                        };
+                    });
                     services.AddSysTkApiClient()
                         .ConfigureHttpClient(client =>
                         {
