@@ -17,7 +17,7 @@ namespace SysTk.Utils
 
             StreamReader file = new(siteManagerPath);
             FileZilla3 siteManager = (FileZilla3)reader.Deserialize(file);
-            Console.WriteLine(siteManager.Platform);
+            file.Dispose();
 
             var uniqueClusters = hosts.Select(x => x.Cluster)
                 .Distinct()

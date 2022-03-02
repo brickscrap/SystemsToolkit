@@ -27,6 +27,8 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
         public async Task<int> InvokeAsync(InvocationContext context)
         {
+            GetDependencies(context);
+
             var result = await _apiClient.GetAllStationsAndCredentials.ExecuteAsync(_ct);
 
             result.EnsureNoErrors();
@@ -54,6 +56,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                     }
                 }
 
+                // TODO: Validate path of sitemanager.xml
                 if (string.IsNullOrWhiteSpace(_options.SiteManagerPath))
                 {
                     var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -64,6 +67,11 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             }
 
             return 0;
+        }
+
+        private void GetDependencies(InvocationContext context)
+        {
+            _apiClient = (SysTkApiClient)context.BindingContext.GetService(typeof(SysTkApiClient));
         }
     }
 }
