@@ -77,6 +77,7 @@ namespace TSGSystemsToolkit.CmdLine
             });
 
             commandLineBuilder.UseTypoCorrections();
+            commandLineBuilder.UseHelp();
 
             //commandLineBuilder.UseExceptionHandler((x, y) =>
             //{
