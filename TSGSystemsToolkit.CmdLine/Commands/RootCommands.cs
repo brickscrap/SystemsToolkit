@@ -106,7 +106,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
         {
             Argument<string> filePathArg = new("filepath", "Path to Terminals_044.csv");
             Option<bool> emisFileOpt = new(new[] { "--emisfile", "-e" }, "Create a Remote eMIS site-list file. If no output path is specified, will deploy the file " +
-                "directlty to it's location in your AppData folder.");
+                "directly to its location in your AppData folder.");
             Option<string> outputOpt = new(new[] { "--output", "-o" }, "Output path for any created files.");
 
             Command cmd = new("terminals", "Commands for use with Terminals_044.csv")
@@ -130,7 +130,8 @@ namespace TSGSystemsToolkit.CmdLine.Commands
         private Command CreateFuelPosCommand() => new("fuelpos", "FuelPOS related commands, such as mutation handling and file transfers")
         {
             CreateMutationCommand(),
-            CreateSendFileCommand()
+            CreateSendFileCommand(),
+            CreateUpdateEmisCommand()
         };
 
         private Command CreateMutationCommand()
@@ -157,6 +158,20 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             return cmd;
         }
 
+        private Command CreateUpdateEmisCommand()
+        {
+            Option<string?> filePathOption = new(new[] { "--file", "-f" }, "Path to the emis FmsSettings.xml. If this option is not provided, the file will be updated in its default location.");
+
+            Command cmd = new("update-emis", "Update your eMIS site list from the stations available on the API.")
+            {
+                filePathOption
+            };
+
+
+
+
+            return cmd;
+        }
 
         private Command CreateSurveyCommand()
         {
