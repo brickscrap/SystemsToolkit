@@ -359,3 +359,5 @@ healthchecksdb
 /FuelPOS.TankTableTools/Example
 /Systk.Installer
 /Tester
+/TSGSystemsToolkit.CmdLine/systk_installer_2.4.0.exe
+*.exe

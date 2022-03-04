@@ -73,6 +73,12 @@
     <ProjectReference Include="..\SysTk.Utils\SysTk.Utils.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<None Update="appsettings.Development.json">
+			<DependentUpon>appsettings.json</DependentUpon>
+		</None>
+	</ItemGroup>
+	
   <ItemGroup>
     <None Update="99612_statdev.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -82,4 +88,27 @@
     </None>
   </ItemGroup>
 
+	<Target Name="PostBuildMacros">
+		<GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
+			<Output TaskParameter="Assemblies" ItemName="Targets" />
+		</GetAssemblyIdentity>
+		<ItemGroup>
+			<VersionNumber Include="@(Targets->'%(Version)')" />
+		</ItemGroup>
+		<PropertyGroup>
+			<PostBuildEventDependsOn>
+				$(PostBuildEventDependsOn);
+				PostBuildMacros;
+			</PostBuildEventDependsOn>
+			
+		</PropertyGroup>
+	</Target>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="makensis /Dversion=$(AssemblyVersion) install_script.nsi" />
+	</Target>
+
+
+
 </Project>
+
