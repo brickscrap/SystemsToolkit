@@ -5,7 +5,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Version>2.4.0</Version>
     <AssemblyName>SysTk</AssemblyName>
-    <AssemblyVersion>2.4.0</AssemblyVersion>
+    <AssemblyVersion>2.4.1</AssemblyVersion>
     <FileVersion>2.4.0</FileVersion>
 	  <Nullable>annotations</Nullable>
   </PropertyGroup>
@@ -88,27 +88,9 @@
     </None>
   </ItemGroup>
 
-	<Target Name="PostBuildMacros">
-		<GetAssemblyIdentity AssemblyFiles="$(TargetPath)">
-			<Output TaskParameter="Assemblies" ItemName="Targets" />
-		</GetAssemblyIdentity>
-		<ItemGroup>
-			<VersionNumber Include="@(Targets->'%(Version)')" />
-		</ItemGroup>
-		<PropertyGroup>
-			<PostBuildEventDependsOn>
-				$(PostBuildEventDependsOn);
-				PostBuildMacros;
-			</PostBuildEventDependsOn>
-			
-		</PropertyGroup>
-	</Target>
-
-	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+	<Target Name="Pub" AfterTargets="Publish">
 		<Exec Command="makensis /Dversion=$(AssemblyVersion) install_script.nsi" />
 	</Target>
-
-
 
 </Project>
 
