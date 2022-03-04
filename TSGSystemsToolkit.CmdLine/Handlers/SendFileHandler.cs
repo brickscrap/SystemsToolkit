@@ -63,7 +63,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             {
                 if (_options.Cluster is not null)
                 {
-                    var result = await HandleClusterOption(transfers, context);
+                    var result = await HandleClusterOption(context);
 
                     if (result.isSuccess)
                     {
@@ -117,10 +117,10 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             return transfers;
         }
 
-        private async Task<(bool isSuccess, List<FtpTransferModel> transfers, IOperationResult failureResult)> HandleClusterOption(List<FtpTransferModel> transfers, InvocationContext context)
+        private async Task<(bool isSuccess, List<FtpTransferModel> transfers, IOperationResult failureResult)> HandleClusterOption(InvocationContext context)
         {
             Cluster cluster = Enum.Parse<Cluster>(_options.Cluster);
-
+            List<FtpTransferModel> transfers = new();
             var result = await _apiClient.GetStationsByCluster.ExecuteAsync(cluster, _ct);
 
             try
@@ -268,7 +268,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             List<Task> tasks = new();
 
             AnsiConsole.Progress()
-                        .AutoClear(true)
+                        .AutoClear(false)
                         .Columns(new ProgressColumn[]
                     {
                     new TaskDescriptionColumn(),
@@ -285,8 +285,6 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                             {
                                 try
                                 {
-                                    _logger.LogInformation("Uploading {File} to {Station}...", stat.LocalPath, stat.Name);
-
                                     using var ftpClient = new FtpClient(stat.IP, stat.Port, stat.Username, stat.Password);
                                     ftpClient.Connect();
                                     ProgressTask progTask = ctx.AddTask(stat.Name, maxValue: 100, autoStart: true);
@@ -309,7 +307,13 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                                         progTask.Increment(increment);
                                     }
 
-                                    ftpClient.UploadFile(stat.LocalPath, stat.RemotePath, FtpRemoteExists.Overwrite, progress: prog);
+                                    // TODO: Logic to validate if target path has filename, if not, add it, otherwise carry on
+
+                                    var result = ftpClient.UploadFile(stat.LocalPath, stat.RemotePath, FtpRemoteExists.Overwrite, progress: prog);
+                                    
+                                    // TODO: Collate a list of errors to report at the end
+                                    if (result is FtpStatus.Failed)
+                                        AnsiConsole.MarkupLine($"[red]Error uploading file to station {stat.Name}[/]");
                                 }
                                 catch (Exception ex)
                                 {
