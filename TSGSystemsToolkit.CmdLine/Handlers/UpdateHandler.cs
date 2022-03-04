@@ -43,7 +43,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             {
                 _logger.LogInformation("Update available! Updating...");
 
-                Process.Start(available.InstallerPath, "/SILENT");
+                Process.Start(available.InstallerPath, "/S");
             }
 
             return 0;
