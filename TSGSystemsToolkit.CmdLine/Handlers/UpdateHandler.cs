@@ -16,15 +16,15 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
         private readonly UpdateOptions _options;
         private readonly CancellationToken _ct;
 
-        public UpdateHandler(UpdateOptions options, CancellationToken ct = default)
+        public UpdateHandler(UpdateOptions options, IConfiguration config, CancellationToken ct = default)
         {
             _options = options;
+            _config = config;
             _ct = ct;
         }
 
         private void GetDependencies(InvocationContext context)
         {
-            _config = context.BindingContext.GetService(typeof(IConfiguration)) as IConfiguration;
             _logger = context.BindingContext.GetService(typeof(ILogger<UpdateHandler>)) as ILogger<UpdateHandler>;
         }
 
@@ -32,8 +32,8 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
         {
             GetDependencies(context);
 
-            var fileVersion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>().Version.Split('.');
-            Version currentVersion = new(fileVersion[0], fileVersion[1], fileVersion[2]);
+            var assemblyVersion = Assembly.GetEntryAssembly().GetName().Version;
+            Version currentVersion = new(assemblyVersion.Major.ToString(), assemblyVersion.Minor.ToString(), assemblyVersion.Build.ToString());
             _logger.LogInformation("Current version: {Current}", currentVersion);
 
             Version available = Extensions.GetAvailableVersion(_config.GetValue<string>("MasterLocation"));
@@ -43,7 +43,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             {
                 _logger.LogInformation("Update available! Updating...");
 
-                Process.Start(available.InstallerPath, "/S");
+                Process.Start(available.InstallerPath);
             }
 
             return 0;

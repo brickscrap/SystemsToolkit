@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 using System.CommandLine;
 using System.CommandLine.Invocation;
 using System.Threading;
@@ -11,10 +12,12 @@ namespace TSGSystemsToolkit.CmdLine.Commands
     internal class RootCommands : IRootCommands
     {
         private readonly IHost _host;
+        private readonly IConfiguration _config;
 
-        public RootCommands(IHost host)
+        public RootCommands(IHost host, IConfiguration config)
         {
             _host = host;
+            _config = config;
         }
 
         public RootCommand Create()
@@ -34,7 +37,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
 
             cmd.SetHandler((UpdateOptions options, InvocationContext ctx, CancellationToken ct) =>
             {
-                var handler = new UpdateHandler(options, ct);
+                var handler = new UpdateHandler(options, _config, ct);
                 return handler.InvokeAsync(ctx);
             }, binder);
             

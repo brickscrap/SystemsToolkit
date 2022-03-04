@@ -9,7 +9,7 @@ OutFile "installer\systk_installer_${version}.exe"
 Name "Systems Toolkit Installer"
 
 
-RequestExecutionLevel highest
+RequestExecutionLevel admin
 ShowInstDetails Show
 
 Page InstFiles
@@ -51,6 +51,8 @@ WriteUninstaller "uninstall.exe"
 
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SystemsToolkit" "DisplayName" "TSG Systems Toolkit"
 WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\SystemsToolkit" "UninstallString" '"$INSTDIR\uninstall.exe"'
+
+AccessControl::GrantOnFile "$INSTDIR" "(BU)" "FullAccess"
 
 # default section end
 SectionEnd

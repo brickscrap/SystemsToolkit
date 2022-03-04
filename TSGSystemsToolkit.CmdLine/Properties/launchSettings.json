@@ -1,8 +1,7 @@
 {
   "profiles": {
     "TSGSystemsToolkit.CmdLine": {
-      "commandName": "Project",
-      "commandLineArgs": "db update-filezilla"
+      "commandName": "Project"
     }
   }
 }

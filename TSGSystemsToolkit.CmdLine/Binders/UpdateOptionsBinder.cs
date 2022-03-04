@@ -12,6 +12,7 @@ namespace TSGSystemsToolkit.CmdLine.Binders
     {
         private readonly Option<bool> _updateOption;
         private readonly IHost _host;
+        private IConfiguration _configuration;
 
         public UpdateOptionsBinder(Option<bool> updateOption, IHost host)
         {
@@ -32,7 +33,7 @@ namespace TSGSystemsToolkit.CmdLine.Binders
         private void AddDependencies(BindingContext bindingContext)
         {
             bindingContext.AddService<IConfiguration>(x =>
-                (IConfiguration)_host.Services.GetService(typeof(IConfiguration)));
+                _host.Services.GetService(typeof(IConfiguration)) as IConfiguration);
 
             bindingContext.AddService<ILogger<UpdateHandler>>(x =>
                 (ILogger<UpdateHandler>)_host.Services.GetService(typeof(ILogger<UpdateHandler>)));
