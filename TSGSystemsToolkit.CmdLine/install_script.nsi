@@ -16,7 +16,7 @@ Page InstFiles
 
 Unicode True
 
-InstallDir "$PROGRAMFILES\Systems Toolkit"
+InstallDir "$PROGRAMFILES\TSG Systems Toolkit"
 
 # default section start
 Section
