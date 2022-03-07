@@ -89,5 +89,17 @@ namespace TSGSystemsToolkit.CmdLine
 
             return @$"{absolutePath}\appsettings.json";
         }
+
+        internal static bool IsDirectory(this string path)
+        {
+            FileAttributes attr = File.GetAttributes(path);
+
+            if (attr == FileAttributes.Directory)
+            {
+                return true;
+            }
+
+            return false;
+        }
     }
 }

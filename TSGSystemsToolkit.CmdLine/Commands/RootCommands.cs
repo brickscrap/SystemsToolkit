@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using System.CommandLine;
 using System.CommandLine.Invocation;
+using System.CommandLine.Parsing;
 using System.Threading;
 using TSGSystemsToolkit.CmdLine.Binders;
 using TSGSystemsToolkit.CmdLine.Handlers;
@@ -210,6 +211,15 @@ namespace TSGSystemsToolkit.CmdLine.Commands
             var targetOpt = new Option<string>(new[] { "--target", "-t" }, "Target path on the FuelPOS system (excluding file name)") { IsRequired = true };
             var siteOpt = new Option<string>(new[] { "--site", "-s" }, "Site ID of a station to send the file to.");
 
+            filePathArg.AddValidator((ArgumentResult result) =>
+            {
+                if (result.GetValueForArgument(filePathArg).IsDirectory())
+                {
+                    result.ErrorMessage = $"{result.GetValueForArgument(filePathArg)} is a directory, please provide the path to a file to be uploaded.";
+                    return;
+                }
+            });
+
             Command cmd = new("send-file", "Send a file to one or many FuelPOS systems")
             {
                 filePathArg,
@@ -219,7 +229,7 @@ namespace TSGSystemsToolkit.CmdLine.Commands
                 siteOpt
             };
 
-            var binder = new SendFileBinder(filePathArg, clusterOpt, listOpt, targetOpt, siteOpt, _host);
+            var binder = new SendFileOptionsOptionsBinder(filePathArg, clusterOpt, listOpt, targetOpt, siteOpt, _host);
 
             cmd.SetHandler((SendFileOptions options,
                             InvocationContext ctx,
