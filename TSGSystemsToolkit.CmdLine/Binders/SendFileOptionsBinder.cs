@@ -51,9 +51,6 @@ namespace TSGSystemsToolkit.CmdLine.Binders
 
             bindingContext.AddService<ILogger<SendFileHandler>>(x =>
                 _host.Services.GetService(typeof(ILogger<SendFileHandler>)) as ILogger<SendFileHandler>);
-
-            bindingContext.AddService<IAuthService>(x =>
-                _host.Services.GetService(typeof(IAuthService)) as IAuthService);
         }
 
         private string ValidateTarget(BindingContext bindingContext)

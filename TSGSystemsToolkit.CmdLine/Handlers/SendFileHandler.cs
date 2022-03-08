@@ -24,9 +24,6 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
     {
         private SysTkApiClient _apiClient;
         private ILogger<SendFileHandler> _logger;
-        private IConfiguration _config;
-        private IAuthService _authService;
-        private IFtpService _ftpService;
         private SendFileOptions _options;
         private CancellationToken _ct;
 
@@ -42,16 +39,13 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
             // Validate Options - move to do this inside binders
             if (!ValidateOptions(_options))
-            {
                 return 1;
-            }
+            
 
             List<FtpTransferModel> transfers = await BuildTransfers(context);
 
             if (transfers is null || transfers.Count == 0)
-            {
                 return 1;
-            }
 
             return RunTransfers(transfers);
         }
@@ -83,7 +77,6 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 }
 
                 // Get individual site
-
                 if (_options.Site is not null)
                 {
                     var result = await HandleSiteOption(context);
@@ -361,8 +354,6 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
         {
             _apiClient = context.BindingContext.GetService(typeof(SysTkApiClient)) as SysTkApiClient;
             _logger = context.BindingContext.GetService(typeof(ILogger<SendFileHandler>)) as ILogger<SendFileHandler>;
-            _authService = context.BindingContext.GetService(typeof(IAuthService)) as IAuthService;
-            _ftpService = context.BindingContext.GetService(typeof(IFtpService)) as IFtpService;
         }
     }
 }
