@@ -32,8 +32,9 @@ namespace TSGSystemsToolkit.CmdLine
 
         internal static bool IsUpdateAvailable(string installerLocation)
         {
-            var fileVersion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>().Version.Split('.');
-            Version currentVersion = new(fileVersion[0], fileVersion[1], fileVersion[2]);
+            // TODO: This is duplicated in UpdateHandler, spin off to separate helper
+            var assemblyVersion = Assembly.GetEntryAssembly().GetName().Version;
+            Version currentVersion = new(assemblyVersion.Major.ToString(), assemblyVersion.Minor.ToString(), assemblyVersion.Build.ToString());
 
             try
             {
@@ -87,6 +88,18 @@ namespace TSGSystemsToolkit.CmdLine
             var absolutePath = Path.GetFullPath(AppDomain.CurrentDomain.BaseDirectory);
 
             return @$"{absolutePath}\appsettings.json";
+        }
+
+        internal static bool IsDirectory(this string path)
+        {
+            FileAttributes attr = File.GetAttributes(path);
+
+            if (attr == FileAttributes.Directory)
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

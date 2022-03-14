@@ -24,9 +24,6 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
     {
         private SysTkApiClient _apiClient;
         private ILogger<SendFileHandler> _logger;
-        private IConfiguration _config;
-        private IAuthService _authService;
-        private IFtpService _ftpService;
         private SendFileOptions _options;
         private CancellationToken _ct;
 
@@ -42,16 +39,13 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
             // Validate Options - move to do this inside binders
             if (!ValidateOptions(_options))
-            {
                 return 1;
-            }
+            
 
             List<FtpTransferModel> transfers = await BuildTransfers(context);
 
             if (transfers is null || transfers.Count == 0)
-            {
                 return 1;
-            }
 
             return RunTransfers(transfers);
         }
@@ -63,47 +57,34 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             {
                 if (_options.Cluster is not null)
                 {
-                    var result = await HandleClusterOption(transfers, context);
+                    var result = await HandleClusterOption(context);
 
                     if (result.isSuccess)
-                    {
                         transfers.AddRange(result.transfers);
-                    }
                     else
-                    {
                         return null;
-                    }
                 }
 
                 // Get sites from list file
                 if (_options.List is not null)
                 {
-                    var result = await HandleListOption(transfers, context);
+                    var result = await HandleListOption(context);
 
                     if (result.isSuccess)
-                    {
                         transfers.AddRange(result.transfers);
-                    }
                     else
-                    {
                         return null;
-                    }
                 }
 
                 // Get individual site
-
                 if (_options.Site is not null)
                 {
-                    var result = await HandleSiteOption(transfers, context);
+                    var result = await HandleSiteOption(context);
 
                     if (result.isSuccess)
-                    {
                         transfers.AddRange(result.transfers);
-                    }
                     else
-                    {
                         return null;
-                    }
                 }
             }
             catch (HttpRequestException ex)
@@ -117,24 +98,13 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             return transfers;
         }
 
-        private async Task<(bool isSuccess, List<FtpTransferModel> transfers, IOperationResult failureResult)> HandleClusterOption(List<FtpTransferModel> transfers, InvocationContext context)
+        private async Task<(bool isSuccess, List<FtpTransferModel> transfers, IOperationResult failureResult)> HandleClusterOption(InvocationContext context)
         {
             Cluster cluster = Enum.Parse<Cluster>(_options.Cluster);
-
+            List<FtpTransferModel> transfers = new();
             var result = await _apiClient.GetStationsByCluster.ExecuteAsync(cluster, _ct);
 
-            try
-            {
-                result.EnsureNoErrors();
-            }
-            catch (GraphQLClientException ex)
-            {
-                var errorCode = await HandleGraphQLExceptions<IGetStationsByClusterResult>(ex, result, context);
-                if (errorCode > 0)
-                {
-                    return (false, null, result);
-                }
-            }
+            result.EnsureNoErrors();
 
             foreach (var station in result.Data.Station)
             {
@@ -165,26 +135,17 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             return (true, transfers, null);
         }
 
-        private async Task<(bool isSuccess, List<FtpTransferModel> transfers, IOperationResult result)> HandleListOption(List<FtpTransferModel> transfers, InvocationContext context)
+        private async Task<(bool isSuccess, List<FtpTransferModel> transfers, IOperationResult result)> HandleListOption(InvocationContext context)
         {
+            List<FtpTransferModel> transfers = new();
+
             var listFile = File.ReadAllLines(_options.List).ToList();
 
             foreach (var id in listFile)
             {
                 var result = await _apiClient.GetCredentialsByStationId.ExecuteAsync(id, _ct);
 
-                try
-                {
-                    result.EnsureNoErrors();
-                }
-                catch (GraphQLClientException ex)
-                {
-                    var errorCode = await HandleGraphQLExceptions<IGetCredentialsByStationIdResult>(ex, result, context);
-                    if (errorCode > 0)
-                        return (false, null, result);
-                    else
-                        continue;
-                }
+                result.EnsureNoErrors();
 
                 var station = result.Data.Station.FirstOrDefault();
                 var credentials = station.FtpCredentials.FirstOrDefault(x => x.Username == "SUPERVISOR");
@@ -214,22 +175,12 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             return (true, transfers, null);
         }
 
-        public async Task<(bool isSuccess, List<FtpTransferModel> transfers, IOperationResult result)> HandleSiteOption(List<FtpTransferModel> transfers, InvocationContext context)
+        public async Task<(bool isSuccess, List<FtpTransferModel> transfers, IOperationResult result)> HandleSiteOption(InvocationContext context)
         {
+            List<FtpTransferModel> transfers = new();
             var result = await _apiClient.GetCredentialsByStationId.ExecuteAsync(_options.Site, _ct);
 
-            try
-            {
-                result.EnsureNoErrors();
-            }
-            catch (GraphQLClientException ex)
-            {
-                var errorCode = await HandleGraphQLExceptions<IGetCredentialsByStationIdResult>(ex, result, context);
-                if (errorCode > 0)
-                {
-                    return (false, null, result);
-                }
-            }
+            result.EnsureNoErrors();
 
             var station = result.Data.Station.FirstOrDefault();
             var credentials = station.FtpCredentials.FirstOrDefault(x => x.Username == "SUPERVISOR");
@@ -258,17 +209,16 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             return (true, transfers, null);
         }
 
-
-
         private int RunTransfers(List<FtpTransferModel> transfers)
         {
             ThreadPool.GetMaxThreads(out int maxThreads, out int completionPortThreads);
             ThreadPool.SetMaxThreads(5, 5);
 
             List<Task> tasks = new();
+            List<string> errors = new();
 
             AnsiConsole.Progress()
-                        .AutoClear(true)
+                        .AutoClear(false)
                         .Columns(new ProgressColumn[]
                     {
                     new TaskDescriptionColumn(),
@@ -285,8 +235,6 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                             {
                                 try
                                 {
-                                    _logger.LogInformation("Uploading {File} to {Station}...", stat.LocalPath, stat.Name);
-
                                     using var ftpClient = new FtpClient(stat.IP, stat.Port, stat.Username, stat.Password);
                                     ftpClient.Connect();
                                     ProgressTask progTask = ctx.AddTask(stat.Name, maxValue: 100, autoStart: true);
@@ -309,7 +257,14 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                                         progTask.Increment(increment);
                                     }
 
-                                    ftpClient.UploadFile(stat.LocalPath, stat.RemotePath, FtpRemoteExists.Overwrite, progress: prog);
+                                    var result = ftpClient.UploadFile(stat.LocalPath, stat.RemotePath, FtpRemoteExists.Overwrite, progress: prog);
+                                    
+                                    if (result is FtpStatus.Failed)
+                                    {
+                                        AnsiConsole.MarkupLine($"[red]Error uploading file to station:[/] [white]{stat.SiteId} - {stat.Name}[/]");
+                                        errors.Add($"{stat.SiteId} - {stat.Name}");
+                                    }
+                                        
                                 }
                                 catch (Exception ex)
                                 {
@@ -333,6 +288,16 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                             _logger.LogDebug("Trace: {Trace}", ex.StackTrace);
                         }
                     });
+
+            if (errors.Count > 0)
+            {
+                AnsiConsole.MarkupLine($"Error uploading file to:");
+                foreach (var e in errors)
+                    AnsiConsole.MarkupLine(e);
+            }
+
+            AnsiConsole.MarkupLine($"File successfully uploaded to [green]{transfers.Count - errors.Count} sites[/], with [red]{errors.Count} failures.[/]");
+
             return 0;
         }
 
@@ -340,30 +305,21 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
         private async Task<int> HandleGraphQLExceptions<T>(GraphQLClientException exception, IOperationResult<T> operationResult, InvocationContext context) where T : class
         {
             _logger.LogError("Error from API: {Message}", exception.Message);
-            if (operationResult.Errors.Where(x => x.Code == ApiErrorCodes.NotAuthenticated).Any())
-            {
-                Func<InvocationContext, Task<int>> func = InvokeAsync;
-
-                bool authSuccess = await _authService.Authenticate(func, context);
-                if (authSuccess)
-                    return 0;
-                else
-                    return 1;
-            }
 
             return 1;
         }
 
         private bool ValidateOptions(SendFileOptions _options)
         {
+            // TODO: Move this to Binder
             try
             {
-                if (IsDirectory(_options.FilePath))
+                if (_options.FilePath.IsDirectory())
                 {
                     throw new FileNotFoundException($"{_options.FilePath} is a directory, please provide the path to a file.");
                 }
 
-                if (_options.List is not null && IsDirectory(_options.List))
+                if (_options.List is not null && _options.List.IsDirectory())
                 {
                     throw new FileNotFoundException($"{_options.List} is a directory, please provide the path to a CSV or text file containing a list of station IDs.");
                 }
@@ -398,23 +354,6 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
         {
             _apiClient = context.BindingContext.GetService(typeof(SysTkApiClient)) as SysTkApiClient;
             _logger = context.BindingContext.GetService(typeof(ILogger<SendFileHandler>)) as ILogger<SendFileHandler>;
-            _config = context.BindingContext.GetService(typeof(IConfiguration)) as IConfiguration;
-            _authService = context.BindingContext.GetService(typeof(IAuthService)) as IAuthService;
-            _ftpService = context.BindingContext.GetService(typeof(IFtpService)) as IFtpService;
         }
-
-        private static bool IsDirectory(string path)
-        {
-            FileAttributes attr = File.GetAttributes(path);
-
-            if (attr == FileAttributes.Directory)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-
     }
 }
