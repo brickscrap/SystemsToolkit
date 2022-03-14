@@ -268,10 +268,11 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                                 }
                                 catch (Exception ex)
                                 {
+                                    errors.Add(ex.Message);
                                     // TODO: Better handle the various exceptions
-                                    _logger.LogError("Inside Task: {Message}", ex.Message);
-                                    _logger.LogError("{Inner}", ex.InnerException);
-                                    _logger.LogError("{Trace}", ex.StackTrace);
+                                    _logger.LogDebug("Inside Task: {Message}", ex.Message);
+                                    _logger.LogDebug("{Inner}", ex.InnerException);
+                                    _logger.LogDebug("{Trace}", ex.StackTrace);
                                 }
                             }, TaskCreationOptions.AttachedToParent, cancellationToken: _ct);
 
@@ -291,7 +292,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
             if (errors.Count > 0)
             {
-                AnsiConsole.MarkupLine($"Error uploading file to:");
+                AnsiConsole.MarkupLine($"Error list:");
                 foreach (var e in errors)
                     AnsiConsole.MarkupLine(e);
             }
