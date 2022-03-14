@@ -9,7 +9,7 @@ OutFile "installer\systk_installer_${version}.exe"
 Name "Systems Toolkit Installer"
 
 
-RequestExecutionLevel highest
+RequestExecutionLevel user
 ShowInstDetails Show
 
 Page InstFiles
