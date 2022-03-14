@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Spectre.Console;
 using System.CommandLine.Invocation;
 using System.Diagnostics;
 using System.Reflection;
@@ -34,14 +35,14 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
             var fileVersion = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyFileVersionAttribute>().Version.Split('.');
             Version currentVersion = new(fileVersion[0], fileVersion[1], fileVersion[2]);
-            _logger.LogInformation("Current version: {Current}", currentVersion);
+            AnsiConsole.MarkupLine($"Current version: [orange]{currentVersion}[/]");
 
             Version available = Extensions.GetAvailableVersion(_config.GetValue<string>("MasterLocation"));
-            _logger.LogInformation("Available version: {Available}", available);
+            AnsiConsole.MarkupLine($"Available version: [green]{available}[/]");
 
             if (available > currentVersion)
             {
-                _logger.LogInformation("Update available! Updating...");
+                AnsiConsole.MarkupLine("Update available! [green]Updating...[/]");
 
                 Process.Start(available.InstallerPath, "/S");
             }
