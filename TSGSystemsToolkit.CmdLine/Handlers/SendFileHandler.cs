@@ -100,7 +100,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
         private async Task<(bool isSuccess, List<FtpTransferModel> transfers, IOperationResult failureResult)> HandleClusterOption(InvocationContext context)
         {
-            Cluster cluster = Enum.Parse<Cluster>(_options.Cluster);
+            Cluster cluster = Enum.Parse<Cluster>(_options.Cluster, true);
             List<FtpTransferModel> transfers = new();
             var result = await _apiClient.GetStationsByCluster.ExecuteAsync(cluster, _ct);
 
@@ -148,6 +148,12 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 result.EnsureNoErrors();
 
                 var station = result.Data.Station.FirstOrDefault();
+                if (station is null)
+                {
+                    _logger.LogInformation("Station {Id} not found...", id);
+                    continue;
+                }
+
                 var credentials = station.FtpCredentials.FirstOrDefault(x => x.Username == "SUPERVISOR");
 
                 // TODO: Handle supervisor credentials not existing, offer option to add
@@ -225,7 +231,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                     new ProgressBarColumn(),
                     new PercentageColumn(),
                     new RemainingTimeColumn(),
-                    new SpinnerColumn(Spinner.Known.BetaWave)
+                    new SpinnerColumn(Spinner.Known.Aesthetic)
                     })
                     .Start(ctx =>
                     {
@@ -235,36 +241,9 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                             {
                                 try
                                 {
-                                    using var ftpClient = new FtpClient(stat.IP, stat.Port, stat.Username, stat.Password);
-                                    ftpClient.Connect();
                                     ProgressTask progTask = ctx.AddTask(stat.Name, maxValue: 100, autoStart: true);
 
-                                    double increment = 0;
-                                    double lastProg = 0;
-                                    void prog(FtpProgress x)
-                                    {
-                                        if (increment == 0)
-                                        {
-                                            increment = x.Progress;
-                                            lastProg = x.Progress;
-                                        }
-                                        else
-                                        {
-                                            increment = x.Progress - lastProg;
-                                            lastProg = x.Progress;
-                                        }
-
-                                        progTask.Increment(increment);
-                                    }
-
-                                    var result = ftpClient.UploadFile(stat.LocalPath, stat.RemotePath, FtpRemoteExists.Overwrite, progress: prog);
-                                    
-                                    if (result is FtpStatus.Failed)
-                                    {
-                                        AnsiConsole.MarkupLine($"[red]Error uploading file to station:[/] [white]{stat.SiteId} - {stat.Name}[/]");
-                                        errors.Add($"{stat.SiteId} - {stat.Name}");
-                                    }
-                                        
+                                    HandleTransfer(progTask, stat, errors);
                                 }
                                 catch (Exception ex)
                                 {
@@ -302,12 +281,38 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             return 0;
         }
 
-        // TODO: Put this in a separate class ErrorHandlers?
-        private async Task<int> HandleGraphQLExceptions<T>(GraphQLClientException exception, IOperationResult<T> operationResult, InvocationContext context) where T : class
+        private List<string> HandleTransfer(ProgressTask progTask, FtpTransferModel stat, List<string> errors)
         {
-            _logger.LogError("Error from API: {Message}", exception.Message);
+            using var ftpClient = new FtpClient(stat.IP, stat.Port, stat.Username, stat.Password);
+            ftpClient.Connect();
 
-            return 1;
+            double increment = 0;
+            double lastProg = 0;
+            void prog(FtpProgress p)
+            {
+                if (increment == 0)
+                {
+                    increment = p.Progress;
+                    lastProg = p.Progress;
+                }
+                else
+                {
+                    increment = p.Progress - lastProg;
+                    lastProg = p.Progress;
+                }
+
+                progTask.Increment(increment);
+            }
+
+            var result = ftpClient.UploadFile(stat.LocalPath, stat.RemotePath, FtpRemoteExists.Overwrite, progress: prog);
+
+            if (result is FtpStatus.Failed)
+            {
+                AnsiConsole.MarkupLine($"[red]Error uploading file to station:[/] [white]{stat.SiteId} - {stat.Name}[/]");
+                errors.Add($"{stat.SiteId} - {stat.Name}");
+            }
+
+            return errors;
         }
 
         private bool ValidateOptions(SendFileOptions _options)
@@ -333,7 +338,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
             try
             {
-                Cluster cluster = Enum.Parse<Cluster>(_options.Cluster);
+                Cluster cluster = Enum.Parse<Cluster>(_options.Cluster, true);
             }
             catch (ArgumentException)
             {
