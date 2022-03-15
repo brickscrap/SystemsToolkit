@@ -336,21 +336,24 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 return false;
             }
 
-            try
+            if (_options.Cluster is not null)
             {
-                Cluster cluster = Enum.Parse<Cluster>(_options.Cluster, true);
-            }
-            catch (ArgumentException)
-            {
-                _logger.LogError("The provided cluster name \"{Cluster}\" is not a valid cluster.", _options.Cluster);
-                var clusters = Enum.GetValues<Cluster>();
-                Console.WriteLine("Possible clusters are:");
-                foreach (var item in clusters)
+                try
                 {
-                    Console.WriteLine(item);
+                    Cluster cluster = Enum.Parse<Cluster>(_options.Cluster, true);
                 }
+                catch (ArgumentException)
+                {
+                    _logger.LogError("The provided cluster name \"{Cluster}\" is not a valid cluster.", _options.Cluster);
+                    var clusters = Enum.GetValues<Cluster>();
+                    Console.WriteLine("Possible clusters are:");
+                    foreach (var item in clusters)
+                    {
+                        Console.WriteLine(item);
+                    }
 
-                return false;
+                    return false;
+                }
             }
 
             return true;
