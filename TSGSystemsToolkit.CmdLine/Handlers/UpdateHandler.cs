@@ -35,7 +35,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
 
             var assemblyVersion = Assembly.GetEntryAssembly().GetName().Version;
             Version currentVersion = new(assemblyVersion.Major.ToString(), assemblyVersion.Minor.ToString(), assemblyVersion.Build.ToString());
-            AnsiConsole.MarkupLine($"Current version: [orange]{currentVersion}[/]");
+            AnsiConsole.MarkupLine($"Current version: [blue]{currentVersion}[/]");
 
             Version available = Extensions.GetAvailableVersion(_config.GetValue<string>("MasterLocation"));
             AnsiConsole.MarkupLine($"Available version: [green]{available}[/]");
