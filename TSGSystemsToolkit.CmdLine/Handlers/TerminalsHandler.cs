@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Pse.TerminalsToEmis;
+using Spectre.Console;
 using System;
 using System.CommandLine.Invocation;
 using System.IO;
@@ -28,6 +29,17 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
             if (_options.CreateEmisFile)
             {
                 string outputPath;
+                string terminalsPath;
+
+                if (File.Exists(_options.FilePath))
+                    terminalsPath = _options.FilePath;
+                else if (Directory.Exists(_options.FilePath))
+                    terminalsPath = $"{_options.FilePath}\\Terminals_044.csv";
+                else
+                {
+                    AnsiConsole.MarkupLine($"[red]Error:[/] File or directory {_options.FilePath} does not exist.");
+                    return 1;
+                }
 
                 if (string.IsNullOrWhiteSpace(_options.OutputPath))
                 {
@@ -46,7 +58,7 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                     _logger.LogDebug("Output path manually defined at: {Output}", outputPath);
                 }
 
-                TerminalsToEmis.Run($"{_options.FilePath}\\Terminals_044.csv", outputPath);
+                TerminalsToEmis.Run(terminalsPath, outputPath);
             }
 
             return 0;
