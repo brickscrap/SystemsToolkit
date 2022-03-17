@@ -1,111 +1,110 @@
-﻿namespace TSGSystemsToolkit.CmdLine
+﻿namespace TSGSystemsToolkit.CmdLine;
+
+internal class Version
 {
-    internal class Version
+    public int Major { get; set; }
+    public int Minor { get; set; }
+    public int Patch { get; set; }
+    public string InstallerPath { get; set; }
+
+    public Version(string major, string minor, string patch)
     {
-        public int Major { get; set; }
-        public int Minor { get; set; }
-        public int Patch { get; set; }
-        public string InstallerPath { get; set; }
+        Major = int.Parse(major);
+        Minor = int.Parse(minor);
+        Patch = int.Parse(patch);
+    }
 
-        public Version(string major, string minor, string patch)
+    public Version()
+    {
+        Major = 0;
+        Minor = 0;
+        Patch = 0;
+    }
+
+    public override string ToString()
+    {
+        return $"{Major}.{Minor}.{Patch}";
+    }
+
+    public static bool operator >(Version a, Version b)
+    {
+        if (a.Major != b.Major)
         {
-            Major = int.Parse(major);
-            Minor = int.Parse(minor);
-            Patch = int.Parse(patch);
+            if (a.Major > b.Major)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        public Version()
+        if (a.Minor != b.Minor)
         {
-            Major = 0;
-            Minor = 0;
-            Patch = 0;
+            if (a.Minor > b.Minor)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        public override string ToString()
+        if (a.Patch != b.Patch)
         {
-            return $"{Major}.{Minor}.{Patch}";
+            if (a.Patch > b.Patch)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
-        public static bool operator >(Version a, Version b)
+        return false;
+    }
+
+    public static bool operator <(Version a, Version b)
+    {
+        if (a.Major != b.Major)
         {
-            if (a.Major != b.Major)
+            if (a.Major < b.Major)
             {
-                if (a.Major > b.Major)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return true;
             }
-
-            if (a.Minor != b.Minor)
+            else
             {
-                if (a.Minor > b.Minor)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
-
-            if (a.Patch != b.Patch)
-            {
-                if (a.Patch > b.Patch)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            return false;
         }
 
-        public static bool operator <(Version a, Version b)
+        if (a.Minor != b.Minor)
         {
-            if (a.Major != b.Major)
+            if (a.Minor < b.Minor)
             {
-                if (a.Major < b.Major)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return true;
             }
-
-            if (a.Minor != b.Minor)
+            else
             {
-                if (a.Minor < b.Minor)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
+                return false;
             }
-
-            if (a.Patch != b.Patch)
-            {
-                if (a.Patch < b.Patch)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-
-            return false;
         }
+
+        if (a.Patch != b.Patch)
+        {
+            if (a.Patch < b.Patch)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        return false;
     }
 }

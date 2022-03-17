@@ -1,40 +1,33 @@
 ﻿using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.CommandLine;
 using System.CommandLine.Binding;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.GraphQL;
 using TSGSystemsToolkit.CmdLine.Options;
 
-namespace TSGSystemsToolkit.CmdLine.Binders
+namespace TSGSystemsToolkit.CmdLine.Binders;
+
+internal class UpdateEmisOptionsBinder : BinderBase<UpdateEmisOptions>
 {
-    internal class UpdateEmisOptionsBinder : BinderBase<UpdateEmisOptions>
+    private readonly Option<string?> _filePathOption;
+    private readonly IHost _host;
+
+    public UpdateEmisOptionsBinder(Option<string?> filePathOption, IHost host)
     {
-        private readonly Option<string?> _filePathOption;
-        private readonly IHost _host;
+        _filePathOption = filePathOption;
+        _host = host;
+    }
+    protected override UpdateEmisOptions GetBoundValue(BindingContext bindingContext)
+    {
+        AddDependencies(bindingContext);
 
-        public UpdateEmisOptionsBinder(Option<string?> filePathOption, IHost host)
+        return new()
         {
-            _filePathOption = filePathOption;
-            _host = host;
-        }
-        protected override UpdateEmisOptions GetBoundValue(BindingContext bindingContext)
-        {
-            AddDependencies(bindingContext);
+            FilePath = bindingContext.ParseResult.GetValueForOption(_filePathOption)
+        };
+    }
 
-            return new()
-            {
-                FilePath = bindingContext.ParseResult.GetValueForOption(_filePathOption)
-            };
-        }
-
-        private void AddDependencies(BindingContext bindingContext)
-        {
-            bindingContext.AddService<SysTkApiClient>(x =>
-                (SysTkApiClient)_host.Services.GetService(typeof(SysTkApiClient)));
-        }
+    private void AddDependencies(BindingContext bindingContext)
+    {
+        bindingContext.AddService<SysTkApiClient>(x =>
+            (SysTkApiClient)_host.Services.GetService(typeof(SysTkApiClient)));
     }
 }

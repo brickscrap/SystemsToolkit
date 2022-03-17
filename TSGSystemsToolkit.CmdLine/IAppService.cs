@@ -1,9 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿namespace TSGSystemsToolkit.CmdLine;
 
-namespace TSGSystemsToolkit.CmdLine
+internal interface IAppService
 {
-    internal interface IAppService
-    {
-        Task<int> Run(string[] args);
-    }
+    Task<int> Run(string[] args);
 }

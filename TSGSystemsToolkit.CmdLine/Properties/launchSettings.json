@@ -1,7 +1,8 @@
 {
   "profiles": {
     "TSGSystemsToolkit.CmdLine": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "fuelpos send-file \"T:\\Tech Support\\FuelPOS\\Debuggers\\Shell GIPT\\BUG_DEF.ASC\" -c ShellRfa -t PRO_BO/EBOC"
     }
   }
 }

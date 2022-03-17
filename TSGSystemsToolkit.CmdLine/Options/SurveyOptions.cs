@@ -1,10 +1,9 @@
-﻿namespace TSGSystemsToolkit.CmdLine.Options
+﻿namespace TSGSystemsToolkit.CmdLine.Options;
+
+internal class SurveyOptions
 {
-    public class SurveyOptions : OptionsBase
-    {
-        public string FilePath { get; set; }
-        public string OutputPath { get; set; }
-        public bool FuelPosSurvey { get; set; }
-        public bool SerialNumberSurvey { get; set; }
-    }
+    public string FilePath { get; set; }
+    public string OutputPath { get; set; }
+    public bool FuelPosSurvey { get; set; }
+    public bool SerialNumberSurvey { get; set; }
 }

@@ -1,10 +1,9 @@
-﻿namespace TSGSystemsToolkit.CmdLine.Options
+﻿namespace TSGSystemsToolkit.CmdLine.Options;
+
+internal class VeederRootOptions
 {
-    public class VeederRootOptions : OptionsBase
-    {
-        public string FilePath { get; set; }
-        public string OutputPath { get; set; }
-        public bool CreateFuelPosFile { get; set; }
-        public bool CreateCsv { get; set; }
-    }
+    public string FilePath { get; set; }
+    public string OutputPath { get; set; }
+    public bool CreateFuelPosFile { get; set; }
+    public bool CreateCsv { get; set; }
 }

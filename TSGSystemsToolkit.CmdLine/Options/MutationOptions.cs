@@ -1,8 +1,7 @@
-﻿namespace TSGSystemsToolkit.CmdLine.Options
+﻿namespace TSGSystemsToolkit.CmdLine.Options;
+
+internal class MutationOptions
 {
-    public class MutationOptions : OptionsBase
-    {
-        public string CardIdMutPath { get; set; }
-        public string OutputPath { get; set; }
-    }
+    public string CardIdMutPath { get; set; }
+    public string OutputPath { get; set; }
 }

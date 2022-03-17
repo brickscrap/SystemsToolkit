@@ -1,61 +1,56 @@
 ﻿using FuelPOS.MutationCreator;
-using Microsoft.Extensions.Logging;
-using System.CommandLine.Invocation;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using SysTk.DataManager.DataAccess;
 using TSGSystemsToolkit.CmdLine.Options;
 
-namespace TSGSystemsToolkit.CmdLine.Handlers
+namespace TSGSystemsToolkit.CmdLine.Handlers;
+
+public class MutationHandler : ICommandHandler
 {
-    public class MutationHandler : ICommandHandler
+    private readonly MutationOptions _options;
+    private readonly CancellationToken _ct;
+    private ILogger<MutationHandler> _logger;
+    private ICardIdentificationData _crdIdData;
+
+    public MutationHandler(MutationOptions options, CancellationToken ct = default)
     {
-        private readonly MutationOptions _options;
-        private readonly CancellationToken _ct;
-        private ILogger<MutationHandler> _logger;
-        private ICardIdentificationData _crdIdData;
+        _options = options;
+        _ct = ct;
+    }
 
-        public MutationHandler(MutationOptions options, CancellationToken ct = default)
+    public async Task<int> InvokeAsync(InvocationContext context)
+    {
+        GetDependencies(context);
+
+        int result = 1;
+        if (!string.IsNullOrWhiteSpace(_options.CardIdMutPath))
         {
-            _options = options;
-            _ct = ct;
+            result = RunCardIdMut(_options);
         }
 
-        public async Task<int> InvokeAsync(InvocationContext context)
+        return result;
+    }
+
+    private void GetDependencies(InvocationContext context)
+    {
+        _logger = context.BindingContext.GetService(typeof(ILogger<MutationHandler>)) as ILogger<MutationHandler>;
+        _crdIdData = context.BindingContext.GetService(typeof(ICardIdentificationData)) as ICardIdentificationData;
+    }
+
+    private int RunCardIdMut(MutationOptions options)
+    {
+        var data = _crdIdData.GetAllCards(options.CardIdMutPath);
+
+        if (options.OutputPath is null)
         {
-            GetDependencies(context);
-
-            int result = 1;
-            if (!string.IsNullOrWhiteSpace(_options.CardIdMutPath))
-            {
-                result = RunCardIdMut(_options);
-            }
-
-            return result;
+            string outputDir = Path.GetDirectoryName(options.CardIdMutPath);
+            CrdIdMut.Create(data, outputDir);
+        }
+        else
+        {
+            CrdIdMut.Create(data, options.OutputPath);
         }
 
-        private void GetDependencies(InvocationContext context)
-        {
-            _logger = context.BindingContext.GetService(typeof(ILogger<MutationHandler>)) as ILogger<MutationHandler>;
-            _crdIdData = context.BindingContext.GetService(typeof(ICardIdentificationData)) as ICardIdentificationData;
-        }
-
-        private int RunCardIdMut(MutationOptions options)
-        {
-            var data = _crdIdData.GetAllCards(options.CardIdMutPath);
-
-            if (options.OutputPath is null)
-            {
-                string outputDir = Path.GetDirectoryName(options.CardIdMutPath);
-                CrdIdMut.Create(data, outputDir);
-            }
-            else
-            {
-                CrdIdMut.Create(data, options.OutputPath);
-            }
-
-            return 1;
-        }
+        return 1;
     }
 }
