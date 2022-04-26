@@ -45,10 +45,13 @@ namespace TSGSystemsToolkit.CmdLine.Handlers
                 {
                     outputPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
                     outputPath = $"{outputPath}\\FuelPos";
+
                     if (!Directory.Exists(outputPath))
                     {
-                        throw new DirectoryNotFoundException($"Directory {outputPath} could not be found. Is Remote eMIS installed?");
+                        AnsiConsole.MarkupLine($"Directory {outputPath} could not be found. Is Remote eMIS installed?");
+                        return 1;
                     }
+                        
 
                     _logger.LogDebug("Output path automatically set to: {Output}", outputPath);
                 }

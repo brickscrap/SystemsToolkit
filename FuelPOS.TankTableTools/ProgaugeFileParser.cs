@@ -95,10 +95,8 @@ namespace FuelPOS.TankTableTools
             if (_isFirstTank)
             {
                 if (tankNumber.Length > 1)
-                {
                     _tankNumZeroIndexed = true;
-                }
-
+                
                 _isFirstTank = false;
             }
 

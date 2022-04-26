@@ -13,12 +13,12 @@ namespace FuelPOS.TankTableTools.Helpers
 
         internal static string ToSemiColonSeparated(this string line)
         {
-            var regex = new Regex("   +");
+            var regex = new Regex(@"\s+");
             var newLine = line.Trim();
             var output = regex.Replace(newLine, ";").Trim();
 
-            output = output.RemoveConsecutiveDuplicateChars(';');
             output = output.Replace(',', ';');
+            output = output.RemoveConsecutiveDuplicateChars(';');
 
             return output;
         }
