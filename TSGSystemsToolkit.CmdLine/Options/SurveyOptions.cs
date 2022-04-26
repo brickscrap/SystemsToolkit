@@ -1,6 +1,6 @@
 ﻿namespace TSGSystemsToolkit.CmdLine.Options;
 
-internal class SurveyOptions
+public class SurveyOptions
 {
     public string FilePath { get; set; }
     public string OutputPath { get; set; }

@@ -1,6 +1,6 @@
 ﻿namespace TSGSystemsToolkit.CmdLine.Options;
 
-internal class UpdateOptions
+public class UpdateOptions
 {
     public bool Check { get; set; }
 }

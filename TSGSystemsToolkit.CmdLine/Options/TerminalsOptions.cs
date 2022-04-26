@@ -1,6 +1,6 @@
 ﻿namespace TSGSystemsToolkit.CmdLine.Options;
 
-internal class TerminalsOptions
+public class TerminalsOptions
 {
     public string FilePath { get; set; }
     public string OutputPath { get; set; }
