@@ -1,9 +1,6 @@
-﻿using System.CommandLine;
+﻿namespace TSGSystemsToolkit.CmdLine.Commands;
 
-namespace TSGSystemsToolkit.CmdLine.Commands
+internal interface IRootCommands
 {
-    internal interface IRootCommands
-    {
-        RootCommand Create();
-    }
+    RootCommand Create();
 }

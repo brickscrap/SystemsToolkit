@@ -1,9 +1,8 @@
-﻿namespace TSGSystemsToolkit.CmdLine.Options
+﻿namespace TSGSystemsToolkit.CmdLine.Options;
+
+internal class ProgaugeOptions
 {
-    public class ProgaugeOptions : OptionsBase
-    {
-        public string FilePath { get; set; }
-        public string OutputPath { get; set; }
-        public bool CreateFuelPosFile { get; set; }
-    }
+    public string FilePath { get; set; }
+    public string OutputPath { get; set; }
+    public bool CreateFuelPosFile { get; set; }
 }

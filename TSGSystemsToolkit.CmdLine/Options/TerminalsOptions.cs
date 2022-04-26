@@ -1,9 +1,8 @@
-﻿namespace TSGSystemsToolkit.CmdLine.Options
+﻿namespace TSGSystemsToolkit.CmdLine.Options;
+
+internal class TerminalsOptions
 {
-    public class TerminalsOptions : OptionsBase
-    {
-        public string FilePath { get; set; }
-        public string OutputPath { get; set; }
-        public bool CreateEmisFile { get; set; }
-    }
+    public string FilePath { get; set; }
+    public string OutputPath { get; set; }
+    public bool CreateEmisFile { get; set; }
 }

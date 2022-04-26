@@ -1,11 +1,10 @@
-﻿namespace TSGSystemsToolkit.CmdLine.Options
+﻿namespace TSGSystemsToolkit.CmdLine.Options;
+
+internal class SendFileOptions
 {
-    public class SendFileOptions : OptionsBase
-    {
-        public string FilePath { get; set; }
-        public string Cluster { get; set; }
-        public string Target { get; set; }
-        public string List { get; set; }
-        public string Site { get; set; }
-    }
+    public string FilePath { get; set; }
+    public string Cluster { get; set; }
+    public string Target { get; set; }
+    public string List { get; set; }
+    public string Site { get; set; }
 }

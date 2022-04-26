@@ -1,176 +1,169 @@
-﻿using Spectre.Console;
-using StrawberryShake;
-using System;
-using System.Collections.Generic;
-using System.CommandLine.Invocation;
+﻿using StrawberryShake;
 using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using TSGSystemsToolkit.CmdLine.GraphQL;
 using TSGSystemsToolkit.CmdLine.Options;
 
-namespace TSGSystemsToolkit.CmdLine.Handlers
+namespace TSGSystemsToolkit.CmdLine.Handlers;
+
+public class AddStationsHandler : ICommandHandler
 {
-    public class AddStationsHandler : ICommandHandler
+    private readonly AddStationsOptions _options;
+    private readonly CancellationToken _ct;
+    private SysTkApiClient _apiClient;
+
+    public AddStationsHandler(AddStationsOptions options, CancellationToken ct = default)
     {
-        private readonly AddStationsOptions _options;
-        private readonly CancellationToken _ct;
-        private SysTkApiClient _apiClient;
+        _options = options;
+        _ct = ct;
+    }
 
-        public AddStationsHandler(AddStationsOptions options, CancellationToken ct = default)
+    public async Task<int> InvokeAsync(InvocationContext context)
+    {
+        GetDependencies(context);
+
+        if (_options.Individual is not null)
         {
-            _options = options;
-            _ct = ct;
+            await HandleIndividualStation(_options.Individual);
         }
 
-        public async Task<int> InvokeAsync(InvocationContext context)
+        if (_options.File is not null)
         {
-            GetDependencies(context);
+            // TODO: Validate file contents
+            var siteList = File.ReadAllLines(_options.File);
 
-            if (_options.Individual is not null)
+            // TODO: Build a list of errors to report at the end
+            foreach (var site in siteList)
             {
-                await HandleIndividualStation(_options.Individual);
+                await HandleIndividualStation(site);
             }
-
-            if (_options.File is not null)
-            {
-                // TODO: Validate file contents
-                var siteList = File.ReadAllLines(_options.File);
-
-                // TODO: Build a list of errors to report at the end
-                foreach (var site in siteList)
-                {
-                    await HandleIndividualStation(site);
-                }
-            }
-
-            return 0;
         }
 
-        private async Task HandleIndividualStation(string stationLine)
-        {
-            var stationInput = CreateStationInput(stationLine);
+        return 0;
+    }
 
-            if (stationInput is null)
+    private async Task HandleIndividualStation(string stationLine)
+    {
+        var stationInput = CreateStationInput(stationLine);
+
+        if (stationInput is null)
+            return;
+
+        var stationResult = await _apiClient.AddStation.ExecuteAsync(CreateStationInput(stationLine), _ct);
+        stationResult.EnsureNoErrors();
+
+        if (stationResult.IsSuccessResult() && stationResult.Data.AddStation.Station is not null)
+        {
+            AnsiConsole.MarkupLine($"Station {stationResult.Data.AddStation.Station.Id} - {stationResult.Data.AddStation.Station.Name} [green]added successfully[/].");
+
+            var ftpInput = CreateFtpCredentialsInput(stationLine);
+
+            if (ftpInput is null)
                 return;
 
-            var stationResult = await _apiClient.AddStation.ExecuteAsync(CreateStationInput(stationLine), _ct);
-            stationResult.EnsureNoErrors();
-
-            if (stationResult.IsSuccessResult() && stationResult.Data.AddStation.Station is not null)
+            await AddFtpCredentials(ftpInput);
+        }
+        else if (stationResult.Data.AddStation.Errors.Count > 0)
+        {
+            foreach (var error in stationResult.Data.AddStation.Errors)
             {
-                AnsiConsole.MarkupLine($"Station {stationResult.Data.AddStation.Station.Id} - {stationResult.Data.AddStation.Station.Name} [green]added successfully[/].");
-
-                var ftpInput = CreateFtpCredentialsInput(stationLine);
-
-                if (ftpInput is null)
-                    return;
-
-                await AddFtpCredentials(ftpInput);
-            }
-            else if (stationResult.Data.AddStation.Errors.Count > 0)
-            {
-                foreach (var error in stationResult.Data.AddStation.Errors)
+                switch (error)
                 {
-                    switch (error)
-                    {
-                        case AddStation_AddStation_Errors_StationExistsError stationExists:
-                            AnsiConsole.MarkupLine($"[red]Error:[/] {stationExists.Message}");
-                            var ftpInput = CreateFtpCredentialsInput(stationLine);
+                    case AddStation_AddStation_Errors_StationExistsError stationExists:
+                        AnsiConsole.MarkupLine($"[red]Error:[/] {stationExists.Message}");
+                        var ftpInput = CreateFtpCredentialsInput(stationLine);
 
-                            if (ftpInput is null)
-                                return;
+                        if (ftpInput is null)
+                            return;
 
-                            await AddFtpCredentials(ftpInput);
-                            break;
-                        default:
-                            break;
-                    }
+                        await AddFtpCredentials(ftpInput);
+                        break;
+                    default:
+                        break;
                 }
             }
         }
+    }
 
-        private static AddStationInput CreateStationInput(string stationLine)
+    private static AddStationInput CreateStationInput(string stationLine)
+    {
+        try
         {
-            try
-            {
-                string[] stationDetails = stationLine.Split(';');
-                var ftpCreds = new Uri(stationDetails[3]);
-                var cluster = (Cluster)Enum.Parse(typeof(Cluster), stationDetails[1]);
+            string[] stationDetails = stationLine.Split(';');
+            var ftpCreds = new Uri(stationDetails[3]);
+            var cluster = (Cluster)Enum.Parse(typeof(Cluster), stationDetails[1]);
 
-                return new AddStationInput
-                {
-                    Cluster = cluster,
-                    Id = stationDetails[0],
-                    Name = stationDetails[2],
-                    Ip = ftpCreds.Host
-                };
-            }
-            catch (UriFormatException)
+            return new AddStationInput
             {
-                AnsiConsole.MarkupLine($"[Yellow]Warning:[/] Could not parse URI for {stationLine}");
-            }
-
-            return null;
+                Cluster = cluster,
+                Id = stationDetails[0],
+                Name = stationDetails[2],
+                Ip = ftpCreds.Host
+            };
+        }
+        catch (UriFormatException)
+        {
+            AnsiConsole.MarkupLine($"[Yellow]Warning:[/] Could not parse URI for {stationLine}");
         }
 
-        private static AddFtpCredentialsInput CreateFtpCredentialsInput(string stationLine)
+        return null;
+    }
+
+    private static AddFtpCredentialsInput CreateFtpCredentialsInput(string stationLine)
+    {
+        try
         {
-            try
-            {
-                string[] stationDetails = stationLine.Split(';');
-                var ftpCreds = new Uri(stationDetails[3]);
-                var userInfo = ftpCreds.UserInfo.Split(':');
+            string[] stationDetails = stationLine.Split(';');
+            var ftpCreds = new Uri(stationDetails[3]);
+            var userInfo = ftpCreds.UserInfo.Split(':');
 
-                return new AddFtpCredentialsInput
-                {
-                    StationId = stationDetails[0],
-                    Username = userInfo[0],
-                    Password = userInfo[1]
-                };
-            }
-            catch (UriFormatException)
+            return new AddFtpCredentialsInput
             {
-                AnsiConsole.MarkupLine($"[Yellow]Warning:[/] Could not parse URI for {stationLine}");
-            }
-
-            return null;
+                StationId = stationDetails[0],
+                Username = userInfo[0],
+                Password = userInfo[1]
+            };
+        }
+        catch (UriFormatException)
+        {
+            AnsiConsole.MarkupLine($"[Yellow]Warning:[/] Could not parse URI for {stationLine}");
         }
 
-        private async Task AddFtpCredentials(AddFtpCredentialsInput input)
-        {
-            var credsResult = await _apiClient.AddCredentials.ExecuteAsync(input, _ct);
-            credsResult.EnsureNoErrors();
+        return null;
+    }
 
-            if (credsResult.IsSuccessResult() && credsResult.Data.AddFtpCredentials.FtpCredentials is not null)
+    private async Task AddFtpCredentials(AddFtpCredentialsInput input)
+    {
+        var credsResult = await _apiClient.AddCredentials.ExecuteAsync(input, _ct);
+        credsResult.EnsureNoErrors();
+
+        if (credsResult.IsSuccessResult() && credsResult.Data.AddFtpCredentials.FtpCredentials is not null)
+        {
+            AnsiConsole.MarkupLine($"FTP credentials for station {input.StationId} [green]added successfully[/].");
+        }
+        else if (credsResult.Data.AddFtpCredentials.Errors.Count > 0)
+        {
+            foreach (var error in credsResult.Data.AddFtpCredentials.Errors)
             {
-                AnsiConsole.MarkupLine($"FTP credentials for station {input.StationId} [green]added successfully[/].");
-            }
-            else if (credsResult.Data.AddFtpCredentials.Errors.Count > 0)
-            {
-                foreach (var error in credsResult.Data.AddFtpCredentials.Errors)
+                switch (error)
                 {
-                    switch (error)
-                    {
-                        case AddCredentials_AddFtpCredentials_Errors_StationNotExistsError stationNotExists:
-                            Console.WriteLine();
-                            AnsiConsole.MarkupLine($"[red]Error:[/] {stationNotExists.Message}");
-                            break;
-                        case AddCredentials_AddFtpCredentials_Errors_FtpCredentialsExistsError credentialsExists:
-                            Console.WriteLine();
-                            AnsiConsole.MarkupLine($"[red]Error:[/] {credentialsExists.Message}");
-                            break;
-                        default:
-                            break;
-                    }
+                    case AddCredentials_AddFtpCredentials_Errors_StationNotExistsError stationNotExists:
+                        Console.WriteLine();
+                        AnsiConsole.MarkupLine($"[red]Error:[/] {stationNotExists.Message}");
+                        break;
+                    case AddCredentials_AddFtpCredentials_Errors_FtpCredentialsExistsError credentialsExists:
+                        Console.WriteLine();
+                        AnsiConsole.MarkupLine($"[red]Error:[/] {credentialsExists.Message}");
+                        break;
+                    default:
+                        break;
                 }
             }
         }
+    }
 
-        private void GetDependencies(InvocationContext context)
-        {
-            _apiClient = (SysTkApiClient)context.BindingContext.GetService(typeof(SysTkApiClient));
-        }
+    private void GetDependencies(InvocationContext context)
+    {
+        _apiClient = (SysTkApiClient)context.BindingContext.GetService(typeof(SysTkApiClient));
     }
 }
 

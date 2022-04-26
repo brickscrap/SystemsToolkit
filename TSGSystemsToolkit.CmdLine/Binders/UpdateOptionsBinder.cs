@@ -1,42 +1,39 @@
 ﻿using AutoMapper.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using System.CommandLine;
 using System.CommandLine.Binding;
 using TSGSystemsToolkit.CmdLine.Handlers;
 using TSGSystemsToolkit.CmdLine.Options;
 
-namespace TSGSystemsToolkit.CmdLine.Binders
+namespace TSGSystemsToolkit.CmdLine.Binders;
+
+public class UpdateOptionsBinder : BinderBase<UpdateOptions>
 {
-    public class UpdateOptionsBinder : BinderBase<UpdateOptions>
+    private readonly Option<bool> _updateOption;
+    private readonly IHost _host;
+    private IConfiguration _configuration;
+
+    public UpdateOptionsBinder(Option<bool> updateOption, IHost host)
     {
-        private readonly Option<bool> _updateOption;
-        private readonly IHost _host;
-        private IConfiguration _configuration;
+        _updateOption = updateOption;
+        _host = host;
+    }
 
-        public UpdateOptionsBinder(Option<bool> updateOption, IHost host)
+    protected override UpdateOptions GetBoundValue(BindingContext bindingContext)
+    {
+        AddDependencies(bindingContext);
+
+        return new()
         {
-            _updateOption = updateOption;
-            _host = host;
-        }
+            Check = bindingContext.ParseResult.GetValueForOption(_updateOption)
+        };
+    }
 
-        protected override UpdateOptions GetBoundValue(BindingContext bindingContext)
-        {
-            AddDependencies(bindingContext);
+    private void AddDependencies(BindingContext bindingContext)
+    {
+        bindingContext.AddService<IConfiguration>(x =>
+            _host.Services.GetService(typeof(IConfiguration)) as IConfiguration);
 
-            return new()
-            {
-                Check = bindingContext.ParseResult.GetValueForOption(_updateOption)
-            };
-        }
-
-        private void AddDependencies(BindingContext bindingContext)
-        {
-            bindingContext.AddService<IConfiguration>(x =>
-                _host.Services.GetService(typeof(IConfiguration)) as IConfiguration);
-
-            bindingContext.AddService<ILogger<UpdateHandler>>(x =>
-                (ILogger<UpdateHandler>)_host.Services.GetService(typeof(ILogger<UpdateHandler>)));
-        }
+        bindingContext.AddService<ILogger<UpdateHandler>>(x =>
+            (ILogger<UpdateHandler>)_host.Services.GetService(typeof(ILogger<UpdateHandler>)));
     }
 }
