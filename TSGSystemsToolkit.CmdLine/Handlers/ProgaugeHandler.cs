@@ -55,6 +55,4 @@ public class ProgaugeHandler : ICommandHandler
             .Where(f => f.EndsWith("*.cal") || f.EndsWith("*.txt") || f.EndsWith("*.cap"))
             .ToList();
     }
-
-
 }
