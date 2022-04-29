@@ -36,7 +36,12 @@ public class SurveyHandler : ICommandHandler
 
             if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
             {
-                var xmlFiles = Directory.EnumerateFiles(_options.FilePath, "*.xml");
+                var xmlFiles = Directory.EnumerateFiles(_options.FilePath, "*.xml", 
+                    new EnumerationOptions
+                    {
+                        RecurseSubdirectories = true
+                    });
+
                 _logger.LogInformation("Found {Count} XML files in {FilePath}", xmlFiles.Count(), _options.FilePath);
 
                 foreach (var item in xmlFiles)
