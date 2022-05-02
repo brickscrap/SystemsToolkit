@@ -311,6 +311,10 @@ namespace FuelPOS.StatDevParser
             var screen = xml.Elements("Device")
                 .Where(x => x.Value.Contains("TouchScreenType"));
 
+            if (screen.FirstOrDefault() is null)
+            {
+                return "Not found";
+            }
             var output = screen.Elements("Property")
                 .Where(x => x.Attribute("Type").Value == "89")
                 .FirstOrDefault()
