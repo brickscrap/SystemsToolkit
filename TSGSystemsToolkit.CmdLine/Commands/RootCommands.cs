@@ -176,7 +176,7 @@ internal class RootCommands : IRootCommands
 
     private Command CreateSurveyCommand()
     {
-        Argument<string> filePathArg = new("filepath", "Path to either an individual file, or directory containing multile StatDev XMLs.");
+        Argument<string> filePathArg = new("filepath", "Path to either an individual file, or directory containing multile StatDev XMLs. This will parse all directories recursively, use caution.");
         Option<string> outputOpt = new(new[] { "--output", "-o" }, "Path to store any created files.") { IsRequired = true };
         Option<bool> fuelPosOpt = new(new[] { "--fuelpos", "-f" }, "Create a FuelPOS survey spreadsheet.");
         Option<bool> serialNumOpt = new(new[] { "--serialnumbers", "-s" }, "Create a PIN pad serial number survey.");
@@ -237,8 +237,6 @@ internal class RootCommands : IRootCommands
         }, binder);
 
         return cmd;
-
-        // fuelpos send-file "C:\Users\GaryM\Documents\Work\HTEC_GEMPAY_IPT.xml" -t "/" -c "ShellRba"
     }
 
     private Command CreateDatabaseCommand()
@@ -293,5 +291,3 @@ internal class RootCommands : IRootCommands
         return cmd;
     }
 }
-
-// R2798;RontecUK;Billinghurst;FTP://SUPERVISOR:DF572BBC9@10.68.25.21
