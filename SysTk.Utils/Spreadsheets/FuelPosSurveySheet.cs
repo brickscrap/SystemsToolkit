@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using SpreadsheetLight;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Linq;
 
 namespace SysTk.Utils.Spreadsheets
 {
@@ -12,7 +13,7 @@ namespace SysTk.Utils.Spreadsheets
     {
         private readonly ILogger _logger;
 
-        private SLStyle ColumnHeaderStyle
+        private static SLStyle ColumnHeaderStyle
         {
             get
             {
@@ -26,7 +27,7 @@ namespace SysTk.Utils.Spreadsheets
             }
         }
 
-        private SLStyle TitleStyle
+        private static SLStyle TitleStyle
         {
             get
             {
@@ -38,7 +39,7 @@ namespace SysTk.Utils.Spreadsheets
             }
         }
 
-        private SLStyle SubTitleStyle
+        private static SLStyle SubTitleStyle
         {
             get
             {
@@ -63,6 +64,22 @@ namespace SysTk.Utils.Spreadsheets
         {
             SLDocument doc = new();
 
+            doc.AddWorksheet("Summary");
+            doc = SetupSummary(doc, data);
+
+            int rowNumber = 3;
+            foreach (var station in data)
+            {
+                doc = PopulateSummary(doc, station, rowNumber);
+                rowNumber++;
+            }
+
+            doc.AutoFitColumn(1, 71);
+
+            var table = doc.CreateTable(2, 1, data.Count() + 3, 74);
+            table.SetTableStyle(SLTableStyleTypeValues.Medium2);
+            doc.InsertTable(table);
+
             foreach (var station in data)
             {
                 _logger.LogInformation("Creating worksheet for {Station}", station.StationInfo.StationName);
@@ -73,6 +90,10 @@ namespace SysTk.Utils.Spreadsheets
                     doc.MergeWorksheetCells("A1", "C1");
                     doc.SetCellValue("A1", station.StationInfo.StationName);
                     doc.SetCellStyle("A1", TitleStyle);
+                    doc.SetCellValue("A2", "PSE ID:");
+                    doc.SetCellStyle("A2", TitleStyle);
+                    doc.SetCellValue("B2", station.StationInfo.StationNumber);
+                    doc.SetCellStyle("B2", TitleStyle);
 
                     doc = AddPos(doc, station);
                     doc = AddTankManagement(doc, station);
@@ -81,6 +102,175 @@ namespace SysTk.Utils.Spreadsheets
             }
 
             doc.DeleteWorksheet("Sheet1");
+
+            return doc;
+        }
+
+        private SLDocument SetupSummary(SLDocument doc, IEnumerable<StatdevModel> data)
+        {
+            // Titles
+            doc.MergeWorksheetCells("A1", "C1");
+            doc.MergeWorksheetCells("D1", "F1");
+            doc.SetCellValue("D1", "CIS");
+            doc.SetCellStyle("D1", SubTitleStyle);
+            doc.MergeWorksheetCells("G1", "S1");
+            doc.SetCellValue("G1", "POS 1/INT");
+            doc.SetCellStyle("G1", SubTitleStyle);
+            doc.MergeWorksheetCells("T1", "AF1");
+            doc.SetCellValue("T1","POS 2");
+            doc.SetCellStyle("T1", SubTitleStyle);
+            doc.MergeWorksheetCells("AG1", "AS1");
+            doc.SetCellValue("AG1", "POS 3");
+            doc.SetCellStyle("AG1", SubTitleStyle);
+            doc.MergeWorksheetCells("AT1", "BF1");
+            doc.SetCellValue("AT1", "POS 4");
+            doc.SetCellStyle("AT1", SubTitleStyle);
+            doc.MergeWorksheetCells("BG1", "BS1");
+            doc.SetCellValue("BG1", "POS 5");
+            doc.SetCellStyle("BG1", SubTitleStyle);
+            doc.MergeWorksheetCells("BT1", "BV1");
+            doc.SetCellValue("BT1", "Protocols");
+            doc.SetCellStyle("BT1", SubTitleStyle);
+
+            // Table headers
+            doc.SetCellValue("A2", "PSE ID");
+            doc.SetCellValue("B2", "Station Name");
+            doc.SetCellValue("C2", "Nr of POS");
+
+            // CIS
+            doc.SetCellValue("D2", "Hardware");
+            doc.SetCellValue("E2", "Build Disk");
+            doc.SetCellValue("F2", "UPS");
+
+            // POS 1
+            doc.SetCellValue("G2", "Hardware");
+            doc.SetCellValue("H2", "Build Disk");
+            doc.SetCellValue("I2", "Touchscreen");
+            doc.SetCellValue("J2", "UPS");
+            doc.SetCellValue("K2", "Scanner");
+            doc.SetCellValue("L2", "Printer");
+            doc.SetCellValue("M2", "CDU");
+            doc.SetCellValue("N2", "MSR");
+            doc.SetCellValue("O2", "OASE IPT");
+            doc.SetCellValue("P2", "Ext IPT");
+            doc.SetCellValue("Q2", "Ext Loyalty");
+            doc.SetCellValue("R2", "Nr Serial Devices");
+            doc.SetCellValue("S2", "Nr Multiport Devices");
+
+            // POS 2
+            doc.SetCellValue("T2", "Hardware");
+            doc.SetCellValue("U2", "Build Disk");
+            doc.SetCellValue("V2", "Touchscreen");
+            doc.SetCellValue("W2", "UPS");
+            doc.SetCellValue("X2", "Scanner");
+            doc.SetCellValue("Y2", "Printer");
+            doc.SetCellValue("Z2", "CDU");
+            doc.SetCellValue("AA2", "MSR");
+            doc.SetCellValue("AB2", "OASE IPT");
+            doc.SetCellValue("AC2", "Ext IPT");
+            doc.SetCellValue("AD2", "Ext Loyalty");
+            doc.SetCellValue("AE2", "Nr Serial Devices");
+            doc.SetCellValue("AF2", "Nr Multiport Devices");
+
+            // POS 3
+            doc.SetCellValue("AG2", "Hardware");
+            doc.SetCellValue("AH2", "Build Disk");
+            doc.SetCellValue("AI2", "Touchscreen");
+            doc.SetCellValue("AJ2", "UPS");
+            doc.SetCellValue("AK2", "Scanner");
+            doc.SetCellValue("AL2", "Printer");
+            doc.SetCellValue("AM2", "CDU");
+            doc.SetCellValue("AN2", "MSR");
+            doc.SetCellValue("AO2", "OASE IPT");
+            doc.SetCellValue("AP2", "Ext IPT");
+            doc.SetCellValue("AQ2", "Ext Loyalty");
+            doc.SetCellValue("AR2", "Nr Serial Devices");
+            doc.SetCellValue("AS2", "Nr Multiport Devices");
+
+            // POS 4
+            doc.SetCellValue("AT2", "Hardware");
+            doc.SetCellValue("AU2", "Build Disk");
+            doc.SetCellValue("AV2", "Touchscreen");
+            doc.SetCellValue("AW2", "UPS");
+            doc.SetCellValue("AX2", "Scanner");
+            doc.SetCellValue("AY2", "Printer");
+            doc.SetCellValue("AZ2", "CDU");
+            doc.SetCellValue("BA2", "MSR");
+            doc.SetCellValue("BB2", "OASE IPT");
+            doc.SetCellValue("BC2", "Ext IPT");
+            doc.SetCellValue("BD2", "Ext Loyalty");
+            doc.SetCellValue("BE2", "Nr Serial Devices");
+            doc.SetCellValue("BF2", "Nr Multiport Devices");
+
+            // POS 5
+            doc.SetCellValue("BG2", "Hardware");
+            doc.SetCellValue("BH2", "Build Disk");
+            doc.SetCellValue("BI2", "Touchscreen");
+            doc.SetCellValue("BJ2", "UPS");
+            doc.SetCellValue("BK2", "Scanner");
+            doc.SetCellValue("BL2", "Printer");
+            doc.SetCellValue("BM2", "CDU");
+            doc.SetCellValue("BN2", "MSR");
+            doc.SetCellValue("BO2", "OASE IPT");
+            doc.SetCellValue("BP2", "Ext IPT");
+            doc.SetCellValue("BQ2", "Ext Loyalty");
+            doc.SetCellValue("BR2", "Nr Serial Devices");
+            doc.SetCellValue("BS2", "Nr Multiport Devices");
+        
+            // Protocols
+            doc.SetCellValue("BT2", "Proto 1");
+            doc.SetCellValue("BU2", "Proto 2");
+            doc.SetCellValue("BV2", "Proto 3");
+
+            return doc;
+        }
+
+        private SLDocument PopulateSummary(SLDocument doc, StatdevModel station, int row)
+        {
+            doc.SetCellValue($"A{row}", station.StationInfo.StationNumber);
+            doc.SetCellValue($"B{row}", station.StationInfo.StationName);
+            doc.SetCellValue($"C{row}", station.StationInfo.NumberOfPos);
+
+            int col = 4;
+            // Add POS
+            foreach (var pos in station.POS)
+            {
+                if (pos.Number == 9)
+                {
+                    doc.SetCellValue(row, 4, pos.HardwareType);
+                    doc.SetCellValue(row, 5, pos.BuildDisk);
+                    doc.SetCellValue(row, 6, pos.UPS);
+                    continue;
+                }
+
+                if (pos.Number == 1)
+                    col = 7;
+
+                doc.SetCellValue(row, col++, pos.HardwareType);
+                doc.SetCellValue(row, col++, pos.BuildDisk);
+                doc.SetCellValue(row, col++, pos.TouchScreenType);
+                doc.SetCellValue(row, col++, pos.UPS);
+                doc.SetCellValue(row, col++, pos.BarcodeScanner);
+                doc.SetCellValue(row, col++, pos.ReceiptPrinter);
+                doc.SetCellValue(row, col++, pos.CustomerDisplay);
+                doc.SetCellValue(row, col++, pos.MagCardReader);
+                doc.SetCellValue(row, col++, pos.PinPad.Name);
+                doc.SetCellValue(row, col++, pos.PaymentTerminal);
+                doc.SetCellValue(row, col++, pos.LoyaltyTerminal);
+                doc.SetCellValue(row, col++, pos.ComDevices.NumberSerialPortsInUse);
+                doc.SetCellValue(row, col++, pos.ComDevices.NumberPciMultiPortsInUse);
+            }
+
+            col = 72;
+            // Add Protocols
+            foreach (var proto in station.POS.Select(x => x.DispenserCommTypes))
+            {
+                foreach (var item in proto)
+                {
+                    doc.SetCellValue(row, col, item);
+                    col++;
+                }
+            }
 
             return doc;
         }
@@ -139,6 +329,8 @@ namespace SysTk.Utils.Spreadsheets
 
         private SLDocument AddPos(SLDocument doc, StatdevModel data)
         {
+            doc.SetCellValue("B2", data.StationInfo.StationNumber);
+
             for (int i = 0; i < data.POS.Count; i++)
             {
                 int j = i + 2;
@@ -168,6 +360,7 @@ namespace SysTk.Utils.Spreadsheets
             doc.InsertTable(table);
             doc.SetCellValue("B20", data.POS[0].A4Printer);
 
+            
 
             return doc;
         }
