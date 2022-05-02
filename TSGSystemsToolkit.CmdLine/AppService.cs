@@ -81,11 +81,6 @@ internal class AppService : IAppService
         commandLineBuilder.UseTypoCorrections();
         commandLineBuilder.UseHelp();
 
-        //commandLineBuilder.UseExceptionHandler((x, y) =>
-        //{
-
-        //}, 1);
-
         var parser = commandLineBuilder.Build();
 
         return await parser.InvokeAsync(args);
