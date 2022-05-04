@@ -91,6 +91,17 @@ internal class AppService : IAppService
             }
         });
 
+        commandLineBuilder.AddMiddleware(async (context, next) =>
+        {
+            if (context.ParseResult.CommandResult.Tokens.Count == 0)
+            {
+                var helpBuilder = new HelpBuilder(LocalizationResources.Instance);
+                helpBuilder.Write(context.ParseResult.CommandResult.Command, Console.Out);
+
+                return;
+            }
+        });
+
         commandLineBuilder.UseTypoCorrections();
         commandLineBuilder.UseHelp();
 
