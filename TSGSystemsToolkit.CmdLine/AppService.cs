@@ -93,6 +93,8 @@ internal class AppService : IAppService
 
                 return;
             }
+
+            await next(context);
         });
 
         commandLineBuilder.UseTypoCorrections();
