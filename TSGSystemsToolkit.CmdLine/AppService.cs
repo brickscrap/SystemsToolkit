@@ -76,6 +76,19 @@ internal class AppService : IAppService
                         await next(context);
                 }
             }
+            catch (ArgumentNullException ex)
+            {
+                _logger.LogDebug("Exception message: {Message}", ex.Message);
+                _logger.LogDebug("Stack trace: {StackTrace}", ex.StackTrace);
+                _logger.LogDebug("Parameter name: {ParamName}", ex.ParamName);
+
+                Console.WriteLine();
+                AnsiConsole.MarkupLine("[red]The command provided is in an incorrect format, you must provide all arguments, and any parameters marked (REQUIRED).[/]");
+                Console.WriteLine();
+                var helpBuilder = new HelpBuilder(LocalizationResources.Instance);
+                helpBuilder.Write(context.ParseResult.CommandResult.Command, Console.Out);
+                return;
+            }
         });
 
         commandLineBuilder.UseTypoCorrections();
