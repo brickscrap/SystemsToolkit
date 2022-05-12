@@ -90,7 +90,7 @@ namespace FuelPOS.TankTableTools
 
                 if (newLine.Any(x => x.Contains("TANK")))
                 {
-                    _currentTank = newLine.First();
+                    _currentTank = newLine[1];
 
                     if (_nextTank == _currentTank)
                     {
