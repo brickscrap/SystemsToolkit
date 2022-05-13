@@ -82,7 +82,8 @@ namespace FuelPOS.TankTableTools
             List<TankTableModel> output = new();
             TankTableModel table = new();
 
-            _nextTank = _serialisedCalChart.Where(x => x.Contains("TANK")).FirstOrDefault();
+            _nextTank = _serialisedCalChart.Where(x => x.Contains("TANK")).FirstOrDefault()
+                .Split(';').ToList()[1];
 
             foreach (var line in _serialisedCalChart)
             {
